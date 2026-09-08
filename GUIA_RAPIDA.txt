@@ -1,0 +1,187 @@
+GUÍA RÁPIDA - GENERADOR DE INFORME ATENCIONAL
+=============================================
+
+📦 INSTALACIÓN
+==============
+
+1. Asegúrate de tener Python 3.7+ instalado:
+   
+   python --version
+
+2. Instala las dependencias:
+   
+   pip install -r requirements.txt
+
+
+🎯 USO BÁSICO
+=============
+
+1. Abre main.py en un editor de texto.
+
+2. Modifica la línea de configuración (aproximadamente línea 16):
+
+   RUTA_EXCEL = r"C:\ruta\a\tu\archivo.xlsx"
+
+3. Guarda el archivo y ejecútalo:
+
+   python main.py
+
+El programa generará los informes en la carpeta 'informes_generados/'
+que se creará automáticamente junto al script.
+
+
+📊 FORMATO DEL EXCEL
+====================
+
+El archivo Excel debe contener estas siete hojas con sus nombres exactos:
+
+HOJA 1: "info"
+--------------
+Columnas obligatorias:
+  age      → edad del evaluado (número entero)
+  sub_num  → nombre completo del evaluado
+
+HOJA 2: "ACS"
+--------------------------------
+Columnas obligatorias:
+  trial      →  orden de presentación del estímulo
+  numero_del_enunciado  → número de estímulo
+  respuesta      → valor de la respuesta (1, 2 o 3)
+| trial || numero_del_enunciado || respuesta |
+|-------||----------------------||-----------|
+|   1   ||           18         ||     3     |
+
+HOJA 3: "ANT"
+-------------------------------
+Columnas obligatorias:
+  trial      →  orden de presentación del estímulo
+  block  → bloque o parte de la prueba a la que pertenece el evento
+  response      → valor de la respuesta (right, left, NA)
+| trial || block || congruency || cue || location || FixationTime || ITI || direction || response || correct || RT |
+|-------||-------||------------||-----||----------||--------------||-----||-----------||----------||---------||----|
+|   1   ||   1   || congruent  ||center||   top   ||     958      || 842 ||   right   ||    NA    ||    0    ||1700|
+
+HOJA 4: "CPT"
+Columnas obligatorias:
+- row: Número de fila (1 a 14)
+- letter_number: Posición de letra (1 a 47)
+- target: 'si' si es d con 2 rayas, 'no' si no lo es
+- selected: 'TRUE' si fue marcado, 'FALSE' si no
+------------
+| row | letter_number | target | selected |
+|-----|---------------|--------|----------|
+| 1   | 1             | no     | FALSE    |
+| 1   | 2             | si     | TRUE     |
+| 1   | 3             | si     | FALSE    |
+| ... | ...           | ...    | ...      |
+
+HOJAS DUAL-TASK: 
+
+### Hoja 5"Dual Task - Responses"
+Contiene una fila por estímulo presentado durante la prueba.
+-------------------------------
+| stimulus | stimulus_type | stimulus_time_s | latency_s | responded |
+|----------|---------------|-----------------|-----------|-----------|
+|    1     | target_red    |    4.004        |     NaN   |  False    |
+|    4     |distractor_blue|       18.003    |  0.311    |   True    |
+
+- `stimulus_type`: `target_red` (estímulo señal) o `distractor_blue` (distractor).
+- `responded`: `True` si se emitió respuesta, `False` si no.
+- `latency_s`: tiempo de respuesta en segundos (NaN si no respondió).
+
+HOJA 6: "Dual Task - Tracking"
+-------------------------------
+| stimulus | stimulus_type | measurement_phase | time_s | cursor_x | cursor_y | point_x | point_y | distance_px |
+|----------|---------------|-------------------|--------|----------|----------|---------|---------|-------------|
+|     1    |  target_red   |      concurrent   | 4.216  |    548   |    224    |  532   |   215   |     18.36    |
+
+- `measurement_phase`: `concurrent` (durante el estímulo), `after` (inmediatamente después), `unrelated` (independiente).
+- `distance_px`: distancia en píxeles entre cursor y punto objetivo (menor = mejor precisión).
+
+HOJA 7 "FourFigures"
+-------------------------------
+| part | trial_type | contour  | content | discrepancy | latency_s     | correct_response | correct |
+|------|------------|----------| --------|-------------|---------------|------------------|---------|
+|   1  |  practice  |   circle |  circle |     no      |      4.215    |      circle      |   yes   | 
+
+
+HOJA 8 "Digits Memorization"
+-------------------------------
+| forward_span |	backward_span |	ascending_span  |
+|--------------|----------------|-----------------|
+|       0	     |      2	        |         3       |
+
+
+HOJA 9 "PVR"   
+## Esta prueba no forma parte del informe pero se planea implementar con el resto de pruebas 
+para otros análisis externos al informe atencional
+-------------------------------
+| task_name	| initial_angle_deg	| final_angle_deg	| rotation_time_ms  |
+|-----------|-------------------|-----------------| ------------------|
+|   PVR   	|         0        	|     358.8     	|       21510       |
+
+
+✅ RESULTADO
+============
+
+El programa generará un informe profesional en Word (.docx) que incluye:
+
+✓ Portada con nombre, edad y fecha
+✓ Descripción del test: objetivo, procedimiento e índices
+✓ Tabla con puntuaciones directas (PD), típicas (PT) y clasificaciones
+✓ Interpretación adaptativa de cada índice según el perfil del evaluado
+✓ Recomendaciones individualizadas de trabajo
+
+
+🔍 PUNTUACIONES CALCULADAS
+===========================
+Tarea Dual-TASK — Seguimiento visomotor:
+  PSV            → Distancia media cursor-objetivo (píxeles, menor = mejor)
+  PSV_concurrent → PSV durante eventos concurrentes
+  PSV_after      → PSV inmediatamente después de los estímulos
+  PSV_unrelated  → PSV en 2 eventos independientes (aproximadamente 1 y 2 segundos después después aparición estímulo y mínimo un par de segundos antes aparición del siguiente)
+
+
+
+🆘 SOLUCIÓN DE PROBLEMAS
+=========================
+
+Error: "ModuleNotFoundError: No module named 'pandas'"
+→ Ejecuta: pip install -r requirements.txt
+
+Error: "FileNotFoundError"
+→ Verifica que la ruta del Excel es correcta
+→ Usa r"C:\..." para rutas en Windows
+
+Error: "KeyError: 'age'"
+→ Verifica que la hoja "info" tiene la columna "age"
+
+Error: "Worksheet 'ACS', 'ANT', 'CPT', 'FourFigures', 'DUAL-TASK' or 'Digits Memorization' not found"
+→ Verifica que el Excel tiene hojas con esos nombres exactos
+
+Error al generar el documento
+→ Verifica que tienes permisos de escritura en la ruta de salida
+→ Cierra el archivo si está abierto en Word
+
+
+📧 CONTACTO
+===========
+
+Para soporte o dudas sobre el programa, contacta al desarrollador.
+
+
+🎓 CRÉDITOS
+===========
+
+-Cuestionario ACS - Autoría de Derryberry, D., & Reed, M. A. (2002). Anxiety-related attentional biases and their regulation by attentional control. Journal of Abnormal Psychology, 111(2), 225–236.
+-Prueba ANT - Autoría de Fan, J., McCandliss, B. D., Sommer, T., Raz, A., & Posner, M. I. (2002). Testing the Efficiency and Independence of Attentional Networks. Journal of Cognitive Neuroscience, 14(3), 340–347.
+Un estudio de referencia que intenta obtener datos normativos para población española se puede consultar en el siguiente enlace:
+https://crea.ujaen.es/server/api/core/bitstreams/71440c8a-44ab-4aaf-9380-14d0dfa0492f/content
+-Prueba CPT - Prueba de autoría propia inspirada en otras pruebas del paradigma CPT tales como las pruebas Tolouse-Pieron, CARAS-R o D2. Teóricamente inspirado en el artículo original de Rosvold, H. E., Mirsky, A. F., Sarason, I., Bransome, E. D., & Beck, L. H. (1956). A continuous performance test of brain damage. Journal of Consulting Psychology, 20(5), 343–350.
+-Prueba FourFigures - Prueba de autoría original inspirado en otras pruebas de procesamiento de información discrepante, tales como la tarea Stroop o la prueba FiveDigits.
+-DUAL-TASK - Prueba de autoría propia inspirada en juntar los paradigmas experimentales Signal Tracking y Go/No Go
+- Prueba Digits Memorization - Se basa en un paradigma clásico de memorización de secuencias de estímulos, en este caso números, al igual que en la subprueba Digits del WISC-V.
+
+═══════════════════════════════════════════════════════════════
+© 2026 - Generador automático de informes atencionales
+═══════════════════════════════════════════════════════════════
