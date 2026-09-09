@@ -108,17 +108,57 @@ PARRAFOS_FIJOS = {
 
     'titulo_resultados_específicos': "Profundizando en cada prueba atencional",
 
+    'titulo_ACS': "ACS - cuestionario de control atencional",
+
+    'texto_resultados_ACS': "Empezamos mostrando la percepción autodeclarada sobre las capacidades atencionales propias. A través del cuestionario ACS, {nombre} afirma tener la siguiente capacidad atencional:",
+
     'titulo_ANT': "ANT - prueba de eficiencia de redes neuronales atencionales",
 
     'titulo_CPT': "CPT - prueba de rendimiento continuo",
 
     'titulo_FourFigures': "Four Figures - prueba de control y flexibilidad cognitiva",
 
+    'titulo_DigitsMemorization': "Memorización de dígitos - prueba de memoria operativa",
+
     'titulo_DualTask': "Dual Task - prueba multitarea de atención dividida",
 
     'introduccion_analisis_tareas_DualTask': "A continuación, nos centramos en el rendimiento pormenorizado de cada tarea por separado."
 
     'título_sintesis_final': "Finalmente, a modo de síntensis revisamos el desempeño global y dimensional de las capacidades atencionales de {nombre}. A fin de señalar las posibles debilidades y fortalezas y áreas en las que cabe prestar más atención futura." 
+ }
+
+
+
+# ============================================================================
+# ACS — PÁRRAFOS CONDICIONALES
+# ============================================================================
+# Se podría añadir un índice de fiabilidad basado en desviación típica
+
+
+PARRAFO_ACS_atenciongeneral = {
+    'bajo':"""En general, una capacidad atencional baja, con dificultades para aislarse de distracciones y atender la tarea deseada.""",
+
+    'normal':"""En general, una capacidad atencional adecuada. A excepción de algunas dificultades puntuales, se tiene capacidad para aislarse de distracciones y atender la tarea deseada.""",
+
+    'alto':"""En general, una capacidad atencional excelente. No se percibe ningún problema o dificultad para aislarse de las distracciones y atender una tarea o varias tareas al máximo.""",
+ }
+
+PARRAFO_ACS_foco = {
+    'bajo':"""En particular, se detecta dificultad a la hora de concentrarse y desarrollar un estado de atención focalizada prolongado.""",
+
+    'normal':"""En particular, se detecta una adecuada capacidad para concentrarse y desarrollar un estado de atención focalizada prolongado.""",
+
+    'alto':"""En particular, se detecta una muy buena capacidad para concentrarse y desarrollar un estado de atención focalizada prolongado.""",
+
+ }
+
+PARRAFO_ACS_cambio = {
+    'bajo':"""Y por otro lado, se señala dificultad para intercalar y dirigir la atención entre diferentes estímulos o tareas de manera voluntaria y eficiente.""",
+
+    'normal':"""Y por otro lado, se señala una adecuada capacidad para intercalar y dirigir la atención entre diferentes estímulos o tareas de manera voluntaria y eficiente.""",
+
+    'alto':"""Y por otro lado, se señala una gran facilidad para intercalar y dirigir la atención entre diferentes estímulos o tareas de manera voluntaria y eficiente.""",
+
  }
 
 
@@ -260,13 +300,19 @@ PARRAFO_CPT_CON = {
 
 
 PARRAFO_CPT_VAR = {
-    ('alto', False): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante trazada entre los últimos elementos procesados de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación y a una mayor facilidad para distraerse. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados."""
+# Álvaro. Calcular presencia Fatiga o automatismo por prueba t entre el índice CON del primer y tercer tercio prueba? Necesidad baremar esta dif.?
+    ('alto', 'nada'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación constante y a una mayor facilidad para distraerse. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados."""
 
-#Álvaro. Ahora mismo VAR y F juntas, señal si dif. rendimiento mayor y menor serie sign. y más de 10 líneas de diferencia hacia delante. Sería mejor F por comparación conj. varia líneas 1º tercio vs 3º tercio. Y también párrafo para automatización.
-    ('alto', True): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante trazada entre los últimos elementos procesados de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación y a una mayor facilidad para distraerse. En particular, aparece aquí cierto cansancio o fatiga con el transcurso de la tarea, ya que la serie de peor rendimiento se obtuvo más hacia el final de la tarea, en comparación con la de mayor rendimiento. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados."""
+# dentro de la condición VAR se tratan las condiciones 'Fatiga' y 'Automatizacion' si dif. sign. negativa o positiva respectivamente entre el primer (primeras 4 series) y tercer tercio (últimas 4 series) de la prueba.
+    ('alto', 'fatiga'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación y a una mayor facilidad para distraerse. En particular, aparece aquí cierto cansancio o fatiga con el transcurso de la tarea, ya que la serie de peor rendimiento se obtuvo más hacia el final de la tarea, en comparación con la de mayor rendimiento. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados."""
+
+# Si promedio CON 4 primeras series es 5 puntos mayor que promedio 4 últimas
+    ('alto', 'automatismo'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una notable capacidad para adaptarse y automatizar la ejecución a largo plazo."""
+
+# Si promedio CON 4 primeras series es 5 puntos menos que promedio 4 últimas
+    ('alto', 'dificultadinicial'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una dificultad inicial para asimilar y acomodarse rápidamente a la nueva tarea."""
 
     'normal': """ El último aspecto para mencionar es en relación a la curva de trabajo trazada en el perfil gráfico adjunto en este informe. Aquí se puede ver que el rendimiento de {nombre} durante la prueba ha resultado estable y consistente entre series. Esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales aquí evaluados resulta típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte o la aparición de cansancio, respectivamente, son menos probables.""",
-
 
     'bajo': """El bajo nivel de variabilidad observado sugiere una alta consistencia y estabilidad en el rendimiento, indicando una buena resistencia al cansancio o fatiga y una buena capacidad para sostener el esfuerzo atencional de forma uniforme durante toda la tarea. Además, esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales anteriormente evaluados resulta aún más típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte, distracciones puntuales o la aparición de cansancio, respectivamente, son menos probables."""
 }
@@ -373,7 +419,15 @@ PARRAFO_FourFigures_P4 = {
 # 3.5 Digits Memorization
 # ============================================================================
 
+# Calcular este índice en función de la PT promedio de PD_directo y PD_inverso
+PARRAFO_DigitsMemorization = {
 
+    'bajo':"""En relación a la prueba de memorización de dígitos, esta nos indica la capacidad de memoria operativa. En este aspecto el desempeño ha resultado deficiente, por debajo de lo normal o esperable. {nombre} parece presentar dificultades para procesar y mantener consciente por un tiempo mayores cantidades de información.""",
+
+    'normal':"""En relación a la prueba de memorización de dígitos, esta nos indica la capacidad de memoria operativa. En este aspecto el desempeño ha resultado normal. {nombre} puede adecuadamente procesar y mantener consciente por un tiempo mayores cantidades de información.""",
+
+    'alto':"""En relación a la prueba de memorización de dígitos, esta nos indica la capacidad de memoria operativa. En este aspecto el desempeño ha resultado escepcionalmente bueno. {nombre} tiene una gran capacidad para procesar y mantener consciente por un tiempo mayores cantidades de información.""",
+}
 
 # ============================================================================
 # 3.5 DUAL-TASK

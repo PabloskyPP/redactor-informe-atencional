@@ -311,7 +311,7 @@ raph()
     hdr_cells[4.2].text = 'Control Inhibitorio'
     hdr_cells[5].text = 'Flexibilidad Cognitiva'
     hdr_cells[6].text = 'Memoria operativa'
-    hdr_cells[7].text = 'Velocidad de procesmiento'
+    hdr_cells[7].text = 'Velocidad de procesamiento'
     hdr_cells[8].text = 'Hiperactividad'
 
 
@@ -391,7 +391,6 @@ raph()
     row3[9].text = str(resultados.get('Clasificacion_TR_ejecutivo', '-'))
     
 
-
     # Colorear celdas según el rendimiento
     # Verde si es alto, rojo si es bajo (columnas: Aciertos, Alerta, Orientación, Ejecutivo)
     green_if_high = [1, 4, 5, 9]
@@ -421,11 +420,102 @@ raph()
     doc.add_paragraph()  # Espacio
 
 
+
+def _add_bars_section(doc, factores_info, resultados, tabla_destino_cell=None):
+    """
+    Añade una sección de barras horizontales para los factores dados.
+
+    Args:
+        doc:              Documento (usado si tabla_destino_cell es None).
+        factores_info:    Dict clave→{nombre, color, ...} (ACS_INFO o ANT_INFO).
+        resultados:       Dict con PCT_<factor>.
+        tabla_destino_cell: Si se pasa, añade el contenido dentro de esa celda.
+    """
+    BAR_CHARS  = 20   # caracteres de ancho total de la barra
+    CHAR_LLENO = '█'
+    CHAR_VACIO = '░'
+
+    # Ordenar factores de mayor a menor PCT
+    orden = sorted(factores_info.keys(),
+                   key=lambda k: resultados.get(f'PCT_{k}', 0), reverse=True)
+
+    destino = tabla_destino_cell if tabla_destino_cell is not None else doc
+
+    titulo = destino.add_paragraph("Tu perfil completo")
+    titulo.runs[0].bold = True
+    titulo.runs[0].font.size = Pt(11)
+    _no_space_before_after(titulo)
+
+    for clave in orden:
+        info = factores_info[clave]
+        pct  = resultados.get(f'PCT_{clave}', 0)
+        r, g, b = info['color']
+        hex_color = _rgb_to_hex(info['color'])
+
+        # --- Párrafo de encabezado: nombre + porcentaje ---
+        p_header = destino.add_paragraph()
+        _no_space_before_after(p_header)
+        run_letra = p_header.add_run(f"[{clave}] {info['nombre']}  ")
+        run_letra.bold = True
+        run_letra.font.size = Pt(9)
+        run_pct = p_header.add_run(f"{pct}%")
+        run_pct.font.size  = Pt(9)
+        run_pct.font.color.rgb = RGBColor(r, g, b)
+        run_pct.bold = True
+
+        # --- Párrafo de barra ---
+        p_bar = destino.add_paragraph()
+        _no_space_before_after(p_bar)
+        llenos = round(pct / 100 * BAR_CHARS)
+        vacios  = BAR_CHARS - llenos
+
+        run_fill = p_bar.add_run(CHAR_LLENO * llenos)
+        run_fill.font.color.rgb = RGBColor(r, g, b)
+        run_fill.font.size      = Pt(9)
+
+        run_empty = p_bar.add_run(CHAR_VACIO * vacios)
+        run_empty.font.color.rgb = RGBColor(200, 200, 200)
+        run_empty.font.size      = Pt(9)
+
+        # Pequeño espacio
+        sep = destino.add_paragraph()
+        _no_space_before_after(sep)
+
+
+
     # ================================================================== #
     # Secciones particulares de cada prueba                                                           #
     # ================================================================== #
 
     _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_resultados_específicos'])
+
+
+
+    # ================================================================== #
+    # 3.0 ACS                                                           #
+    # ================================================================== #
+    p_tit_r = doc.add_paragraph("ACS - cuestionario de control atencionals")
+    _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_ACS'])
+    _add_bold_paragraph(doc, PARRAFOS_FIJOS['texto_resultados_ACS'])
+
+    # Normalizar nivel para selección de párrafo
+    tr_nivel = normalizar_nivel(clasificaciones['ACS_atenciongeneral'])
+    doc.add_paragraph(PARRAFO_ACS_atenciongeneral[tr_nivel])
+
+    # Gráficas, barras ACS.
+    #Revisar recuperación de datos de esta función en estos tres índices
+    _add_bars_section(doc, ACS_INFO, resultados_ACS_atenciongeneral, tabla_destino_cell=None)
+
+    tr_nivel = normalizar_nivel(clasificaciones['ACS_foco'])
+    doc.add_paragraph(PARRAFO_ACS_foco[tr_nivel])
+    #Revisar recuperación de datos de esta función
+    _add_bars_section(doc, ACS_INFO, resultados_ACS_foco, tabla_destino_cell=None)
+
+    tr_nivel = normalizar_nivel(clasificaciones['ACS_cambio'])
+    doc.add_paragraph(PARRAFO_ACS_cambio[tr_nivel])
+    #Revisar recuperación de datos de esta función
+    _add_bars_section(doc, ACS_INFO, resultados_ACS_cambio, tabla_destino_cell=None)
+
 
     # ================================================================== #
     # 3.1 ANT                                                           #
@@ -509,8 +599,12 @@ raph()
     con_nivel = normalizar_nivel(clasificaciones['ANT_TR_ejecutivo'])
 
     doc.add_paragraph(PARRAFO_ANT_alerta[con_nivel])
+    # Revisar esta función de añadir grafico barras para estos tres índices
+    _add_bars_section(doc, ANT_INFO, resultados_ANT_TR_alerta, tabla_destino_cell=None)
     doc.add_paragraph(PARRAFO_ANT_orientacion[con_nivel])
+    _add_bars_section(doc, ANT_INFO, resultados_ANT_TR_orientacion, tabla_destino_cell=None)
     doc.add_paragraph(PARRAFO_ANT_ejecutivo[con_nivel])
+    _add_bars_section(doc, ANT_INFO, resultados_ANT_TR_ejecutivo, tabla_destino_cell=None)
 
 
 
@@ -518,8 +612,8 @@ raph()
     # 3.2  CPT                                         # o D2 si el caso
     # ================================================================== #
     doc.add_page_break()
-    p_tit_im = doc.add_paragraph
-        "CPT - prueba de rendimiento continuo")
+    p_tit_im = doc.add_paragraph()
+    p_tit_r = doc.add_paragraph("CPT - prueba de rendimiento continuo")
     p_tit_im.runs[0].bold      = True
     p_tit_im.runs[0].underline = True
 
@@ -643,9 +737,23 @@ raph()
     # Normalizar nivel para selección de párrafo
     c_nivel = normalizar_nivel(clasificaciones['FourFigures_P4_A_obtenido_vs_esperado'])
     
-    doc.add_paragraph(PARRAFO_FourFigures_P4_A_obtenido_vs_esperado [c_nivel])
+    doc.add_paragraph(PARRAFO_FourFigures_P4_A_obtenido_vs_esperado[c_nivel])
 
 
+    # ============================================
+    # Párrafos condicionales DigitsMemorization
+
+    # ERRORES DE COMISIÓN
+    p_c_titulo = doc.add_paragraph()
+    run = p_c_titulo.add_run("🔹 Memoria operativa o de trabajo")
+    run.bold = True
+    run.font.size = Pt(11)
+    
+    # Normalizar nivel para selección de párrafo
+    c_nivel = normalizar_nivel(clasificaciones['DigitsMemorization_PDpromedio'])
+    
+    doc.add_paragraph(PARRAFO_DigitsMemorization
+[c_nivel])
 
     # ============================================
 
