@@ -35,8 +35,6 @@ def _extract_docx_lines(ruta_docx: str) -> List[str]:
             if any(values):
                 lines.append(" || ".join(values))
     return lines
-
-
 def _render_lines_to_pages(lines: List[str]) -> List[Image.Image]:
     width, height = 1240, 1754
     margin = 80
@@ -75,14 +73,12 @@ def generar_pdf_desde_docx(ruta_docx, ruta_pdf=None, verbose=True):
 
     if ruta_pdf is None:
         ruta_pdf = os.path.splitext(ruta_docx)[0] + '.pdf'
-    os.makedirs(os.path.dirname(ruta_pdf), exist_ok=True)
+    output_dir = os.path.dirname(ruta_pdf)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
 
     lines = _extract_docx_lines(ruta_docx)
     pages = _render_lines_to_pages(lines)
-
-    imagen_cpt = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'grafico_CPT_final.png')
-    if os.path.exists(imagen_cpt):
-        pages.append(Image.open(imagen_cpt).convert('RGB'))
 
     first, rest = pages[0], pages[1:]
     first.save(ruta_pdf, save_all=True, append_images=rest)

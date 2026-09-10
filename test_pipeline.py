@@ -4,6 +4,7 @@ import unittest
 
 import pandas as pd
 from docx import Document
+from PIL import Image
 
 from generador_docx import crear_informe_docx, guardar_informe
 from generador_pdf import generar_pdf_desde_docx
@@ -94,6 +95,25 @@ class PipelineTests(unittest.TestCase):
         self.assertIn('Disponible', table_text)
         self.assertIn('PT', table_text)
         self.assertIsInstance(resultados['PT_DUALTASK_A'], int)
+
+    def test_pdf_export_con_imagen_y_ruta_sin_directorio(self):
+        datos = leer_datos_excel(SAMPLE_XLSX)
+        resultados = calcular_puntuaciones_directas(datos)
+        clasificaciones = obtener_puntuaciones(resultados)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            Image.new('RGB', (20, 20), 'white').save(os.path.join(tmpdir, 'grafico_CPT_final.png'))
+            ruta_docx = os.path.join(tmpdir, 'con_imagen.docx')
+            doc = crear_informe_docx(resultados, clasificaciones, resultados['nombre_completo'], tmpdir)
+            guardar_informe(doc, ruta_docx)
+
+            cwd = os.getcwd()
+            try:
+                os.chdir(tmpdir)
+                self.assertTrue(generar_pdf_desde_docx(ruta_docx, 'solo_nombre.pdf', verbose=False))
+                self.assertTrue(os.path.exists(os.path.join(tmpdir, 'solo_nombre.pdf')))
+            finally:
+                os.chdir(cwd)
 
 
 if __name__ == '__main__':

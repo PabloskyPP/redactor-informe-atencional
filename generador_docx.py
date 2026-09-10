@@ -12,7 +12,7 @@ from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-from docx.shared import Inches, Pt
+from docx.shared import Inches, Pt, RGBColor
 from PIL import Image
 
 from textos_runtime import (
@@ -182,7 +182,7 @@ def _add_results_table(doc: Document, resultados: dict, clasificaciones: dict) -
                 _set_cell_bg(cell, '404040')
                 for paragraph in cell.paragraphs:
                     for run in paragraph.runs:
-                        run.font.color.rgb = None
+                        run.font.color.rgb = RGBColor(255, 255, 255)
 
 
 def _add_bars_section(doc: Document, title: str, items: Iterable[tuple]) -> None:

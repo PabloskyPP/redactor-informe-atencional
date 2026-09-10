@@ -250,7 +250,7 @@ def _calcular_ant(resultados: dict, datos: dict) -> None:
     resultados['PD_ANT_O'] = int((~responded).sum())
     resultados['PD_ANT_C'] = int((responded & ~correct).sum())
     resultados['PD_ANT_E'] = resultados['PD_ANT_O'] + resultados['PD_ANT_C']
-    resultados['PD_ANT_TR'] = _safe_mean(rt[responded | correct])
+    resultados['PD_ANT_TR'] = _safe_mean(rt[responded])
 
     resultados['PD_ANT_TR_CvsA'] = _difference_or_none(
         _safe_mean(rt[responded & ~correct]),
