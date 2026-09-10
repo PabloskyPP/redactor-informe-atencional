@@ -140,6 +140,24 @@ class PipelineTests(unittest.TestCase):
             finally:
                 os.chdir(cwd)
 
+    def test_pdf_preserva_orden_basico_de_parrafos_y_tablas(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ruta_docx = os.path.join(tmpdir, 'orden.docx')
+            ruta_pdf = os.path.join(tmpdir, 'orden.pdf')
+
+            doc = Document()
+            doc.add_paragraph('PRIMERO')
+            table = doc.add_table(rows=1, cols=2)
+            table.rows[0].cells[0].text = 'TABLA_A'
+            table.rows[0].cells[1].text = 'TABLA_B'
+            doc.add_paragraph('ULTIMO')
+            guardar_informe(doc, ruta_docx)
+
+            self.assertTrue(generar_pdf_desde_docx(ruta_docx, ruta_pdf, verbose=False))
+            texto = "\n".join((page.extract_text() or '') for page in PdfReader(ruta_pdf).pages)
+            self.assertLess(texto.index('PRIMERO'), texto.index('TABLA_A'))
+            self.assertLess(texto.index('TABLA_B'), texto.index('ULTIMO'))
+
 
 if __name__ == '__main__':
     unittest.main()

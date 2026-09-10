@@ -9,7 +9,6 @@ from typing import Iterator, List, Tuple
 from xml.sax.saxutils import escape
 
 from docx import Document
-from docx.document import Document as DocxDocument
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.oxml.table import CT_Tbl
 from docx.oxml.text.paragraph import CT_P
@@ -26,8 +25,8 @@ from reportlab.platypus import SimpleDocTemplate, Spacer, Table as RLTable, Tabl
 REL_NS = '{http://schemas.openxmlformats.org/officeDocument/2006/relationships}embed'
 
 
-def _iter_block_items(parent: DocxDocument) -> Iterator[Tuple[str, object]]:
-    for child in parent.element.body.iterchildren():
+def _iter_block_items(parent) -> Iterator[Tuple[str, object]]:
+    for child in parent._element.body.iterchildren():
         if isinstance(child, CT_P):
             yield 'paragraph', Paragraph(child, parent)
         elif isinstance(child, CT_Tbl):
@@ -81,7 +80,7 @@ def _extract_story(ruta_docx: str):
             if markup:
                 story.append(RLParagraph(markup, _paragraph_style(block)))
                 story.append(Spacer(1, 0.18 * cm))
-            for blip in block._p.xpath('.//a:blip'):
+            for blip in block._p.xpath('.//*[local-name()="blip"]'):
                 rid = blip.get(REL_NS)
                 if rid and rid in doc.part.related_parts:
                     image_part = doc.part.related_parts[rid]

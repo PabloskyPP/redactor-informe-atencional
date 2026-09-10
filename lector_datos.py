@@ -75,12 +75,20 @@ def _split_first_last(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     if df.empty:
         return df, df
     chunk = max(1, len(df) // 3)
+    chunk = min(chunk, max(1, len(df) // 2))
     return df.iloc[:chunk].copy(), df.iloc[-chunk:].copy()
 
 
 def _ordered_trials(df: pd.DataFrame, preferred_column: str) -> pd.DataFrame:
     if preferred_column in df.columns:
         return df.sort_values(preferred_column).reset_index(drop=True)
+    return df.reset_index(drop=True)
+
+
+def _sort_by_available_columns(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
+    usable = [column for column in columns if column in df.columns]
+    if usable:
+        return df.sort_values(usable).reset_index(drop=True)
     return df.reset_index(drop=True)
 
 
@@ -461,8 +469,8 @@ def _calcular_digits(resultados: dict, datos: dict) -> None:
 
 
 def _calcular_dualtask(resultados: dict, datos: dict) -> None:
-    responses = datos['df_DUALTASK_responses'].copy().sort_values('stimulus')
-    tracking = datos['df_DUALTASK_tracking'].copy().sort_values(['time_s', 'stimulus'])
+    responses = _sort_by_available_columns(datos['df_DUALTASK_responses'].copy(), ['stimulus', 'stimulus_time_s'])
+    tracking = _sort_by_available_columns(datos['df_DUALTASK_tracking'].copy(), ['time_s', 'stimulus'])
 
     is_target = _dual_task_is_target(responses['stimulus_type'])
     responded = responses['responded'].fillna(False).astype(bool)

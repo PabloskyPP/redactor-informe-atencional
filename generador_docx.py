@@ -267,7 +267,7 @@ def _add_ant_section(doc: Document, resultados: dict, clasificaciones: dict, fmt
 def _add_cpt_section(doc: Document, resultados: dict, clasificaciones: dict, fmt: dict) -> None:
     nombre = resultados['display_names']['CPT']
     _add_heading(doc, f"{nombre} - prueba de rendimiento continuo")
-    tr_key = _raw_level(clasificaciones['CPT_TR'], reverse_metric=True)
+    tr_key = clasificaciones['CPT_TR']
     cpt_o_raw = _raw_level(clasificaciones.get('CPT_O'), reverse_metric=True)
     cpt_c_raw = _raw_level(clasificaciones.get('CPT_C'), reverse_metric=True)
     e_key = 'alto' if cpt_o_raw == 'alto' or cpt_c_raw == 'alto' else 'normal'
