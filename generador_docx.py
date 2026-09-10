@@ -482,5 +482,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso", script_d
 
 
 def guardar_informe(doc, ruta_salida):
-    os.makedirs(os.path.dirname(ruta_salida), exist_ok=True)
+    directory = os.path.dirname(ruta_salida)
+    if directory:
+        os.makedirs(directory, exist_ok=True)
     doc.save(ruta_salida)

@@ -5,6 +5,7 @@ import unittest
 import pandas as pd
 from docx import Document
 from PIL import Image
+from pypdf import PdfReader
 
 from generador_docx import crear_informe_docx, guardar_informe
 from generador_pdf import generar_pdf_desde_docx
@@ -19,8 +20,7 @@ SAMPLE_XLSX = os.path.join(REPO_DIR, 'excel ejemplo.xlsx')
 class PipelineTests(unittest.TestCase):
     @staticmethod
     def _count_pdf_pages(path):
-        with open(path, 'rb') as handle:
-            return handle.read().count(b'/Type /Page')
+        return len(PdfReader(path).pages)
 
     def test_sample_workbook_end_to_end(self):
         datos = leer_datos_excel(SAMPLE_XLSX)

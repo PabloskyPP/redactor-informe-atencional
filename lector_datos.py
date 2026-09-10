@@ -205,6 +205,11 @@ def _bool_yes(series: pd.Series) -> pd.Series:
     return series.astype(str).str.strip().str.lower().isin({'yes', 'si', 'sí', 'true', '1'})
 
 
+def _dual_task_is_target(series: pd.Series) -> pd.Series:
+    values = series.astype(str).str.strip().str.lower()
+    return values.isin({'target', 'target_red', 'red_target', 'objetivo', 'objetivo_rojo'})
+
+
 def _registrar_resultado_prueba(
     resultados: dict,
     slot: str,
@@ -453,7 +458,7 @@ def _calcular_dualtask(resultados: dict, datos: dict) -> None:
     responses = datos['df_DUALTASK_responses'].copy().sort_values('stimulus')
     tracking = datos['df_DUALTASK_tracking'].copy().sort_values(['time_s', 'stimulus'])
 
-    is_target = responses['stimulus_type'].astype(str).str.lower().str.contains('target')
+    is_target = _dual_task_is_target(responses['stimulus_type'])
     responded = responses['responded'].fillna(False).astype(bool)
     latency = pd.to_numeric(responses['latency_s'], errors='coerce')
 
@@ -483,7 +488,7 @@ def _calcular_dualtask(resultados: dict, datos: dict) -> None:
     )
 
     def _target_accuracy(df_resp: pd.DataFrame) -> Optional[float]:
-        targets = df_resp[df_resp['stimulus_type'].astype(str).str.lower().str.contains('target')]
+        targets = df_resp[_dual_task_is_target(df_resp['stimulus_type'])]
         if targets.empty:
             return None
         return float(targets['responded'].fillna(False).astype(bool).mean())
@@ -498,7 +503,7 @@ def _calcular_dualtask(resultados: dict, datos: dict) -> None:
     )
 
     concurrent_targets = responses.loc[responses['stimulus'].isin(tracking.loc[concurrent, 'stimulus'].unique())]
-    concurrent_target_resp = concurrent_targets[concurrent_targets['stimulus_type'].astype(str).str.lower().str.contains('target')]
+    concurrent_target_resp = concurrent_targets[_dual_task_is_target(concurrent_targets['stimulus_type'])]
     resultados['PD_DUALTASK_A_cuando_concurrencia'] = _target_accuracy(concurrent_target_resp)
     resultados['PD_DUALTASK_TR_cuando_concurrencia'] = _safe_mean(
         pd.to_numeric(concurrent_target_resp.loc[concurrent_target_resp['responded'] == True, 'latency_s'], errors='coerce')
