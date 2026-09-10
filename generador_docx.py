@@ -477,7 +477,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso", script_d
     _add_results_table(doc, resultados, clasificaciones)
 
     imagen_cpt = os.path.join(script_dir, 'grafico_CPT_final.png')
-    if _image_is_valid(imagen_cpt):
+    if 'CPT' in resultados['available_tests'] and _image_is_valid(imagen_cpt):
         doc.add_page_break()
         _add_heading(doc, 'Gráfico CPT/D2', size=11)
         doc.add_picture(imagen_cpt, width=Inches(6.5))

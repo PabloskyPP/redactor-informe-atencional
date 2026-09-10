@@ -78,6 +78,12 @@ def _split_first_last(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     return df.iloc[:chunk].copy(), df.iloc[-chunk:].copy()
 
 
+def _ordered_trials(df: pd.DataFrame, preferred_column: str) -> pd.DataFrame:
+    if preferred_column in df.columns:
+        return df.sort_values(preferred_column).reset_index(drop=True)
+    return df.reset_index(drop=True)
+
+
 def _resolve_sheet_map(xl: pd.ExcelFile) -> Dict[str, str]:
     by_lower = {sheet.strip().lower(): sheet for sheet in xl.sheet_names}
     resolved = {}
@@ -274,7 +280,7 @@ def _calcular_ant(resultados: dict, datos: dict) -> None:
         _safe_mean(rt[df['congruency'].astype(str).str.lower() == 'congruent']),
     )
 
-    first, last = _split_first_last(df.sort_values('trial'))
+    first, last = _split_first_last(_ordered_trials(df, 'trial'))
     first_correct = _mean_bool(pd.to_numeric(first['correct'], errors='coerce').fillna(0).astype(int).eq(1))
     last_correct = _mean_bool(pd.to_numeric(last['correct'], errors='coerce').fillna(0).astype(int).eq(1))
     resultados['PD_ANT_A_principio_vs_final'] = _difference_or_none(first_correct, last_correct)
@@ -462,13 +468,20 @@ def _calcular_dualtask(resultados: dict, datos: dict) -> None:
     responded = responses['responded'].fillna(False).astype(bool)
     latency = pd.to_numeric(responses['latency_s'], errors='coerce')
 
-    resultados['PD_DUALTASK_A'] = int((is_target & responded).sum())
+    def _correct_target_mask(df_resp: pd.DataFrame) -> pd.Series:
+        target_mask = _dual_task_is_target(df_resp['stimulus_type'])
+        if 'correct' in df_resp.columns:
+            return target_mask & _bool_yes(df_resp['correct'])
+        return target_mask & df_resp['responded'].fillna(False).astype(bool)
+
+    correct_target = _correct_target_mask(responses)
+    resultados['PD_DUALTASK_A'] = int(correct_target.sum())
     resultados['PD_DUALTASK_O'] = int((is_target & ~responded).sum())
     resultados['PD_DUALTASK_C'] = int((~is_target & responded).sum())
     resultados['PD_DUALTASK_E'] = resultados['PD_DUALTASK_O'] + resultados['PD_DUALTASK_C']
-    resultados['PD_DUALTASK_TR'] = _safe_mean(latency[is_target & responded])
+    resultados['PD_DUALTASK_TR'] = _safe_mean(latency[correct_target])
     resultados['PD_DUALTASK_TR_A_vs_C'] = _difference_or_none(
-        _safe_mean(latency[is_target & responded]),
+        _safe_mean(latency[correct_target]),
         _safe_mean(latency[~is_target & responded]),
     )
 
@@ -491,6 +504,8 @@ def _calcular_dualtask(resultados: dict, datos: dict) -> None:
         targets = df_resp[_dual_task_is_target(df_resp['stimulus_type'])]
         if targets.empty:
             return None
+        if 'correct' in targets.columns:
+            return float(_bool_yes(targets['correct']).mean())
         return float(targets['responded'].fillna(False).astype(bool).mean())
 
     resultados['PD_DUALTASK_A_principio_vs_final'] = _difference_or_none(
@@ -506,7 +521,7 @@ def _calcular_dualtask(resultados: dict, datos: dict) -> None:
     concurrent_target_resp = concurrent_targets[_dual_task_is_target(concurrent_targets['stimulus_type'])]
     resultados['PD_DUALTASK_A_cuando_concurrencia'] = _target_accuracy(concurrent_target_resp)
     resultados['PD_DUALTASK_TR_cuando_concurrencia'] = _safe_mean(
-        pd.to_numeric(concurrent_target_resp.loc[concurrent_target_resp['responded'] == True, 'latency_s'], errors='coerce')
+        pd.to_numeric(concurrent_target_resp.loc[_correct_target_mask(concurrent_target_resp), 'latency_s'], errors='coerce')
     )
 
     _registrar_resultado_prueba(
