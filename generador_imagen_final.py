@@ -1,7 +1,7 @@
 """
-Módulo para generar la imagen final grafico_D2_final.png con superposiciones gráficas
+Módulo para generar la imagen final grafico_CPT_final.png con superposiciones gráficas
 
-Este módulo toma como base grafico_D2.png y genera una versión final con:
+Este módulo toma como base grafico_CPT.png y genera una versión final con:
 - Textos de puntuaciones globales (TR_total, TA_total, O_total, C_total, TOT, CON, VAR, TR_max, TR_min, E_total)
 - Cuadros de texto por fila para cada índice (TR, TA, O, C)
 - Puntos negros en posiciones donde selected == True (items seleccionados)
@@ -23,7 +23,7 @@ import pandas as pd  # Librería para manipulación de datos tabulares
 # ============================================================================
 
 # Dimensiones de la imagen base (estas se detectan automáticamente)
-# grafico_D2.png tiene 804x562 pixels
+# grafico_CPT.png tiene 804x562 pixels
 
 # Configuración del grid de la imagen D2
 # El test D2 tiene 14 filas y aproximadamente 47 posiciones por fila
@@ -374,8 +374,8 @@ def conectar_puntos_entre_filas(draw, puntos_por_fila):
 # FUNCIÓN PRINCIPAL
 # ============================================================================
 
-def generar_imagen_final(resultados, datos_d2, ruta_grafico_base='grafico_D2.png', 
-                        ruta_salida=r'C:\Users\Pablo\OneDrive\Escritorio\informes D2\grafico_D2_final.png'):
+def generar_imagen_final(resultados, datos_d2, ruta_grafico_base='grafico_CPT.png',
+                        ruta_salida='grafico_CPT_final.png'):
     """
     Genera la imagen final grafico_D2_final.png con todas las superposiciones
     
@@ -451,8 +451,8 @@ def generar_desde_resultados(resultados, script_dir=None):
     if script_dir is None:
         script_dir = os.path.dirname(os.path.abspath(__file__))  # Obtener directorio del script actual
 
-    ruta_base = os.path.join(script_dir, 'grafico_D2.png')  # Ruta de la imagen base
-    ruta_salida =  os.path.join(r"C:\Users\Pablo\OneDrive\Escritorio\informes D2", "grafico_D2_final.png")  # Ruta de la imagen final
+    ruta_base = os.path.join(script_dir, 'grafico_CPT.png')  # Ruta de la imagen base
+    ruta_salida = os.path.join(script_dir, "grafico_CPT_final.png")  # Ruta de la imagen final
 
 
     # Los resultados deben incluir el DataFrame datos_d2

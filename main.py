@@ -20,7 +20,7 @@ def main():
     # ------------------------------------------------------------------ #
     RUTA_EXCEL = os.environ.get(
         'RUTA_EXCEL',
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Paco Fiestas-ANT, CPT, DUAL-TASK, FourFigures.xlsx')
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'excel ejemplo.xlsx')
     )
     script_dir       = os.path.dirname(os.path.abspath(__file__))
     carpeta_informes = os.path.join(script_dir, "informes_generados")
@@ -68,8 +68,10 @@ def main():
     print("Paso 2: Calculando puntuaciones directas...")
     try:
         resultados = calcular_puntuaciones_directas(datos)
-        for factor in ('R', 'I', 'A', 'S', 'E', 'C'):
-            print(f"    PD_{factor}: {resultados.get(f'PD_{factor}')}")
+        for test in resultados.get('report_tests', []):
+            print(f"    {test['display_name']}:")
+            for indice in test['indices'][:4]:
+                print(f"      {indice['label']}: {indice['pd']}")
     except Exception as e:
         print(f"   X Error al calcular puntuaciones: {e}")
         sys.exit(1)
@@ -82,12 +84,9 @@ def main():
     print("Paso 3: Calculando porcentajes y clasificaciones...")
     try:
         clasificaciones = obtener_puntuaciones(resultados)
-        top3_r  = resultados.get('top3_riasec', [])
-        top3_im = resultados.get('top3_inteligencia_multiple', [])
-        print(f"    PD_ANT  {ANT_PD}")
-        print(f"    PD_CPT   {CPT_PD}")
-        print(f"    PD_DUAL-TASK  {DUALTASK_PD}")
-        print(f"    PD_FourFigures      {FourFigures_PD}")
+        print(f"    Pruebas disponibles: {', '.join(resultados.get('available_tests', []))}")
+        for test in resultados.get('report_tests', []):
+            print(f"    {test['display_name']}: {len(test['indices'])} índice(s)")
 
     except Exception as e:
         print(f"   X Error al calcular clasificaciones: {e}")
