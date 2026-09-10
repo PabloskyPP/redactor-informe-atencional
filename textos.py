@@ -170,13 +170,15 @@ PARRAFO_ACS_cambio = {
 
 PARRAFO_ANT_TR = {
 
-    'TR bajo':"""En primer lugar, {nombre} muestra un tiempo de respuesta rápido, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad.""",
+    'TR bajo y C alto':"""En primer lugar, {nombre} muestra un tiempo de respuesta rápido, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad. Aunque esto pueda parecer una fortaleza a primeras, cuando revisamos la precisión de estas respuestas vemos que muchas son erróneas. Esto significa entonces un elevado grado de impulsividad, donde {nombre} prioriza velocidad antes que precisión.""",
+
+    'TR bajo y C bajo o normal':"""En primer lugar, {nombre} muestra un tiempo de respuesta rápido, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad.""",
 
     'TR normal y C normal o alto':"""En primer lugar, {nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad.""",
 
-    'TR normal y bajo':"""En primer lugar, {nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad. Además un breve vistazo al número de comisiones durante la tarea nos muestra la excelente precisión de {nombre} durante la tarea. Ambos índices parecen señalar dos cosas: una sobrada capacidad para procesar esta tarea y otras más difíciles en un tiempo de respuesta adecuado, y la posible preferencia por un estilo atencional más reflexivo, que prioriza precisión ante velocidad de respuesta.""",
+    'TR normal y C bajo':"""En primer lugar, {nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad. Además un breve vistazo al número de comisiones durante la tarea nos muestra la excelente precisión de {nombre} durante la tarea. Ambos índices parecen señalar dos cosas: una sobrada capacidad para procesar esta tarea y otras más difíciles en un tiempo de respuesta adecuado. Y la posible preferencia por un estilo atencional más reflexivo, que prioriza precisión ante velocidad de respuesta.""",
     
-    'TR alto':"""En primer lugar, {nombre} muestra un tiempo de respuesta lento, lo que indica una velocidad de procesamiento de la información y toma de decisiones inferior a la media para su edad. Esto puede deberse a un déficit en el procesamiento, necesidad de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. O la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas. Véase a continuación, el apartado de 'Comisiones' para valorar esta segunda posibilidad.""",
+    'TR alto':"""En primer lugar, {nombre} muestra un tiempo de respuesta lento, lo que indica una velocidad de procesamiento de la información y toma de decisiones inferior a la media para su edad. Esto puede deberse a dos cosas. Debido a un déficit en el procesamiento, necesidad de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. Y a la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
 }
 
 PARRAFO_ANT_A = {
@@ -196,9 +198,10 @@ PARRAFO_ANT_C = {
 
     'C normal':"""Respecto al número de errores de comisión, este fue normal, lo que señala que emite un número de respuestas erróneas igual a lo esperado para su edad. Este resultado señala, a la hora de tomar decisiones, una capacidad adecuada para discriminar la información de manera eficiente y un nivel de impulsividad igual al esperado para su edad.""",
 # Álvaro. En estos dos siguientes párrafos se necesita una dif sign? O dif mínima es suficiente asumiendo una H muy intuitiva de que E impulsiva menor TR y E def. discriminatorio mayor TR. Si necesidad sign.
-    'C alto y TR_A_vs_C positivo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Comparando el tiempo de respuesta entre errores y aciertos vemos que estas comisiones corresponden con respuestas más impulsivas, más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
+    'C alto y TR bajo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. De nuevo, considerando el escepcionalmente rápido tiempo de respuesta vemos que estas comisiones corresponden con respuestas más impulsivas, más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
 
-    'C alto y TR_A_vs_C negativo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Estos errores acontecen a una menor velocidad de respuesta en comparación con los aciertos. Esto sugiere que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
+    'C alto y TR normal o alto':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. De nuevo considerando el tiempo de respuesta, vemos que estos errores acontecen a una velocidad normal o incluso retardada de la respuesta. Esto sugiere que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
+
 }
 
 PARRAFO_ANT_O = {
@@ -262,8 +265,10 @@ PARRAFO_ANT_ejecutivo = {
 
 # TR - Velocidad de procesamiento
 PARRAFO_CPT_TR = {
-    'alto': """El elevado número de elementos procesados indica una alta velocidad de procesamiento, asociada a buena capacidad de exploración visual y rapidez en la toma de decisiones.""",
+    'alto y E bajo o normal': """El elevado número de elementos procesados indica una alta velocidad de procesamiento, asociada a buena capacidad de exploración visual y rapidez en la toma de decisiones.""",
     
+    'alto y E alto': """El elevado número de elementos procesados indica una alta velocidad de procesamiento, asociada a una rápida exploración visual y rapidez en la toma de decisiones. Esto que a primeras parece positivo cambia al revisar la precisión o calidad de esta capacidad exploratoria y decisional. Vemos aquí que {nombre} bien a omitido información relevante o bien a respondido erroneamente ante información irrelevante. Esto señala un procesamiento de la información superficial, rápido pero defectuoso.""",
+
     'normal': """El número de elementos procesados se sitúa dentro de los valores esperables para su grupo normativo, indicando una velocidad de procesamiento adecuada, con un ritmo de trabajo ajustado a las demandas temporales de la tarea""",
     
     'bajo y E normal o alto': """El bajo volumen de elementos procesados sugiere una velocidad de procesamiento reducida. {nombre} requiere de más tiempo de lo normal para procesar y discriminar la información. Esto puede incapacitar y emperorar el desempeño, especialmente ante tareas con limitación temporal o de desempeño rápido."""
@@ -348,10 +353,10 @@ PARRAFO_FourFigures_C = {
     'C bajo y TR alto':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad. Por otro lado, {nombre} tarda más de lo normal o esperado en emitir sus respuestas. Ambos índices parecen señalar la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
 
     'C normal':"""Respecto al número de errores de comisión, este fue normal, lo que señala que emite un número de respuestas erróneas igual a lo esperado para su edad. Este resultado señala, a la hora de tomar decisiones, una capacidad adecuada para discriminar la información de manera eficiente y un nivel de impulsividad igual al esperado para su edad.""",
-# Álvaro. En estos dos siguientes párrafos se necesita una dif sign? O dif mínima es suficiente asumiendo una H muy intuitiva de que E impulsiva menor TR y E def. discriminatorio mayor TR. Si necesidad sign.
-    'C alto y TR_A_vs_C positivo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Comparando el tiempo de respuesta entre errores y aciertos vemos que estas comisiones corresponden con respuestas más impulsivas, más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
 
-    'C alto y TR_A_vs_C negativo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Estos errores acontecen a una menor velocidad de respuesta en comparación con los aciertos. Esto sugiere que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
+    'C alto y TR bajo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando la suma rapidez con la que se responde vemos que estos errores de comisión se deben a una escepcionalmente alta impulsividdad, con respuestas más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
+
+    'C alto y TR normal o alto':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando el velocidad normal o lenta con el que se responde, vemos que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
 }
 
 # Flexibilidad cognitiva. Diferencia puntuación obtenida en P4 vs puntuación esperada en P4 en base a puntuación obtenida en P2 y P3.
@@ -390,20 +395,21 @@ PARRAFO_FiveDigits_A = {
 
 
 # C - Errores de comisión
-PARRAFO_FourFigures_C = {
+PARRAFO_FiveDigits_C = {
     'C bajo y TR bajo o normal':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad.""",
 
     'C bajo y TR alto':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad. Por otro lado, {nombre} tarda más de lo normal o esperado en emitir sus respuestas. Ambos índices parecen señalar la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
 
     'C normal':"""Respecto al número de errores de comisión, este fue normal, lo que señala que emite un número de respuestas erróneas igual a lo esperado para su edad. Este resultado señala, a la hora de tomar decisiones, una capacidad adecuada para discriminar la información de manera eficiente y un nivel de impulsividad igual al esperado para su edad.""",
-# Álvaro. En estos dos siguientes párrafos se necesita una dif sign? O dif mínima es suficiente asumiendo una H muy intuitiva de que E impulsiva menor TR y E def. discriminatorio mayor TR. Si necesidad sign.
-    'C alto y TR_A_vs_C positivo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Comparando el tiempo de respuesta entre errores y aciertos vemos que estas comisiones corresponden con respuestas más impulsivas, más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
 
-    'C alto y TR_A_vs_C negativo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Estos errores acontecen a una menor velocidad de respuesta en comparación con los aciertos. Esto sugiere que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
+    'C alto y TR bajo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando la suma rapidez con la que se responde vemos que estos errores de comisión se deben a una escepcionalmente alta impulsividdad, con respuestas más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
+
+    'C alto y TR normal o alto':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando el velocidad normal o lenta con el que se responde, vemos que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
+
 }
 
 # Flexibilidad cognitiva. Diferencia puntuación obtenida en P4 vs puntuación esperada en P4 en base a puntuación obtenida en P2 y P3.
-PARRAFO_FourFigures_P4 = {
+PARRAFO_FiveDigits_P4 = {
 # Álvaro. Comparar prueba significación prueba t o PT en comparación con la muestra? Aquí avogo por usar sign. prueba t.
     'alto': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva o capacidad de adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento superior al esperable. Esto destaca positivamente su capacidad para adaptarse y dirigir la atención a voluntad.""",
 
@@ -413,6 +419,7 @@ PARRAFO_FourFigures_P4 = {
     'normal y A bajo': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva o capacidad de adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento igual a lo esperable en la línea de su rendimiento general. Esto disminuye la posibilidad de una deficiencia atencional particularmente ligada a problemas de flexibilidad cognitiva, o la capacidad para cambiar el foco atencional rápidamente y a voluntad.""",
     
     'bajo': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva o capacidad de adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento inferior al esperado. Esto muestra una alta rigidez cognitiva o dificultad para cambiar el foco atencional rápidamente y adaptarse a una nueva forma de procesar y responder a una tarea."""
+
 }
 
 # ============================================================================
@@ -535,15 +542,16 @@ PARRAFO_DUALTASK_O = {
 # Parrafo condicional de C para posibilidad de identificar la prevalencia de un estilo atencional reflexivo o impulsivo
 PARRAFO_DUALTASK_TR = {
 
-    'TR bajo y rendimiento C igual':"""Por último, {nombre} muestra un tiempo de respuesta bajo, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad.""",
-    'TR bajo y rendimiento C menor':"""Por último, {nombre} muestra un tiempo de respuesta bajo, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad. Aunque esta mayor velocidad también puede deberse a la evidente preferencia o tendencia de {nombre} por un estilo atencional más impulsivo, con respuestas más rápidas pero menos precisas.""",
+    'TR bajo y C bajo':"""Por último, {nombre} muestra un tiempo de respuesta bajo, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad.""",
+    'TR bajo y C normal o alto':"""Por último, {nombre} muestra un tiempo de respuesta bajo, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad. Aunque esta mayor velocidad también puede deberse a la evidente preferencia o tendencia de {nombre} por un estilo atencional más impulsivo, con respuestas más rápidas pero menos precisas.""",
 
     'TR normal':"""Por último, {nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad.""",
     
-    'TR alto y rendimiento C igual':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones inferior a la media para su edad. Este resultado puede señala que {nombre} requiere de más tiempo para procesar la misma cantidad de información que otros individuos de su edad.""",
-    'TR alto y rendimiento C mayor':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones inferior a la media para su edad. Este resultado puede señalar dos fenómenos diferentes: la necesidad de {nombre} de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. Y la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
+    'TR alto y C alto':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones inferior a la media para su edad. Este resultado puede señala que {nombre} requiere de más tiempo para procesar la misma cantidad de información que otros individuos de su edad.""",
 
+    'TR alto y C normal':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones inferior a la media para su edad. Este resultado puede señalar dos fenómenos diferentes: la necesidad de {nombre} de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. Y la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
 
+    'TR alto y C bajo':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones inferior a la media para su edad. Considerando el reducido número de comisiones parece que prevalece un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
 }
 
 #F_A si fatiga (diferencia significativa) en precisión T1, F_TR en TR T2, TR_PSV si precisión T1

@@ -9,8 +9,8 @@ from datetime import datetime
 from docx import Document
 from docx.shared import Pt, Inches, RGBColor, Emu, Cm
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
-from docx.oxml.ns import qn
-from docx.oxml import OxmlElement
+from docx.oxml.ns import qn, nsdecls
+from docx.oxml import OxmlElement, parse_xml
 from PIL import Image, ImageDraw, ImageFont
 
 from textos import (
@@ -264,8 +264,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # ------------------------------------------------------------------ #
     doc.add_page_break()
 
-    titulo_res = doc.add_parag    _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_indices'])
-raph()
+    titulo_res = doc.add_paragraph()
     titulo_res.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
     run_tr = titulo_res.add_run(PARRAFOS_FIJOS['titulo_resultados'].format(**fmt))
     run_tr.bold = True
@@ -291,131 +290,497 @@ raph()
     doc.add_paragraph(PARRAFOS_FIJOS['texto__resultados'].format(nombre=nombre, nombre_completo=nombre_completo))
 
     # Tabla PDs, PTs y clasificaciones
-    tabla = doc.add_table(rows=4, cols=10)
+    tabla = doc.add_table(rows=2, cols=8)
 
     # Aplicar estilo simple con bordes negros y encabezado con fondo gris claro
     tabla.style = 'Table Grid'
-    # Aplicar fondo gris claro al encabezado
-    for cell in tabla.rows[0].cells:
-        cell._element.get_or_add_tcPr().append(parse_xml(r'<w:shd {} w:fill="D9D9D9"/>'.format(nsdecls('w'))))
     
-    # Encabezados
+    # Aplicar fondo gris claro al encabezado (filas 0 y 1)
+    for row_idx in [0, 1]:
+        for cell in tabla.rows[row_idx].cells:
+            cell._element.get_or_add_tcPr().append(parse_xml(r'<w:shd {} w:fill="D9D9D9"/>'.format(nsdecls('w'))))
+    
+    # ========== FILA 0: Encabezados principales ==========
     hdr_cells = tabla.rows[0].cells
     hdr_cells[0].text = ''
-    hdr_cells[0.1].text = 'Pruebas'
-    hdr_cells[0].2.text = 'Índices'
     hdr_cells[1].text = 'Arousal'
     hdr_cells[2].text = 'Atención Sostenida'
-    hdr_cells[4].text = 'Control Ejecutivo'
-    hdr_cells[4.1].text = 'Atención Selectiva'
-    hdr_cells[4.2].text = 'Control Inhibitorio'
+    hdr_cells[3].text = 'Control Ejecutivo'
     hdr_cells[5].text = 'Flexibilidad Cognitiva'
     hdr_cells[6].text = 'Memoria operativa'
     hdr_cells[7].text = 'Velocidad de procesamiento'
-    hdr_cells[8].text = 'Hiperactividad'
-
+    
+    # Hacer merge horizontal de las celdas 3 y 4 en la fila 0 para "Control Ejecutivo"
+    # Usando vMerge para combinar con la fila siguiente
+    tcPr = hdr_cells[3]._element.get_or_add_tcPr()
+    tcMer = OxmlElement('w:gridSpan')
+    tcMer.set(qn('w:val'), '2')
+    tcPr.append(tcMer)
+    
+    # Eliminar el contenido de la celda 4 ya que está mergeada
+    hdr_cells[4].text = ''
+    
+    # ========== FILA 1: Subrencabezados para Control Ejecutivo ==========
+    sub_hdr = tabla.rows[1].cells
+    sub_hdr[0].text = ''
+    sub_hdr[1].text = ''
+    sub_hdr[2].text = ''
+    sub_hdr[3].text = 'Atención Selectiva'
+    sub_hdr[4].text = 'Control Inhibitorio (impulsividad)'
+    sub_hdr[5].text = ''
+    sub_hdr[6].text = ''
+    sub_hdr[7].text = ''
+    
+    # Hacer merge vertical de las celdas que no tienen subrencabezados
+    # Para las columnas: 1 (Arousal), 2 (Atención Sostenida), 5 (Flexibilidad), 6 (Memoria), 7 (Velocidad)
+    for col_idx in [1, 2, 5, 6, 7]:
+        # Agregar vMerge restart a la fila 0
+        tcPr_start = hdr_cells[col_idx]._element.get_or_add_tcPr()
+        vMerge_start = OxmlElement('w:vMerge')
+        vMerge_start.set(qn('w:val'), 'restart')
+        tcPr_start.append(vMerge_start)
+        
+        # Agregar vMerge continue a la fila 1
+        tcPr_end = sub_hdr[col_idx]._element.get_or_add_tcPr()
+        vMerge_end = OxmlElement('w:vMerge')
+        tcPr_end.append(vMerge_end)
 
     # Centrar el texto en las celdas del encabezado
-    for cell in hdr_cells:
-        for paragraph in cell.paragraphs:
-            paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-            
-    # Fila 1: prueba ANT
-    row1 = tabla.rows[1].cells
-    row1[0].text = ''
-    row1[0.1].text = 'ANT'
-    row1[0.1.1].text = 'Punt. Directa'
-    row1[0.1.2].text = 'Punt. Típica'
-    row1[0.1.3].text = 'Rendimiento'
-    row1[1].text = str(round(resultados.get('PD_A', 0), 4))
-    row1[2].text = str(round(resultados.get('PD_C', 0), 4))
-    row1[3].text = str(round(resultados.get('PD_O', 0), 4))
-    row1[4].text = str(round(resultados.get('PD_F_A', 0), 4))
-    row1[5].text = str(round(resultados.get('PD_F_TR', 0), 4))
-    row1[6].text = str(round(resultados.get('PD_TR', 0), 4))
-    row1[7].text = str(round(resultados.get('PD_TR_alerta', 0), 4))
-    row1[8].text = str(round(resultados.get('PD_TR_orientacion', 0), 4))
-    row1[9].text = str(round(resultados.get('PD_TR_ejecutivo', 0), 4))
-    
-    # Fila 2: prueba CPT
-    row2 = tabla.rows[2].cells
-    row1[0].text = ''
-    row1[0.1].text = 'CPT'
-    row1[0.1.1].text = 'Punt. Directa'
-    row1[0.1.2].text = 'Punt. Típica'
-    row1[0.1.3].text = 'Rendimiento'
-    row2[1].text = str(resultados.get('PT_A', 0))
-    row2[2].text = str(resultados.get('PT_C', 0))
-    row2[3].text = str(resultados.get('PT_O', 0))
-    row2[4].text = str(resultados.get('PT_F_A', 0))
-    row2[5].text = str(resultados.get('PT_TR', 0))
-    row2[6].text = str(resultados.get('PT_F_TR', 0))
-    row2[7].text = str(resultados.get('PT_TR_alerta', 0))
-    row2[8].text = str(resultados.get('PT_TR_orientacion', 0))
-    row2[9].text = str(resultados.get('PT_TR_ejecutivo', 0))
-    
-    # Fila 3: prueba FourFigures
-    row3 = tabla.rows[3].cells
-    row1[0].text = ''
-    row1[0].text = ''
-    row1[0.1].text = 'FourFigures'
-    row1[0.1.1].text = 'Punt. Directa'
-    row1[0.1.2].text = 'Punt. Típica'
-    row1[0.1.3].text = 'Rendimiento'
-    row3[1].text = str(resultados.get('Clasificacion_A', '-'))
-    row3[2].text = str(resultados.get('Clasificacion_C', '-'))
-    row3[3].text = str(resultados.get('Clasificacion_O', '-'))
-    row3[4].text = str(resultados.get('Clasificacion_F_A', '-'))
-    row3[5].text = str(resultados.get('Clasificacion_F_TR', '-'))
-    row3[6].text = str(resultados.get('Clasificacion_TR', '-'))
-    row3[7].text = str(resultados.get('Clasificacion_TR_alerta', '-'))
-    row3[8].text = str(resultados.get('Clasificacion_TR_orientacion', '-'))
-    row3[9].text = str(resultados.get('Clasificacion_TR_ejecutivo', '-'))
-    
-    # Fila 4: prueba Dual-Task
-    row3 = tabla.rows[3].cells
-    row1[0].text = ''
-    row1[0].text = ''
-    row1[0.1].text = 'Dual-Task'
-    row1[0.1.1].text = 'Punt. Directa'
-    row1[0.1.2].text = 'Punt. Típica'
-    row1[0.1.3].text = 'Rendimiento'
-    row3[1].text = str(resultados.get('Clasificacion_A', '-'))
-    row3[2].text = str(resultados.get('Clasificacion_C', '-'))
-    row3[3].text = str(resultados.get('Clasificacion_O', '-'))
-    row3[4].text = str(resultados.get('Clasificacion_F_A', '-'))
-    row3[5].text = str(resultados.get('Clasificacion_F_TR', '-'))
-    row3[6].text = str(resultados.get('Clasificacion_TR', '-'))
-    row3[7].text = str(resultados.get('Clasificacion_TR_alerta', '-'))
-    row3[8].text = str(resultados.get('Clasificacion_TR_orientacion', '-'))
-    row3[9].text = str(resultados.get('Clasificacion_TR_ejecutivo', '-'))
-    
-
-    # Colorear celdas según el rendimiento
-    # Verde si es alto, rojo si es bajo (columnas: Aciertos, Alerta, Orientación, Ejecutivo)
-    green_if_high = [1, 4, 5, 9]
-    # Rojo si es alto, verde si es bajo (columnas: Comisiones, Omisiones, Fatiga precisión, Fatiga velocidad, Velocidad)
-    red_if_high = [2, 3, 4, 5, 6, 7, 8]
-    
-    for idx in green_if_high:
-        clasificacion = str(row3[idx].text).lower()
-        if clasificacion == 'alto':
-            row3[idx]._element.get_or_add_tcPr().append(parse_xml(r'<w:shd {} w:fill="90EE90"/>'.format(nsdecls('w'))))
-        elif clasificacion == 'bajo':
-            row3[idx]._element.get_or_add_tcPr().append(parse_xml(r'<w:shd {} w:fill="FF6B6B"/>'.format(nsdecls('w'))))
-    
-    for idx in red_if_high:
-        clasificacion = str(row3[idx].text).lower()
-        if clasificacion == 'alto':
-            row3[idx]._element.get_or_add_tcPr().append(parse_xml(r'<w:shd {} w:fill="FF6B6B"/>'.format(nsdecls('w'))))
-        elif clasificacion == 'bajo':
-            row3[idx]._element.get_or_add_tcPr().append(parse_xml(r'<w:shd {} w:fill="90EE90"/>'.format(nsdecls('w'))))
-
-    # Centrar el texto en las celdas de las filas 1, 2 y 3
-    for row in [row1, row2, row3]:
-        for cell in row:
+    for row_idx in [0, 1]:
+        for cell in tabla.rows[row_idx].cells:
             for paragraph in cell.paragraphs:
                 paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
+                
+    
+    # Agregar filas de datos
+    tabla.add_row()  # Fila 2 para ANT
+    tabla.add_row()  # Fila 3 para CPT
+    
+    # Función auxiliar para crear tabla anidada en celda [0]
+    def _crear_tabla_anidada_prueba(celda_destino, nombre_prueba):
+        """
+        Crea una tabla anidada dentro de una celda con:
+        - Izquierda: nombre de la prueba
+        - Derecha: 3 filas con 'Índice', 'PD', 'Rendimiento'
+        """
+        # Crear tabla anidada: 2 columnas x 3 filas
+        tabla_anidada = celda_destino.add_table(rows=3, cols=2)
+        tabla_anidada.style = 'Table Grid'
+        
+        # Columna izquierda: nombre de la prueba (mergear verticalmente)
+        for i in range(3):
+            tabla_anidada.rows[i].cells[0].text = nombre_prueba if i == 0 else ''
+        
+        # Mergear las celdas de la columna izquierda
+        cell_0_0 = tabla_anidada.rows[0].cells[0]._tc
+        tcPr = cell_0_0.get_or_add_tcPr()
+        vMerge = OxmlElement('w:vMerge')
+        vMerge.set(qn('w:val'), 'restart')
+        tcPr.append(vMerge)
+        
+        for i in range(1, 3):
+            cell_i_0 = tabla_anidada.rows[i].cells[0]._tc
+            tcPr = cell_i_0.get_or_add_tcPr()
+            vMerge = OxmlElement('w:vMerge')
+            tcPr.append(vMerge)
+        
+        # Columna derecha: Índice, PD, Rendimiento
+        tabla_anidada.rows[0].cells[1].text = 'Índice'
+        tabla_anidada.rows[1].cells[1].text = 'PD'
+        tabla_anidada.rows[2].cells[1].text = 'Rendimiento'
+        
+        # Centrar texto
+        for row in tabla_anidada.rows:
+            for cell in row.cells:
+                for para in cell.paragraphs:
+                    para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        
+        return tabla_anidada
+    
+    # Función auxiliar para llenar tabla anidada en celda de datos
+    def _llenar_tabla_anidada_datos(celda_destino, nombre_indice, valor_pd, valor_rendimiento):
+        """
+        Crea una tabla anidada dentro de una celda de datos con:
+        - Fila 1: Nombre del índice
+        - Fila 2: Valor PD
+        - Fila 3: Valor Rendimiento
+        """
+        tabla_anidada = celda_destino.add_table(rows=3, cols=1)
+        tabla_anidada.style = 'Table Grid'
+        
+        tabla_anidada.rows[0].cells[0].text = str(nombre_indice)
+        tabla_anidada.rows[1].cells[0].text = str(valor_pd)
+        tabla_anidada.rows[2].cells[0].text = str(valor_rendimiento)
+        
+        # Centrar texto
+        for row in tabla_anidada.rows:
+            for cell in row.cells:
+                for para in cell.paragraphs:
+                    para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        
+        return tabla_anidada
+    
+    # Función auxiliar para llenar tabla anidada con múltiples índices
+    def _llenar_tabla_anidada_multiples_indices(celda_destino, indices_datos):
+        """
+        Crea una tabla anidada dentro de una celda con múltiples índices lado a lado.
+        
+        Args:
+            celda_destino: Celda donde insertar la tabla anidada
+            indices_datos: Lista de tuplas (nombre_indice, valor_pd, valor_rendimiento)
+        
+        Estructura (3 filas × N columnas):
+        - Fila 0: Nombres de índices (A, TR, O, etc.)
+        - Fila 1: Valores PD
+        - Fila 2: Valores Rendimiento
+        """
+        tabla_anidada = celda_destino.add_table(rows=3, cols=len(indices_datos))
+        tabla_anidada.style = 'Table Grid'
+        
+        for col_idx, (nombre_indice, valor_pd, valor_rendimiento) in enumerate(indices_datos):
+            tabla_anidada.rows[0].cells[col_idx].text = str(nombre_indice)
+            tabla_anidada.rows[1].cells[col_idx].text = str(valor_pd)
+            tabla_anidada.rows[2].cells[col_idx].text = str(valor_rendimiento)
+        
+        # Centrar texto en todas las celdas
+        for row in tabla_anidada.rows:
+            for cell in row.cells:
+                for para in cell.paragraphs:
+                    para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        
+        return tabla_anidada
+    
+    # Asignación de contenido celdads para cada fila
+
+    # Fila 2: prueba ANT
+    row_ant = tabla.rows[2].cells
+    _crear_tabla_anidada_prueba(row_ant[0], 'ANT')
+    
+    # Columna 1: Arousal (Red de Alerta)
+    _llenar_tabla_anidada_datos(
+        row_ant[1],
+        'Red de Alerta',
+        str(round(resultados.get('PD_ANT_TR_alerta', 0), 4)),
+        str(clasificaciones.get('ANT_TR_alerta', '-'))
+    )
+    
+    # Columna 2: Atención Sostenida - Múltiples índices (A y TR)
+    _llenar_tabla_anidada_multiples_indices(
+        row_ant[2],
+        [
+            ('Dif. A* 1º vs 3º',
+             str(round(resultados.get('PD_ANT_A_principio_vs_final', 0), 4)),
+             str(clasificaciones.get('ANT_A_principio_vs_final', '-'))),
+            ('Dif. TR* 1º vs 3º',
+             str(round(resultados.get('PD_ANT_TR_principio_vs_final', 0), 4)),
+             str(clasificaciones.get('ANT_TR_principio_vs_final', '-')))
+        ]
+    )
+
+# Copilot. Los índices de C y Red ejecutiva son comunes a la atención selectiva y el control inhibitorio, anidar de esta manera dentro de la columna control ejecutivo.
+    # Columna 3: Control Ejecutivo - Atención Selectiva - Múltiples índices (Red de orientación, C y Red ejecutiva)
+    _llenar_tabla_anidada_datos(
+        row_ant[3],
+        [
+            ('Red de orientación',
+             str(round(resultados.get('ANT_TR_orientacion', 0), 4)),
+             str(clasificaciones.get('ANT_TR_orientacion', '-'))),
+            ('Dif. TR 1º vs 3º',
+             str(round(resultados.get('PD_ANT_C', 0), 4)),
+             str(clasificaciones.get('ANT_C', '-'))),
+            ('Red ejecutiva',
+             str(round(resultados.get('ANT_TR_ejecutiva', 0), 4)),
+             str(clasificaciones.get('ANT_TR_ejecutiva', '-')))
+        ]
+    )
+    
+    # Columna 4: Control Ejecutivo - Control Inhibitorio (vacío para ANT)
+    _llenar_tabla_anidada_datos(
+        row_ant[4],
+        [
+            ('Dif. TR 1º vs 3º',
+             str(round(resultados.get('PD_ANT_C', 0), 4)),
+             str(clasificaciones.get('ANT_C', '-'))),
+            ('Red ejecutiva',
+             str(round(resultados.get('ANT_TR_ejecutiva', 0), 4)),
+             str(clasificaciones.get('ANT_TR_ejecutiva', '-')))
+        ]
+    )
+    
+    # Columna 5: Flexibilidad Cognitiva
+    _llenar_tabla_anidada_datos(
+        row_ant[5],
+        'Flexibilidad',
+        str(resultados.get('PT_TR_alerta', 0)),
+        '-'
+    )
+    
+    # Columna 6: Memoria operativa
+    _llenar_tabla_anidada_datos(
+        row_ant[6],
+        'Memoria',
+        str(resultados.get('PT_TR_orientacion', 0)),
+        '-'
+    )
+    
+    # Columna 7: Velocidad de procesamiento - Múltiples índices (O y TR)
+    _llenar_tabla_anidada_multiples_indices(
+        row_ant[7],
+        [
+            ('O*',
+             str(round(resultados.get('PD_ANT_O', 0), 4)),
+             str(clasificaciones.get('ANT_O', '-'))),
+            ('TR',
+             str(round(resultados.get('ANT_TR', 0), 4)),
+             str(clasificaciones.get('ANT_TR', '-')))
+        ]
+    )
+    
+    # Fila 3: prueba CPT o D2 según cual se recupere del excel
+    row_cpt = tabla.rows[3].cells
+    # Añadir condicional texto según prueba recuperada del excel
+    _crear_tabla_anidada_prueba(row_cpt[0], 'CPT' o 'D2')
+    
+    # Columna 1: Arousal
+    _llenar_tabla_anidada_datos(
+        row_cpt[1],
+        'CON*',
+        str(resultados.get('PD_CPT_CON', 0)),
+        str(clasificaciones.get('CPT_CON', '-'))
+    )
+    
+    # Columna 2: Atención Sostenida: VAR
+    _llenar_tabla_anidada_multiples_indices(
+        row_cpt[2],
+        'VAR*',
+        str(resultados.get('PD_CPT_VAR', 0)),
+        str(clasificaciones.get('CPT_VAR', '-'))
+        # Aquí se podría añadir una subcelda adicional: dif. sign A o TR 1º y 3º tercio = sing o no (color amarillo)
+    )
+    
+    # Columna 3: Control ejecutivo - Atención Selectiva
+    _llenar_tabla_anidada_datos(
+        row_cpt[3],
+        'O',
+        str(round(resultados.get('PD_CPT_O', 0), 4)),
+        str(clasificaciones.get('CPT_O', '-'))
+    )
+    
+    # Columna 4: Control Ejecutivo - Control Inhibitorio (Fatiga A)
+    _llenar_tabla_anidada_datos(
+        row_cpt[4],
+        'C*',
+        str(resultados.get('PD_CPT_C', 0)),
+        str(clasificaciones.get('CPT_C', '-'))
+    )
+    
+    # Columna 5: Flexibilidad Cognitiva
+    _llenar_tabla_anidada_datos(
+        row_cpt[5],
+        '',
+        '',
+        '',
+    )
+    
+    # Columna 6: Memoria operativa
+    _llenar_tabla_anidada_datos(
+        row_cpt[6],
+        '',
+        '',
+        '',
+    )
+    
+    # Columna 7: Velocidad de procesamiento (R como número de elementos procesados, fijado en base al último elemento de la serie respondido)
+    _llenar_tabla_anidada_datos(
+        row_cpt[7],
+        'R*',
+        str(resultados.get('PD_CPT_R', 0)),
+        str(clasificaciones.get('CPT_R', '-'))
+    )
+
+
+    # Fila 4: prueba FourFigures o FiveDigits, según la prueba que haya en el excel
+    row_cpt = tabla.rows[3].cells
+    # Copilot. Añadir condicional a prueba recuperada del excel
+    _crear_tabla_anidada_prueba(row_cpt[0], 'FourFigures' o 'FiveDigits')
+    
+    # Columna 1: Arousal
+    _llenar_tabla_anidada_datos(
+        row_cpt[1],
+        'A',
+        str(resultados.get('PD_FourFigures_A', 0)),
+        str(clasificaciones.get('FourFIgures_A', '-'))
+    )
+    
+    # Columna 2: Atención Sostenida: VAR
+    _llenar_tabla_anidada_multiples_indices(
+        row_cpt[2],
+        '',
+        '',
+        '',
+    )
+    
+    # Columna 3 y 4: Control ejecutivo
+    _llenar_tabla_anidada_datos(
+        row_cpt[3],
+        'C',
+        str(resultados.get('PD_FourFigures_C', 0)),
+        str(clasificaciones.get('FourFIgures_C', '-'))
+    )
+    
+    # Columna 5: Flexibilidad Cognitiva
+    _llenar_tabla_anidada_datos(
+        row_cpt[5],
+        'Dif. A P4 obtenida vs esperada*',
+        str(resultados.get('PD_FourFigures_Dif_A_P4', 0)),
+        # Aquí alto y color verde si la diferencia es positiva, y rojo si es negativa. No color si normal
+        str(clasificaciones.get('FourFIgures_Dif_A_P4', '-'))
+    )
+    
+    # Columna 6: Memoria operativa
+    _llenar_tabla_anidada_datos(
+        row_cpt[6],
+        '',
+        '',
+        '',
+    )
+    
+    # Columna 7: Velocidad de procesamiento (R como número de elementos procesados, fijado en base al último elemento de la serie respondido)
+    _llenar_tabla_anidada_datos(
+        row_cpt[7],
+        'TR',
+        str(resultados.get('PD_FourFigures_TR', 0)),
+        str(clasificaciones.get('FourFigures_TR', '-'))
+    )
+    
+    # Centrar el texto en todas las celdas de datos
+    for row_idx in range(2, 4):
+        for cell_idx in range(1, 8):  # Comenzar desde celda 1 (0 ya tiene tabla anidada)
+            cell = tabla.rows[row_idx].cells[cell_idx]
+            for paragraph in cell.paragraphs:
+                paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
+
+    # Fila 5: prueba Dual-Task
+    row_cpt = tabla.rows[3].cells
+    # Copilot. Añadir condicional
+    _crear_tabla_anidada_prueba(row_cpt[0], 'Dual-Task')
+    
+    # Columna 1: Arousal
+    _llenar_tabla_anidada_datos(
+        row_cpt[1],
+        'O',
+        str(resultados.get('PD_DUALTASK_O', 0)),
+        str(clasificaciones.get('DUALTAS_O', '-'))
+    )
+    
+    # Columna 2: Atención Sostenida - Múltiples índices (PSV T2, A y TR T1)
+    _llenar_tabla_anidada_multiples_indices(
+        row_cpt[2],
+        [
+            ('Dif. PSV* 1º y 3º tercio',
+             str(round(resultados.get('PD_DUALTASK_PSV', 0), 4)),
+             str(clasificaciones.get('DUALTASK_PSV', '-'))),
+            ('Dif. A* 1º y 3º tercio',
+             str(round(resultados.get('PD_DUALTASK_A', 0), 4)),
+             str(clasificaciones.get('DUALTASK_A', '-'))),
+            ('Dif. TR* 1º y 3º tercio',
+             str(round(resultados.get('PD_DUALTASK_TR', 0), 4)),
+             str(clasificaciones.get('DUALTASK_TR', '-')))
+        ]
+    )
+    
+    # Columna 3 y 4: Control ejecutivo
+    _llenar_tabla_anidada_datos(
+        row_cpt[3],
+        'C',
+        str(resultados.get('PD_DUALTASK_C', 0)),
+        str(clasificaciones.get('DUALTASK_C', '-'))
+    )
+    
+    # Columna 5: Flexibilidad Cognitiva
+    _llenar_tabla_anidada_datos(
+        row_cpt[5],
+        '',
+        '',
+        '',
+    )
+    
+    # Columna 6: Memoria operativa
+    _llenar_tabla_anidada_datos(
+        row_cpt[6],
+        '',
+        '',
+        '',
+    )
+    
+    # Columna 7: Velocidad de procesamiento
+    _llenar_tabla_anidada_datos(
+        row_cpt[7],
+        'TR',
+        str(resultados.get('PD_DUALTASK_TR', 0)),
+        str(clasificaciones.get('DUALTASK_TR', '-'))
+    )
+
+    
+    # Fila 6: prueba DIgitsMemorization
+    row_cpt = tabla.rows[3].cells
+    # Copilot. Añadir condicional
+    _crear_tabla_anidada_prueba(row_cpt[0], 'Memorización de Dígitos')
+    
+    # Columna 1: Arousal
+    _llenar_tabla_anidada_datos(
+        row_cpt[1],
+        '',
+        '',
+        '',
+    )
+    
+    # Columna 2: Atención Sostenida
+    _llenar_tabla_anidada_multiples_indices(
+        row_cpt[2],
+        '',
+        '',
+        '',
+    )
+    
+    # Columna 3 y 4: Control ejecutivo
+    _llenar_tabla_anidada_datos(
+        row_cpt[3],
+        '',
+        '',
+        '',
+    )
+    
+    # Columna 5: Flexibilidad Cognitiva
+    _llenar_tabla_anidada_datos(
+        row_cpt[5],
+        '',
+        '',
+        '',
+    )
+    
+    # Columna 6: Memoria operativa - Múltiples Índices (PD_directo y PD_inverso)
+    _llenar_tabla_anidada_datos(
+        row_cpt[6]
+        [
+            ('PD directo*',
+             str(round(resultados.get('PD_DigitsMemorization_directo', 0), 4)),
+             str(clasificaciones.get('DigitsMemorization_directo', '-'))),
+            ('PD inverso',
+             str(round(resultados.get('PD_DigitsMemorization_inverso', 0), 4)),
+             str(clasificaciones.get('DigitsMemorization_inverso', '-')))
+        ]
+    )
+    
+    # Columna 7: Velocidad de procesamiento
+    _llenar_tabla_anidada_datos(
+        row_cpt[7],
+        '',
+        '',
+        '',
+    )
     
     doc.add_paragraph()  # Espacio
 
