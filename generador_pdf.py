@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import os
 import textwrap
+import zipfile
+from io import BytesIO
 from typing import List
 
 from docx import Document
@@ -35,6 +37,19 @@ def _extract_docx_lines(ruta_docx: str) -> List[str]:
             if any(values):
                 lines.append(" || ".join(values))
     return lines
+
+
+def _extract_docx_images(ruta_docx: str) -> List[Image.Image]:
+    images: List[Image.Image] = []
+    with zipfile.ZipFile(ruta_docx) as archive:
+        media_names = sorted(
+            name for name in archive.namelist()
+            if name.startswith('word/media/')
+        )
+        for name in media_names:
+            with archive.open(name) as handle:
+                images.append(Image.open(BytesIO(handle.read())).convert('RGB'))
+    return images
 def _render_lines_to_pages(lines: List[str]) -> List[Image.Image]:
     width, height = 1240, 1754
     margin = 80
@@ -79,6 +94,7 @@ def generar_pdf_desde_docx(ruta_docx, ruta_pdf=None, verbose=True):
 
     lines = _extract_docx_lines(ruta_docx)
     pages = _render_lines_to_pages(lines)
+    pages.extend(_extract_docx_images(ruta_docx))
 
     first, rest = pages[0], pages[1:]
     first.save(ruta_pdf, save_all=True, append_images=rest)

@@ -187,7 +187,7 @@ def _clasificar_dualtask(resultados: dict, clasificaciones: dict) -> None:
     avg_concurrent_pts = [
         resultados.get('PT_DUALTASK_A_cuando_concurrencia'),
         pd_a_pt_provisional(resultados.get('PD_DUALTASK_PSV_cuando_concurrencia'), BaremoProvisional(-10, 10, invertir=True)),
-        resultados.get('PT_DUALTASK_TR'),
+        resultados.get('PT_DUALTASK_TR_cuando_concurrencia'),
     ]
     avg_concurrent_pts = [value for value in avg_concurrent_pts if value is not None]
     if avg_concurrent_pts:

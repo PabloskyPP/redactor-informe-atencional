@@ -353,7 +353,7 @@ def _add_dualtask_section(doc: Document, resultados: dict, clasificaciones: dict
     if tr_key == 'bajo':
         dual_tr_text = PARRAFO_DUALTASK_TR['TR bajo y C bajo' if c_key == 'alto' else 'TR bajo y C normal o alto']
     elif tr_key == 'alto':
-        dual_tr_text = PARRAFO_DUALTASK_TR[f"TR alto y C {'alto' if c_key == 'bajo' else ('bajo' if c_key == 'alto' else 'normal')}"]
+        dual_tr_text = PARRAFO_DUALTASK_TR[f"TR alto y C {'bajo' if c_key == 'alto' else ('alto' if c_key == 'bajo' else 'normal')}"]
     else:
         dual_tr_text = PARRAFO_DUALTASK_TR['TR normal']
     _add_paragraph(doc, dual_tr_text, **fmt)

@@ -17,6 +17,11 @@ SAMPLE_XLSX = os.path.join(REPO_DIR, 'excel ejemplo.xlsx')
 
 
 class PipelineTests(unittest.TestCase):
+    @staticmethod
+    def _count_pdf_pages(path):
+        with open(path, 'rb') as handle:
+            return handle.read().count(b'/Type /Page')
+
     def test_sample_workbook_end_to_end(self):
         datos = leer_datos_excel(SAMPLE_XLSX)
         resultados = calcular_puntuaciones_directas(datos)
@@ -102,16 +107,29 @@ class PipelineTests(unittest.TestCase):
         clasificaciones = obtener_puntuaciones(resultados)
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            Image.new('RGB', (20, 20), 'white').save(os.path.join(tmpdir, 'grafico_CPT_final.png'))
             ruta_docx = os.path.join(tmpdir, 'con_imagen.docx')
-            doc = crear_informe_docx(resultados, clasificaciones, resultados['nombre_completo'], tmpdir)
-            guardar_informe(doc, ruta_docx)
+            ruta_docx_sin = os.path.join(tmpdir, 'sin_imagen.docx')
+            guardar_informe(
+                crear_informe_docx(resultados, clasificaciones, resultados['nombre_completo'], tmpdir),
+                ruta_docx_sin,
+            )
+            self.assertTrue(generar_pdf_desde_docx(ruta_docx_sin, os.path.join(tmpdir, 'sin_imagen.pdf'), verbose=False))
+
+            Image.new('RGB', (20, 20), 'white').save(os.path.join(tmpdir, 'grafico_CPT_final.png'))
+            guardar_informe(
+                crear_informe_docx(resultados, clasificaciones, resultados['nombre_completo'], tmpdir),
+                ruta_docx,
+            )
 
             cwd = os.getcwd()
             try:
                 os.chdir(tmpdir)
                 self.assertTrue(generar_pdf_desde_docx(ruta_docx, 'solo_nombre.pdf', verbose=False))
                 self.assertTrue(os.path.exists(os.path.join(tmpdir, 'solo_nombre.pdf')))
+                self.assertGreater(
+                    self._count_pdf_pages(os.path.join(tmpdir, 'solo_nombre.pdf')),
+                    self._count_pdf_pages(os.path.join(tmpdir, 'sin_imagen.pdf')),
+                )
             finally:
                 os.chdir(cwd)
 
