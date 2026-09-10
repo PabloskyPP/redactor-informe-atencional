@@ -782,7 +782,22 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         '',
     )
     
+    # Pie de tabla con leyenda de siglas
     doc.add_paragraph()  # Espacio
+    
+    pie_tabla = doc.add_paragraph()
+    pie_tabla.paragraph_format.space_before = Pt(0)
+    pie_tabla.paragraph_format.space_after = Pt(0)
+    
+    run_siglas = pie_tabla.add_run(
+        "A: Aciertos | O: Omisiones | C: Comisiones | TR: Tiempo de respuesta | "
+        "PSV: Precisión de Seguimiento Visomotor | CON: Concentración | "
+        "VAR: Variabilidad | R: Respuestas"
+    )
+    run_siglas.italic = True
+    run_siglas.font.size = Pt(8)
+
+
 
 
 
