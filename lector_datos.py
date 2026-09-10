@@ -51,6 +51,13 @@ def _present_value(value):
     return value
 
 
+def _first_present(mapping: dict, *keys):
+    for key in keys:
+        if key in mapping and not pd.isna(mapping[key]) and str(mapping[key]).strip():
+            return mapping[key]
+    return None
+
+
 def _safe_mean(series: pd.Series) -> Optional[float]:
     clean = pd.to_numeric(series, errors='coerce').dropna()
     if clean.empty:
@@ -169,7 +176,15 @@ def leer_datos_excel(ruta_archivo):
         df_info = pd.read_excel(ruta_archivo, sheet_name=info_sheet)
         first_info = df_info.iloc[0].to_dict() if not df_info.empty else {}
 
-        nombre_completo = _present_value(first_info.get('sub_num'))
+        nombre_completo = _first_present(
+            first_info,
+            'name',
+            'full_name',
+            'nombre',
+            'nombre_completo',
+            'participant_name',
+            'sub_num',
+        )
         if nombre_completo is not None:
             nombre_completo = str(nombre_completo).strip()
         nombre = nombre_completo.split()[0] if nombre_completo else None
@@ -385,7 +400,7 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
             ('CPT_VAR', 'VAR', resultados['PD_CPT_VAR'], 'PT_CPT_VAR'),
             ('CPT_O', 'O', resultados['PD_CPT_O'], 'PT_CPT_O'),
             ('CPT_C', 'C', resultados['PD_CPT_C'], 'PT_CPT_C'),
-            ('CPT_TR', 'TR total', resultados['PD_CPT_TR'], 'PT_CPT_TR'),
+            ('CPT_TR', 'Elementos procesados', resultados['PD_CPT_TR'], 'PT_CPT_TR'),
             ('CPT_TOT', 'TOT', resultados['PD_CPT_TOT'], 'PT_CPT_TOT'),
         ],
     )

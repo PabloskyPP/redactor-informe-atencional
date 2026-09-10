@@ -53,6 +53,12 @@ from textos_runtime import (
 )
 
 TABLE_SLOTS = ['ACS', 'ANT', 'CPT', 'FourFigures', 'DUALTASK', 'DigitsMemorization']
+RAW_LOW_IS_BETTER = {
+    'ANT_C', 'ANT_O', 'ANT_TR', 'ANT_TR_alerta', 'ANT_TR_orientacion', 'ANT_TR_ejecutivo',
+    'CPT_O', 'CPT_C', 'CPT_VAR',
+    'FourFigures_C', 'FourFigures_TR',
+    'DUALTASK_C', 'DUALTASK_O', 'DUALTASK_TR',
+}
 
 
 def _set_cell_bg(cell, color_hex: str) -> None:
@@ -297,7 +303,7 @@ def _add_cpt_section(doc: Document, resultados: dict, clasificaciones: dict, fmt
             ('VAR', resultados.get('PT_CPT_VAR')),
             ('O', resultados.get('PT_CPT_O')),
             ('C', resultados.get('PT_CPT_C')),
-            ('TR', resultados.get('PT_CPT_TR')),
+            ('Elementos procesados', resultados.get('PT_CPT_TR')),
         ],
     )
 
@@ -374,7 +380,12 @@ def _add_dualtask_section(doc: Document, resultados: dict, clasificaciones: dict
     if tr_key == 'bajo':
         dual_tr_text = PARRAFO_DUALTASK_TR['TR bajo y C bajo' if c_key == 'bajo' else 'TR bajo y C normal o alto']
     elif tr_key == 'alto':
-        dual_tr_text = PARRAFO_DUALTASK_TR[f"TR alto y C {'alto' if c_key == 'alto' else ('bajo' if c_key == 'bajo' else 'normal')}"]
+        if c_key == 'alto':
+            dual_tr_text = PARRAFO_DUALTASK_TR['TR alto y C alto']
+        elif c_key == 'bajo':
+            dual_tr_text = PARRAFO_DUALTASK_TR['TR alto y C bajo']
+        else:
+            dual_tr_text = PARRAFO_DUALTASK_TR['TR alto y C normal']
     else:
         dual_tr_text = PARRAFO_DUALTASK_TR['TR normal']
     _add_paragraph(doc, dual_tr_text, **fmt)
@@ -422,10 +433,19 @@ def _add_summary(doc: Document, resultados: dict, clasificaciones: dict, fmt: di
     for test in resultados.get('report_tests', []):
         for indice in test['indices']:
             nivel = clasificaciones.get(indice['key'])
-            if nivel == 'alto':
-                altos.append(f"{test['display_name']} {indice['label']}")
-            elif nivel == 'bajo':
-                bajos.append(f"{test['display_name']} {indice['label']}")
+            if nivel == 'N/D':
+                continue
+            raw_nivel = _raw_level(nivel, indice['key'] in RAW_LOW_IS_BETTER)
+            if indice['key'] in RAW_LOW_IS_BETTER:
+                if raw_nivel == 'bajo':
+                    altos.append(f"{test['display_name']} {indice['label']}")
+                elif raw_nivel == 'alto':
+                    bajos.append(f"{test['display_name']} {indice['label']}")
+            else:
+                if raw_nivel == 'alto':
+                    altos.append(f"{test['display_name']} {indice['label']}")
+                elif raw_nivel == 'bajo':
+                    bajos.append(f"{test['display_name']} {indice['label']}")
     if altos:
         doc.add_paragraph(f"Fortalezas relativas: {', '.join(altos[:6])}.")
     if bajos:
