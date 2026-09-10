@@ -4,7 +4,6 @@ Módulo para convertir el informe DOCX a PDF.
 from __future__ import annotations
 
 import os
-import zipfile
 from io import BytesIO
 from typing import Iterator, List, Tuple
 
@@ -14,44 +13,29 @@ from docx.oxml.table import CT_Tbl
 from docx.oxml.text.paragraph import CT_P
 from docx.table import Table
 from docx.text.paragraph import Paragraph
-from PIL import Image, ImageDraw, ImageFont
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfbase.pdfmetrics import stringWidth
+from reportlab.pdfgen import canvas
 
-
-def _load_font(size: int):
-    for path in [
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
-    ]:
-        if os.path.exists(path):
-            return ImageFont.truetype(path, size)
-    return ImageFont.load_default()
+REL_NS = '{http://schemas.openxmlformats.org/officeDocument/2006/relationships}embed'
+PAGE_WIDTH, PAGE_HEIGHT = A4
+MARGIN = 40
+FONT_NAME = 'Helvetica'
+FONT_SIZE = 11
+LINE_HEIGHT = 16
 
 
 def _iter_block_items(parent: DocxDocument) -> Iterator[Tuple[str, object]]:
-    parent_elm = parent.element.body
-    for child in parent_elm.iterchildren():
+    for child in parent.element.body.iterchildren():
         if isinstance(child, CT_P):
             yield 'paragraph', Paragraph(child, parent)
         elif isinstance(child, CT_Tbl):
             yield 'table', Table(child, parent)
 
 
-def _extract_docx_images(ruta_docx: str) -> List[Image.Image]:
-    images: List[Image.Image] = []
-    with zipfile.ZipFile(ruta_docx) as archive:
-        media_names = sorted(
-            name for name in archive.namelist()
-            if name.startswith('word/media/')
-        )
-        for name in media_names:
-            with archive.open(name) as handle:
-                images.append(Image.open(BytesIO(handle.read())).convert('RGB'))
-    return images
-
-
 def _extract_docx_content(ruta_docx: str) -> List[Tuple[str, object]]:
     doc = Document(ruta_docx)
-    pending_images = iter(_extract_docx_images(ruta_docx))
     content: List[Tuple[str, object]] = []
 
     for kind, block in _iter_block_items(doc):
@@ -59,92 +43,36 @@ def _extract_docx_content(ruta_docx: str) -> List[Tuple[str, object]]:
             text = block.text.strip()
             if text:
                 content.append(('text', text))
-            if 'w:drawing' in block._p.xml:
-                try:
-                    content.append(('image', next(pending_images)))
-                except StopIteration:
-                    pass
+            for blip in block._p.xpath('.//a:blip'):
+                rid = blip.get(REL_NS)
+                if rid and rid in doc.part.related_parts:
+                    content.append(('image', BytesIO(doc.part.related_parts[rid].blob)))
         else:
             content.append(('text', ''))
             for row in block.rows:
                 values = [cell.text.strip().replace('\n', ' | ') for cell in row.cells]
                 if any(values):
                     content.append(('text', " || ".join(values)))
-
-    for image in pending_images:
-        content.append(('image', image))
     return content
 
 
-def _wrap_text(draw: ImageDraw.ImageDraw, text: str, font, max_width: int) -> List[str]:
+def _wrap_text(text: str, max_width: float) -> List[str]:
     if not text:
         return [""]
-
     words = text.split()
-    lines: List[str] = []
-    current = words[0]
-
+    lines = [words[0]]
     for word in words[1:]:
-        candidate = f"{current} {word}"
-        bbox = draw.textbbox((0, 0), candidate, font=font)
-        if (bbox[2] - bbox[0]) <= max_width:
-            current = candidate
+        candidate = f"{lines[-1]} {word}"
+        if stringWidth(candidate, FONT_NAME, FONT_SIZE) <= max_width:
+            lines[-1] = candidate
         else:
-            lines.append(current)
-            current = word
-    lines.append(current)
+            lines.append(word)
     return lines
-def _render_content_to_pages(content: List[Tuple[str, object]]) -> List[Image.Image]:
-    width, height = 1240, 1754
-    margin = 80
-    font = _load_font(18)
-
-    pages: List[Image.Image] = []
-    img = Image.new('RGB', (width, height), 'white')
-    draw = ImageDraw.Draw(img)
-    y = margin
-    page_has_content = False
-
-    def _new_page():
-        new_img = Image.new('RGB', (width, height), 'white')
-        return new_img, ImageDraw.Draw(new_img), margin, False
-
-    max_text_width = width - (2 * margin)
-
-    for kind, payload in content:
-        if kind == 'image':
-            image = payload.copy()
-            image.thumbnail((max_text_width, height - (2 * margin)))
-            if page_has_content:
-                pages.append(img)
-                img, draw, y, page_has_content = _new_page()
-            img.paste(image, (margin, y))
-            page_has_content = True
-            pages.append(img)
-            img, draw, y, page_has_content = _new_page()
-            continue
-
-        raw_line = str(payload)
-        wrapped = _wrap_text(draw, raw_line, font, max_text_width)
-        for line in wrapped:
-            bbox = draw.textbbox((0, 0), line or "Ag", font=font)
-            line_height = (bbox[3] - bbox[1]) + 8
-            if y + line_height > height - margin:
-                pages.append(img)
-                img, draw, y, page_has_content = _new_page()
-            draw.text((margin, y), line, fill='black', font=font)
-            y += line_height
-            page_has_content = True
-        y += 4
-
-    if page_has_content or not pages:
-        pages.append(img)
-    return pages
 
 
 def generar_pdf_desde_docx(ruta_docx, ruta_pdf=None, verbose=True):
     """
-    Genera un PDF básico a partir del DOCX ya creado.
+    Genera un PDF estructurado a partir del DOCX ya creado.
     """
     if not os.path.exists(ruta_docx):
         raise FileNotFoundError(f"No se encuentra el archivo: {ruta_docx}")
@@ -155,11 +83,48 @@ def generar_pdf_desde_docx(ruta_docx, ruta_pdf=None, verbose=True):
     if output_dir:
         os.makedirs(output_dir, exist_ok=True)
 
-    content = _extract_docx_content(ruta_docx)
-    pages = _render_content_to_pages(content)
+    pdf = canvas.Canvas(ruta_pdf, pagesize=A4)
+    pdf.setFont(FONT_NAME, FONT_SIZE)
+    y = PAGE_HEIGHT - MARGIN
+    max_text_width = PAGE_WIDTH - (2 * MARGIN)
 
-    first, rest = pages[0], pages[1:]
-    first.save(ruta_pdf, save_all=True, append_images=rest)
+    def ensure_space(height_needed: float):
+        nonlocal y
+        if y - height_needed < MARGIN:
+            pdf.showPage()
+            pdf.setFont(FONT_NAME, FONT_SIZE)
+            y = PAGE_HEIGHT - MARGIN
+
+    for kind, payload in _extract_docx_content(ruta_docx):
+        if kind == 'text':
+            for line in _wrap_text(str(payload), max_text_width):
+                ensure_space(LINE_HEIGHT)
+                pdf.drawString(MARGIN, y, line)
+                y -= LINE_HEIGHT
+            y -= 4
+            continue
+
+        image_reader = ImageReader(payload)
+        img_width, img_height = image_reader.getSize()
+        max_width = PAGE_WIDTH - (2 * MARGIN)
+        max_height = PAGE_HEIGHT - (2 * MARGIN)
+        scale = min(max_width / img_width, max_height / img_height, 1.0)
+        draw_width = img_width * scale
+        draw_height = img_height * scale
+
+        ensure_space(draw_height + 8)
+        pdf.drawImage(
+            image_reader,
+            MARGIN,
+            y - draw_height,
+            width=draw_width,
+            height=draw_height,
+            preserveAspectRatio=True,
+            mask='auto',
+        )
+        y -= draw_height + 12
+
+    pdf.save()
 
     if verbose:
         print(f"    PDF generado en: {ruta_pdf}")

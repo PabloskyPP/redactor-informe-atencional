@@ -113,6 +113,12 @@ def _safe_dict_text(diccionario: dict, key: Optional[str], fallback: Optional[st
     return None
 
 
+def _raw_level(nivel: Optional[str], reverse_metric: bool = False) -> Optional[str]:
+    if not reverse_metric or nivel is None:
+        return nivel
+    return {'alto': 'bajo', 'bajo': 'alto', 'normal': 'normal', 'N/D': None}.get(nivel, nivel)
+
+
 def agregar_portada(doc: Document, nombre_completo: str, datos: dict) -> None:
     titulo = doc.add_heading('Prueba de Evaluación Atencional', 0)
     titulo.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
@@ -200,11 +206,23 @@ def _add_bars_section(doc: Document, title: str, items: Iterable[tuple]) -> None
 
 
 def _paragraph_key_for_tr(clasificaciones: dict, prefix: str) -> str:
-    return clasificaciones.get(f'{prefix}_TR_texto', 'TR normal y C normal o alto')
+    tr_nivel = _raw_level(clasificaciones.get(f'{prefix}_TR'), reverse_metric=True)
+    c_nivel = _raw_level(clasificaciones.get(f'{prefix}_C'), reverse_metric=True)
+    if tr_nivel == 'bajo':
+        return 'TR bajo y C alto' if c_nivel == 'alto' else 'TR bajo y C bajo o normal'
+    if tr_nivel == 'normal':
+        return 'TR normal y C bajo' if c_nivel == 'bajo' else 'TR normal y C normal o alto'
+    return 'TR alto'
 
 
 def _paragraph_key_for_c(clasificaciones: dict, prefix: str) -> str:
-    return clasificaciones.get(f'{prefix}_C_texto', 'C normal')
+    c_nivel = _raw_level(clasificaciones.get(f'{prefix}_C'), reverse_metric=True)
+    tr_nivel = _raw_level(clasificaciones.get(f'{prefix}_TR'), reverse_metric=True)
+    if c_nivel == 'bajo':
+        return 'C bajo y TR alto' if tr_nivel == 'alto' else 'C bajo y TR bajo o normal'
+    if c_nivel == 'alto':
+        return 'C alto y TR bajo' if tr_nivel == 'bajo' else 'C alto y TR normal o alto'
+    return 'C normal'
 
 
 def _add_acs_section(doc: Document, resultados: dict, clasificaciones: dict, fmt: dict) -> None:
@@ -229,11 +247,11 @@ def _add_ant_section(doc: Document, resultados: dict, clasificaciones: dict, fmt
     _add_paragraph(doc, _safe_dict_text(PARRAFO_ANT_TR, _paragraph_key_for_tr(clasificaciones, 'ANT')), **fmt)
     _add_paragraph(doc, _safe_dict_text(PARRAFO_ANT_A, clasificaciones.get('ANT_A')), **fmt)
     _add_paragraph(doc, _safe_dict_text(PARRAFO_ANT_C, _paragraph_key_for_c(clasificaciones, 'ANT')), **fmt)
-    _add_paragraph(doc, _safe_dict_text(PARRAFO_ANT_O, clasificaciones.get('ANT_O')), **fmt)
+    _add_paragraph(doc, _safe_dict_text(PARRAFO_ANT_O, _raw_level(clasificaciones.get('ANT_O'), reverse_metric=True)), **fmt)
     _add_paragraph(doc, _safe_dict_text(PARRAFO_ANT_F, clasificaciones.get('ANT_F_texto')), **fmt)
-    _add_paragraph(doc, _safe_dict_text(PARRAFO_ANT_alerta, clasificaciones.get('ANT_TR_alerta')), **fmt)
-    _add_paragraph(doc, _safe_dict_text(PARRAFO_ANT_orientacion, clasificaciones.get('ANT_TR_orientacion')), **fmt)
-    _add_paragraph(doc, _safe_dict_text(PARRAFO_ANT_ejecutivo, clasificaciones.get('ANT_TR_ejecutivo')), **fmt)
+    _add_paragraph(doc, _safe_dict_text(PARRAFO_ANT_alerta, _raw_level(clasificaciones.get('ANT_TR_alerta'), reverse_metric=True)), **fmt)
+    _add_paragraph(doc, _safe_dict_text(PARRAFO_ANT_orientacion, _raw_level(clasificaciones.get('ANT_TR_orientacion'), reverse_metric=True)), **fmt)
+    _add_paragraph(doc, _safe_dict_text(PARRAFO_ANT_ejecutivo, _raw_level(clasificaciones.get('ANT_TR_ejecutivo'), reverse_metric=True)), **fmt)
     _add_bars_section(
         doc,
         'Perfil ANT',
@@ -249,19 +267,21 @@ def _add_ant_section(doc: Document, resultados: dict, clasificaciones: dict, fmt
 def _add_cpt_section(doc: Document, resultados: dict, clasificaciones: dict, fmt: dict) -> None:
     nombre = resultados['display_names']['CPT']
     _add_heading(doc, f"{nombre} - prueba de rendimiento continuo")
-    tr_key = clasificaciones['CPT_TR']
-    e_key = 'bajo' if clasificaciones.get('CPT_O') == 'alto' or clasificaciones.get('CPT_C') == 'alto' else 'normal'
+    tr_key = _raw_level(clasificaciones['CPT_TR'], reverse_metric=True)
+    cpt_o_raw = _raw_level(clasificaciones.get('CPT_O'), reverse_metric=True)
+    cpt_c_raw = _raw_level(clasificaciones.get('CPT_C'), reverse_metric=True)
+    e_key = 'alto' if cpt_o_raw == 'alto' or cpt_c_raw == 'alto' else 'normal'
     if tr_key == 'alto':
-        cpt_tr_texto = PARRAFO_CPT_TR['alto y E alto' if e_key == 'bajo' else 'alto y E bajo o normal']
+        cpt_tr_texto = PARRAFO_CPT_TR['alto y E alto' if e_key == 'alto' else 'alto y E bajo o normal']
     elif tr_key == 'bajo':
-        cpt_tr_texto = PARRAFO_CPT_TR['bajo y E normal o alto' if e_key == 'bajo' else 'bajo y E bajo']
+        cpt_tr_texto = PARRAFO_CPT_TR['bajo y E normal o alto' if e_key == 'alto' else 'bajo y E bajo']
     else:
         cpt_tr_texto = PARRAFO_CPT_TR['normal']
     _add_paragraph(doc, cpt_tr_texto, **fmt)
-    _add_paragraph(doc, PARRAFO_CPT_O[clasificaciones['CPT_O']], **fmt)
-    _add_paragraph(doc, PARRAFO_CPT_C[clasificaciones['CPT_C']], **fmt)
+    _add_paragraph(doc, PARRAFO_CPT_O[cpt_o_raw], **fmt)
+    _add_paragraph(doc, PARRAFO_CPT_C[cpt_c_raw], **fmt)
     _add_paragraph(doc, PARRAFO_CPT_CON[clasificaciones['CPT_CON']], **fmt)
-    var_nivel = clasificaciones['CPT_VAR']
+    var_nivel = _raw_level(clasificaciones['CPT_VAR'], reverse_metric=True)
     var_condicion = clasificaciones.get('CPT_VAR_condicion', 'nada')
     texto_var = (
         PARRAFO_CPT_VAR.get((var_nivel, var_condicion))
@@ -345,22 +365,23 @@ def _add_dualtask_section(doc: Document, resultados: dict, clasificaciones: dict
     _add_paragraph(doc, PARRAFOS_FIJOS['introduccion_analisis_tareas_DualTask'], **fmt)
     _add_paragraph(doc, _safe_dict_text(PARRAFO_DUALTASK_PSV, clasificaciones.get('DUALTASK_PSV')), **fmt)
     _add_paragraph(doc, _safe_dict_text(PARRAFO_DUALTASK_A, clasificaciones.get('DUALTASK_A')), **fmt)
-    _add_paragraph(doc, _safe_dict_text(PARRAFO_DUALTASK_C, clasificaciones.get('DUALTASK_C')), **fmt)
-    _add_paragraph(doc, _safe_dict_text(PARRAFO_DUALTASK_O, clasificaciones.get('DUALTASK_O')), **fmt)
+    c_key = _raw_level(clasificaciones.get('DUALTASK_C'), reverse_metric=True)
+    o_key = _raw_level(clasificaciones.get('DUALTASK_O'), reverse_metric=True)
+    _add_paragraph(doc, _safe_dict_text(PARRAFO_DUALTASK_C, c_key), **fmt)
+    _add_paragraph(doc, _safe_dict_text(PARRAFO_DUALTASK_O, o_key), **fmt)
 
-    tr_key = clasificaciones['DUALTASK_TR']
-    c_key = clasificaciones['DUALTASK_C']
+    tr_key = _raw_level(clasificaciones['DUALTASK_TR'], reverse_metric=True)
     if tr_key == 'bajo':
-        dual_tr_text = PARRAFO_DUALTASK_TR['TR bajo y C bajo' if c_key == 'alto' else 'TR bajo y C normal o alto']
+        dual_tr_text = PARRAFO_DUALTASK_TR['TR bajo y C bajo' if c_key == 'bajo' else 'TR bajo y C normal o alto']
     elif tr_key == 'alto':
-        dual_tr_text = PARRAFO_DUALTASK_TR[f"TR alto y C {'bajo' if c_key == 'alto' else ('alto' if c_key == 'bajo' else 'normal')}"]
+        dual_tr_text = PARRAFO_DUALTASK_TR[f"TR alto y C {'alto' if c_key == 'alto' else ('bajo' if c_key == 'bajo' else 'normal')}"]
     else:
         dual_tr_text = PARRAFO_DUALTASK_TR['TR normal']
     _add_paragraph(doc, dual_tr_text, **fmt)
 
     tr_a_vs_c = clasificaciones.get('DUALTASK_TR_A_vs_C')
-    if tr_a_vs_c and c_key in {'normal', 'bajo'}:
-        key = f"C {'alto' if c_key == 'bajo' else 'normal'} y TR_A_vs_C {tr_a_vs_c}"
+    if tr_a_vs_c and c_key in {'normal', 'alto'}:
+        key = f"C {'alto' if c_key == 'alto' else 'normal'} y TR_A_vs_C {tr_a_vs_c}"
         if key in PARRAFO_DUALTASK_TR_A_vs_C:
             _add_paragraph(doc, PARRAFO_DUALTASK_TR_A_vs_C[key], **fmt)
 

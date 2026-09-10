@@ -22,6 +22,15 @@ class PipelineTests(unittest.TestCase):
     def _count_pdf_pages(path):
         return len(PdfReader(path).pages)
 
+    @staticmethod
+    def _pdf_has_xobject(path):
+        reader = PdfReader(path)
+        for page in reader.pages:
+            resources = page.get('/Resources')
+            if resources and resources.get('/XObject'):
+                return True
+        return False
+
     def test_sample_workbook_end_to_end(self):
         datos = leer_datos_excel(SAMPLE_XLSX)
         resultados = calcular_puntuaciones_directas(datos)
@@ -126,10 +135,8 @@ class PipelineTests(unittest.TestCase):
                 os.chdir(tmpdir)
                 self.assertTrue(generar_pdf_desde_docx(ruta_docx, 'solo_nombre.pdf', verbose=False))
                 self.assertTrue(os.path.exists(os.path.join(tmpdir, 'solo_nombre.pdf')))
-                self.assertGreater(
-                    self._count_pdf_pages(os.path.join(tmpdir, 'solo_nombre.pdf')),
-                    self._count_pdf_pages(os.path.join(tmpdir, 'sin_imagen.pdf')),
-                )
+                self.assertFalse(self._pdf_has_xobject(os.path.join(tmpdir, 'sin_imagen.pdf')))
+                self.assertTrue(self._pdf_has_xobject(os.path.join(tmpdir, 'solo_nombre.pdf')))
             finally:
                 os.chdir(cwd)
 
