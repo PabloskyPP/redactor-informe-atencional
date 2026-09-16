@@ -22,12 +22,12 @@ PARRAFOS_FIJOS = {
     ),
 
     'descripcion_procedimiento1.1': (
-        "En primer lugar, al participante se le pide responder (Nada, Algo, Mucho) a un total de 20 preguntas breves vinculadas a diferentes habilidades o problemas atencionales, p.ej: "
+        "1) En primer lugar el cuestionario ACS. Al participante se le pide responder (Nada, Algo, Mucho) a un total de 20 preguntas breves vinculadas a diferentes habilidades o problemas atencionales, p.ej: "
         "'Me cuesta concentrarme cuando estoy muy excitado con algo.', 'Puedo rápidamente cambiar de una tarea a otra.', etc."
     ),
 
     'descripcion_procedimiento2.1': (
-        "Siguientemente, se comienza la evaluación conductual con la prueba ANT (Atentional Network Test). Aquí la persona tiene que observar una serie de símbolos. "
+        "2) Seguidamente, se comienza la evaluación conductual con la prueba ANT (Atentional Network Test). Aquí la persona tiene que observar una serie de símbolos. "
         "Entre estos, una flecha central horizontal, ⬅ o ➡, de la cual el evaluado tiene que indicar el sentido hacia el que señala (izquierda o derecha). "
         "Sin embargo, esta flecha central se presenta precedida y continuada por otras 2 líneas a cada lado, que pueden ser: simples líneas rectas o flechas, en el mismo u opuesto sentido a la flecha central objetivo. "
         "Véase un ejemplo de estos posibles estímulos centrales en la siguiente imagen:"
@@ -40,18 +40,22 @@ PARRAFOS_FIJOS = {
     ),
 
         'descripcion_procedimiento3.1': (
-        "En la siguiente prueba CPT (Continuous Performance Test) la persona tiene que en un tiempo límite señalar el mayor número de elementos objetivo posible. "
-        "Estos elementos se muestran en fila intercalados por estímulos similares pero distractores que se tienen que ignorar. Los estímulos objetivos y distractores son los de la siguiente imagen."
+        "3) En la siguiente prueba CPT (Continuous Performance Test) la persona tiene que en un tiempo límite señalar el mayor número de elementos objetivo posible (letras 9 con dos puntos, ni uno más ni uno menos: bien arriba, abajo, o 1 arriba y 1 abajo). "
+        "Estos elementos se muestran en fila intercalados por estímulos similares pero distractores que se tienen que ignorar. Véase a continuación un ejemplo de fila en el que detectar estos estimulos objetivo entre otros engañosos o distractores."
     ),
 
         'descripcion_procedimiento4.1': (
-        "En la cuarta prueba FourFigures se presentan 4 series de estímulos uno por uno. "
+        "4) Le sigue la prueba FourFigures se presentan 4 series de estímulos uno por uno. "
         "Cada estímulo se compone de una figura externa y una interna, las cuales pueden compartir o discrepar en su forma (cuadrado, círculo, triángulo y cruz). En algunas partes de la tarea se pregunta por la forma de la figura externa "
         "y en otras por la de la figura interna. El participante tiene con la mayor rapidez y precisión posible señalar la forma de la figura por la que se está a preguntar en cada momento. Véase a continuación algunos ejemplos de estímulos."
     ),
 
         'descripcion_procedimiento5.1': (
-        "Por último, la prueba DUAL-TASK demanda realizar dos tareas simultáneamente. Por un lado, una tarea constante de seguimiento de un punto en movimiento con el cursor del ratón. "
+        "5) La quinta prueba DigitsMemorization consiste en memorizar y repetir listas de números de longitud creciente (de 2 a 9 cifras) en un orden diferente en cada parte: directo, inverso o creciente."
+    ),
+
+        'descripcion_procedimiento6.1': (
+        "6) Por último, la prueba DUAL-TASK demanda realizar dos tareas simultáneamente. Por un lado, una tarea constante de seguimiento de un punto en movimiento con el cursor del ratón. "
         "Por otro lado, una tarea intermitente de detección de estímulos objetivo frente distractores. Esto es, que además del cursor a seguir, en la pantalla eventualemente aparecen otros dos estímulos: un cuadrado rojo o azul. "
         "Además de mover el ratón para seguir el punto la persona debe de hacer clic izquierdo cada vez que en pantalla aparece el cuadrado rojo, y evitar pulsarlo cuando el cuadrado es azul."
     ),

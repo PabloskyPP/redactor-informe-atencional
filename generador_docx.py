@@ -380,7 +380,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     if _image_is_valid(imagen_ant):
         parrafo_imagen_ant = doc.add_paragraph()
         parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
+        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(5))
 
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento4.1'])
     imagen_ant = os.path.join(script_dir, 'imagenes', 'FourFigures estimulos.png')
@@ -388,8 +388,10 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         parrafo_imagen_ant = doc.add_paragraph()
         parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
         parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
-        
+
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento5.1'])
+    doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento6.1'])
+
 
     doc.add_paragraph()
     _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_indices'])
