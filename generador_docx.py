@@ -373,14 +373,13 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     if _image_is_valid(imagen_ant):
         parrafo_imagen_ant = doc.add_paragraph()
         parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
+        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(4))
 
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento3.1'])
     imagen_ant = os.path.join(script_dir, 'imagenes', 'CPT estimulos.png')
     if _image_is_valid(imagen_ant):
         parrafo_imagen_ant = doc.add_paragraph()
-        parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(5))
+        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
 
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento4.1'])
     imagen_ant = os.path.join(script_dir, 'imagenes', 'FourFigures estimulos.png')
@@ -935,18 +934,95 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     run_siglas.italic = True
     run_siglas.font.size = Pt(8)
 
-    display_names = resultados.get('display_names', {})
-    available_tests = resultados.get('available_tests', [])
-    if 'CPT' in available_tests:
-        doc.add_paragraph(
-            f"{display_names.get('CPT', 'CPT')} - prueba de rendimiento continuo"
-        )
-    if 'FourFigures' in available_tests:
-        doc.add_paragraph(
-            f"{display_names.get('FourFigures', 'FourFigures')} - control y flexibilidad cognitiva"
-        )
+    _add_textual_results_sections(doc, resultados, clasificaciones, nombre)
 
     return doc
+
+
+def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
+    """Añade los párrafos interpretativos definidos en textos.py."""
+    def nivel(clave):
+        return clasificaciones.get(clave)
+
+    def parrafo(textos, clave):
+        valor = nivel(clave)
+        if valor in textos:
+            doc.add_paragraph(textos[valor].format(nombre=nombre))
+
+    def parrafo_con_nivel(textos, titulo, nivel_clave, prefijo=None):
+        """Añade un subtítulo y busca el texto con la clave que usa textos.py."""
+        subtitulo(f"🔹 {titulo}")
+        valor = clasificaciones.get(nivel_clave)
+        if prefijo is not None:
+            valor = f"{prefijo} {valor}"
+        if valor in textos:
+            doc.add_paragraph(textos[valor].format(nombre=nombre))
+
+    def subtitulo(texto):
+        _add_bold_paragraph(doc, texto)
+
+    def titulo_prueba(texto):
+        """Inicia una prueba en página nueva con título destacado y subrayado."""
+        doc.add_page_break()
+        parrafo_titulo = _add_bold_paragraph(doc, texto)
+        for run in parrafo_titulo.runs:
+            run.bold = True
+            run.underline = True
+            run.font.color.rgb = RGBColor(0, 0, 0)
+
+    doc.add_paragraph(PARRAFOS_FIJOS['titulo_resultados_específicos'])
+
+    if 'ACS' in resultados.get('available_tests', []):
+        titulo_prueba(PARRAFOS_FIJOS['titulo_ACS'])
+        doc.add_paragraph(PARRAFOS_FIJOS['texto_resultados_ACS'].format(nombre=nombre))
+        parrafo(PARRAFO_ACS_atenciongeneral, 'ACS_atenciongeneral')
+        parrafo(PARRAFO_ACS_foco, 'ACS_foco')
+        parrafo(PARRAFO_ACS_cambio, 'ACS_cambio')
+
+    if 'ANT' in resultados.get('available_tests', []):
+        titulo_prueba(PARRAFOS_FIJOS['titulo_ANT'])
+        parrafo_con_nivel(PARRAFO_ANT_TR, 'Velocidad de procesamiento / Tiempo de respuesta (TR)', 'ANT_TR_texto')
+        parrafo_con_nivel(PARRAFO_ANT_A, 'Número de aciertos (A)', 'ANT_A', 'A')
+        parrafo_con_nivel(PARRAFO_ANT_C, 'Errores de comisión (C)', 'ANT_C_texto')
+        parrafo_con_nivel(PARRAFO_ANT_O, 'Errores de omisión (O)', 'ANT_O', 'O')
+        parrafo_con_nivel(PARRAFO_ANT_F, 'Atención sostenida / Fatiga', 'ANT_F_texto')
+        parrafo_con_nivel(PARRAFO_ANT_alerta, 'Red de alerta', 'ANT_TR_alerta', 'TR_alerta')
+        parrafo_con_nivel(PARRAFO_ANT_orientacion, 'Red de orientación', 'ANT_TR_orientacion', 'TR_orientacion')
+        parrafo_con_nivel(PARRAFO_ANT_ejecutivo, 'Red ejecutiva', 'ANT_TR_ejecutivo', 'TR_ejecutivo')
+
+    if 'CPT' in resultados.get('available_tests', []):
+        titulo_prueba(PARRAFOS_FIJOS['titulo_CPT'])
+        parrafo_con_nivel(PARRAFO_CPT_TR, 'Velocidad de procesamiento / Tiempo de respuesta (TR)', 'CPT_TR_texto')
+        parrafo_con_nivel(PARRAFO_CPT_C, 'Errores de comisión (C)', 'CPT_C')
+        parrafo_con_nivel(PARRAFO_CPT_O, 'Errores de omisión (O)', 'CPT_O')
+        parrafo_con_nivel(PARRAFO_CPT_CON, 'Concentración (CON)', 'CPT_CON')
+        subtitulo('🔹 Variabilidad del rendimiento (VAR)')
+        var_nivel = nivel('CPT_VAR')
+        var_condicion = clasificaciones.get('CPT_VAR_condicion', 'nada')
+        var_key = (var_nivel, var_condicion)
+        if var_key in PARRAFO_CPT_VAR:
+            doc.add_paragraph(PARRAFO_CPT_VAR[var_key].format(nombre=nombre))
+
+    if 'FourFigures' in resultados.get('available_tests', []):
+        titulo_prueba(PARRAFOS_FIJOS['titulo_FourFigures'])
+        parrafo_con_nivel(PARRAFO_FourFigures_TR, 'Velocidad de procesamiento / Tiempo de respuesta (TR)', 'FourFigures_TR_texto')
+        parrafo_con_nivel(PARRAFO_FourFigures_A, 'Número de aciertos (A)', 'FourFigures_A')
+        parrafo_con_nivel(PARRAFO_FourFigures_C, 'Errores de comisión (C)', 'FourFigures_C_texto')
+        parrafo_con_nivel(PARRAFO_FourFigures_P4_A_obtenido_vs_esperado, 'Aciertos obtenidos frente a esperados', 'FourFigures_P4_A_obtenido_vs_esperado')
+
+    if 'DigitsMemorization' in resultados.get('available_tests', []):
+        titulo_prueba(PARRAFOS_FIJOS['titulo_DigitsMemorization'])
+        subtitulo('🔹 Memoria operativa o de trabajo')
+        parrafo(PARRAFO_DigitsMemorization, 'DigitsMemorization_promedio')
+
+    if 'DUALTASK' in resultados.get('available_tests', []):
+        titulo_prueba(PARRAFOS_FIJOS['titulo_DualTask'])
+        parrafo_con_nivel(PARRAFO_DUALTASK_General_PSV_y_A, 'Rendimiento general', 'DUALTASK_General_PSV_y_A')
+        parrafo_con_nivel(PARRAFO_DUALTASK_PSV, 'Precisión de seguimiento visomotor (PSV)', 'DUALTASK_PSV')
+        parrafo_con_nivel(PARRAFO_DUALTASK_TR, 'Velocidad de procesamiento / Tiempo de respuesta (TR)', 'DUALTASK_TR_texto')
+        parrafo_con_nivel(PARRAFO_DUALTASK_C, 'Errores de comisión (C)', 'DUALTASK_C_texto')
+        parrafo_con_nivel(PARRAFO_DUALTASK_O, 'Errores de omisión (O)', 'DUALTASK_O')
+        parrafo_con_nivel(PARRAFO_DUALTASK_automatización, 'Automatización', 'DUALTASK_automatización')
 
 
 # Esta es la función _add_bars_section que sigue el formato adecuado y deseado.
@@ -1023,8 +1099,12 @@ def _add_bars_section(doc, factores_info, resultados, tabla_destino_cell=None):
     # ================================================================== #
     # 3.0 ACS                                                           #
     # ================================================================== #
-    p_tit_r = doc.add_paragraph("ACS - cuestionario de control atencionals")
-    _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_ACS'])
+    p_tit_acs = _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_ACS'])
+    for parrafo_titulo in (p_tit_r, p_tit_acs):
+        for run in parrafo_titulo.runs:
+            run.bold = True
+            run.font.size = Pt(14)
+            run.font.color.rgb = RGBColor(0, 0, 0)
     _add_bold_paragraph(doc, PARRAFOS_FIJOS['texto_resultados_ACS'])
 
     # Normalizar nivel para selección de párrafo
@@ -1053,8 +1133,12 @@ def _add_bars_section(doc, factores_info, resultados, tabla_destino_cell=None):
     doc.add_paragraph()
 
     #Elegir uno de ambos títulos 
-    p_tit_r = doc.add_paragraph("ANT - prueba de eficiencia de redes neuronales atencionales")
-    _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_ANT'])
+    p_tit_ant = _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_ANT'])
+    for parrafo_titulo in (p_tit_r, p_tit_ant):
+        for run in parrafo_titulo.runs:
+            run.bold = True
+            run.font.size = Pt(14)
+            run.font.color.rgb = RGBColor(0, 0, 0)
 
     p_tit_r.runs[0].bold      = True
     p_tit_r.runs[0].underline = True

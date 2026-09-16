@@ -41,13 +41,13 @@ PARRAFOS_FIJOS = {
 
         'descripcion_procedimiento3.1': (
         "3) En la siguiente prueba CPT (Continuous Performance Test) la persona tiene que en un tiempo límite señalar el mayor número de elementos objetivo posible (letras 9 con dos puntos, ni uno más ni uno menos: bien arriba, abajo, o 1 arriba y 1 abajo). "
-        "Estos elementos se muestran en fila intercalados por estímulos similares pero distractores que se tienen que ignorar. Véase a continuación un ejemplo de fila en el que detectar estos estimulos objetivo entre otros engañosos o distractores."
+        "Estos elementos se muestran en fila intercalados por estímulos similares pero distractores que se tienen que ignorar. A continuación un ejemplo de fila en el que detectar estos estimulos objetivo entre otros engañosos o distractores:"
     ),
 
         'descripcion_procedimiento4.1': (
         "4) Le sigue la prueba FourFigures se presentan 4 series de estímulos uno por uno. "
         "Cada estímulo se compone de una figura externa y una interna, las cuales pueden compartir o discrepar en su forma (cuadrado, círculo, triángulo y cruz). En algunas partes de la tarea se pregunta por la forma de la figura externa "
-        "y en otras por la de la figura interna. El participante tiene con la mayor rapidez y precisión posible señalar la forma de la figura por la que se está a preguntar en cada momento. Véase a continuación algunos ejemplos de estímulos."
+        "y en otras por la de la figura interna. El participante tiene con la mayor rapidez y precisión posible señalar la forma de la figura por la que se está a preguntar en cada momento. Véase a continuación algunos ejemplos de estímulos:"
     ),
 
         'descripcion_procedimiento5.1': (

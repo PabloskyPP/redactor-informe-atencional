@@ -6,11 +6,13 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+import tempfile
 from io import BytesIO
 from typing import Iterator, List, Tuple
 from urllib.parse import unquote
 from xml.sax.saxutils import escape
 
+from PIL import Image
 from docx import Document
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.oxml.table import CT_Tbl
@@ -21,9 +23,11 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
+from reportlab.pdfgen import canvas
 from reportlab.platypus import Image as RLImage
 from reportlab.platypus import Paragraph as RLParagraph
 from reportlab.platypus import SimpleDocTemplate, Spacer, Table as RLTable, TableStyle
+from pypdf import PdfReader, PdfWriter
 
 REL_NS = '{http://schemas.openxmlformats.org/officeDocument/2006/relationships}embed'
 
@@ -257,6 +261,35 @@ def generar_pdf_desde_docx(ruta_docx, ruta_pdf=None, verbose=True):
         if not convertir_docx_a_pdf(ruta_docx, ruta_pdf):
             print("    Error al convertir DOCX a PDF")
             return False
+
+        ruta_docx_normalizada = _normalizar_ruta(ruta_docx)
+        directorios_grafico = [
+            os.path.dirname(ruta_docx_normalizada),
+            os.path.dirname(os.path.dirname(ruta_docx_normalizada)),
+            os.path.dirname(os.path.abspath(__file__)),
+        ]
+        ruta_imagen = next(
+            (
+                os.path.join(directorio, 'grafico_CPT_final.png')
+                for directorio in directorios_grafico
+                if os.path.exists(os.path.join(directorio, 'grafico_CPT_final.png'))
+            ),
+            None,
+        )
+
+        if ruta_imagen:
+            fd, ruta_pdf_con_imagen = tempfile.mkstemp(suffix='.pdf')
+            os.close(fd)
+            try:
+                if insertar_imagen_en_pagina_3(
+                    ruta_pdf, ruta_imagen, ruta_pdf_con_imagen
+                ):
+                    os.replace(ruta_pdf_con_imagen, ruta_pdf)
+                else:
+                    print("    Advertencia: no se pudo insertar el gráfico CPT en la página 3")
+            finally:
+                if os.path.exists(ruta_pdf_con_imagen):
+                    os.unlink(ruta_pdf_con_imagen)
 
         if verbose:
             print(f"    PDF generado en: {ruta_pdf}")
