@@ -150,6 +150,7 @@ def _add_group(doc, *text_items):
     """Añade múltiples textos opcionales como párrafos independientes."""
     texts = [t for t in text_items if t]
     for text in texts:
+        doc.add_paragraph(text)
 
 def _remove_table_borders(table):
     """Elimina todos los bordes visibles de una tabla."""
@@ -252,7 +253,7 @@ def _raw_level(nivel: Optional[str], reverse_metric: bool = False) -> Optional[s
 
 
 def agregar_portada(doc: Document, nombre_completo: str, datos: dict) -> None:
-        """
+    """
     Agrega la portada del informe.
 
     Args:
@@ -291,7 +292,7 @@ def agregar_portada(doc: Document, nombre_completo: str, datos: dict) -> None:
     run_n = nota.add_run(
         f"Informe de evaluación atencional obtenido a partir de las declaraciones "
         f"de {nombre_completo} en el cuestionario ACS y su rendimiento en las pruebas conductuales "
-         "ANT, CPT, FourFigures y DUAL-TASK."
+         "ANT, CPT, FourFigures, DigitsMemorization y Dual-Task."
     )
     run_n.italic = True
     run_n.font.size = Pt(12)
@@ -361,12 +362,37 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento0'])
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento1.1'])
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento2.1'])
+    imagen_ant = os.path.join(script_dir, 'imagenes', 'ANT estimulo central.png')
+    if _image_is_valid(imagen_ant):
+        parrafo_imagen_ant = doc.add_paragraph()
+        parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
+
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento2.2'])
+    imagen_ant = os.path.join(script_dir, 'imagenes', 'ANT estimulo contextual.png')
+    if _image_is_valid(imagen_ant):
+        parrafo_imagen_ant = doc.add_paragraph()
+        parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
+
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento3.1'])
+    imagen_ant = os.path.join(script_dir, 'imagenes', 'CPT estimulos.png')
+    if _image_is_valid(imagen_ant):
+        parrafo_imagen_ant = doc.add_paragraph()
+        parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
+
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento4.1'])
+    imagen_ant = os.path.join(script_dir, 'imagenes', 'FourFigures estimulos.png')
+    if _image_is_valid(imagen_ant):
+        parrafo_imagen_ant = doc.add_paragraph()
+        parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
+        
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento5.1'])
 
     doc.add_paragraph()
+    _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_indices'])
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_indices'].format(**fmt))
 
     # ------------------------------------------------------------------ #
@@ -387,16 +413,6 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # INSERTAR Tabla resultados
     # ========================================================================
     
-    # Título de resultados
-    titulo_resultados = doc.add_paragraph()
-    titulo_resultados.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-    run = titulo_resultados.add_run(PARRAFOS_FIJOS['titulo_resultados'].format(nombre_completo=nombre_completo))
-    run.bold = True
-    run.font.size = Pt(11)
-    doc.add_paragraph()  # Espacio
-    
-    doc.add_paragraph(PARRAFOS_FIJOS['texto__resultados'].format(nombre=nombre, nombre_completo=nombre_completo))
-
     # Tabla PDs, PTs y clasificaciones
     tabla = doc.add_table(rows=2, cols=8)
 
@@ -547,6 +563,9 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         - Fila 1: Valores PD
         - Fila 2: Valores Rendimiento
         """
+        if not indices_datos:
+            return None
+
         tabla_anidada = celda_destino.add_table(rows=3, cols=len(indices_datos))
         tabla_anidada.style = 'Table Grid'
         
@@ -592,8 +611,9 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
 
 # Copilot. Los índices de C y Red ejecutiva son comunes a la atención selectiva y el control inhibitorio, anidar de esta manera dentro de la columna control ejecutivo.
     # Columna 3: Control Ejecutivo - Atención Selectiva - Múltiples índices (Red de orientación, C y Red ejecutiva)
-    _llenar_tabla_anidada_datos(
+    _llenar_tabla_anidada_multiples_indices(
         row_ant[3],
+        [
           ('Red de orientación',
              str(round(resultados.get('ANT_TR_orientacion', 0), 4)),
              str(clasificaciones.get('ANT_TR_orientacion', '-'))),
@@ -607,8 +627,9 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     )
     
     # Columna 4: Control Ejecutivo - Control Inhibitorio (vacío para ANT)
-    _llenar_tabla_anidada_datos(
+    _llenar_tabla_anidada_multiples_indices(
         row_ant[4],
+        [
          ('Dif. TR 1º vs 3º',
              str(round(resultados.get('PD_ANT_C', 0), 4)),
              str(clasificaciones.get('ANT_C', '-'))),
@@ -637,6 +658,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # Columna 7: Velocidad de procesamiento - Múltiples índices (O y TR)
     _llenar_tabla_anidada_multiples_indices(
         row_ant[7],
+        [
             ('O*',
              str(round(resultados.get('PD_ANT_O', 0), 4)),
              str(clasificaciones.get('ANT_O', '-'))),
@@ -649,7 +671,10 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # Fila 3: prueba CPT o D2 según cual se recupere del excel
     row_cpt = tabla.rows[3].cells
     # Añadir condicional texto según prueba recuperada del excel
-    _crear_tabla_anidada_prueba(row_cpt[0], 'CPT' o 'D2')
+    _crear_tabla_anidada_prueba(
+        row_cpt[0],
+        'D2' if 'D2' in resultados.get('available_tests', []) else 'CPT'
+    )
     
     # Columna 1: Arousal
     _llenar_tabla_anidada_datos(
@@ -662,9 +687,13 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # Columna 2: Atención Sostenida: VAR
     _llenar_tabla_anidada_multiples_indices(
         row_cpt[2],
-        'VAR*',
-        str(resultados.get('PD_CPT_VAR', 0)),
-        str(clasificaciones.get('CPT_VAR', '-'))
+        [
+            (
+                'VAR*',
+                str(resultados.get('PD_CPT_VAR', 0)),
+                str(clasificaciones.get('CPT_VAR', '-')),
+            )
+        ],
         # Aquí se podría añadir una subcelda adicional: dif. sign A o TR 1º y 3º tercio = sing o no (color amarillo)
     )
     
@@ -706,10 +735,15 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         'R*',
         str(resultados.get('PD_CPT_R', 0)),
         str(clasificaciones.get('CPT_R', '-'))
+    )
+
  # Fila 4: prueba FourFigures o FiveDigits, según la prueba que haya en el excel
     row_cpt = tabla.rows[3].cells
     # Copilot. Añadir condicional a prueba recuperada del excel
-    _crear_tabla_anidada_prueba(row_cpt[0], 'FourFigures' o 'FiveDigits')
+    _crear_tabla_anidada_prueba(
+        row_cpt[0],
+        'FiveDigits' if 'FiveDigits' in resultados.get('available_tests', []) else 'FourFigures'
+    )
     
     # Columna 1: Arousal
     _llenar_tabla_anidada_datos(
@@ -722,9 +756,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # Columna 2: Atención Sostenida: VAR
     _llenar_tabla_anidada_multiples_indices(
         row_cpt[2],
-        '',
-        '',
-        '',
+        [],
     )
     
     # Columna 3 y 4: Control ejecutivo
@@ -784,6 +816,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # Columna 2: Atención Sostenida - Múltiples índices (PSV T2, A y TR T1)
     _llenar_tabla_anidada_multiples_indices(
         row_cpt[2],
+        [
            ('Dif. PSV* 1º y 3º tercio',
              str(round(resultados.get('PD_DUALTASK_PSV', 0), 4)),
              str(clasificaciones.get('DUALTASK_PSV', '-'))),
@@ -845,9 +878,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # Columna 2: Atención Sostenida
     _llenar_tabla_anidada_multiples_indices(
         row_cpt[2],
-        '',
-        '',
-        '',
+        [],
     )
     
     # Columna 3 y 4: Control ejecutivo
@@ -867,10 +898,10 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     )
     
     # Columna 6: Memoria operativa - Múltiples Índices (PD_directo y PD_inverso)
-    _llenar_tabla_anidada_datos(
-        row_cpt[6]
-
-     ('PD directo*',
+    _llenar_tabla_anidada_multiples_indices(
+        row_cpt[6],
+        [
+            ('PD directo*',
              str(round(resultados.get('PD_DigitsMemorization_directo', 0), 4)),
              str(clasificaciones.get('DigitsMemorization_directo', '-'))),
             ('PD inverso',
@@ -901,6 +932,19 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     )
     run_siglas.italic = True
     run_siglas.font.size = Pt(8)
+
+    display_names = resultados.get('display_names', {})
+    available_tests = resultados.get('available_tests', [])
+    if 'CPT' in available_tests:
+        doc.add_paragraph(
+            f"{display_names.get('CPT', 'CPT')} - prueba de rendimiento continuo"
+        )
+    if 'FourFigures' in available_tests:
+        doc.add_paragraph(
+            f"{display_names.get('FourFigures', 'FourFigures')} - control y flexibilidad cognitiva"
+        )
+
+    return doc
 
 
 # Esta es la función _add_bars_section que sigue el formato adecuado y deseado.
@@ -1035,7 +1079,7 @@ def _add_bars_section(doc, factores_info, resultados, tabla_destino_cell=None):
     
     doc.add_paragraph(PARRAFO_ANT_C[a_nivel])
 
-     ERRORES DE COMISIÓN
+    # ERRORES DE COMISIÓN
     p_c_titulo = doc.add_paragraph()
     run = p_c_titulo.add_run("🔹 Errores de comisión (C)")
     run.bold = True
@@ -1092,8 +1136,9 @@ def _add_bars_section(doc, factores_info, resultados, tabla_destino_cell=None):
     # 3.2  CPT                                         # o D2 si el caso
     # ================================================================== #
 
- p_tit_im = doc.add_paragraph()
-    p_tit_r = doc.add_paragraph("CPT - prueba de rendimiento continuo")
+    p_tit_im = doc.add_paragraph()
+    nombre_cpt = resultados.get('display_names', {}).get('CPT', 'CPT')
+    p_tit_r = doc.add_paragraph(f"{nombre_cpt} - prueba de rendimiento continuo")
     p_tit_im.runs[0].bold      = True
     p_tit_im.runs[0].underline = True
 
@@ -1166,7 +1211,10 @@ def _add_bars_section(doc, factores_info, resultados, tabla_destino_cell=None):
     doc.add_paragraph()
 
 #Elegir uno de ambos títulos 
-    p_tit_r = doc.add_paragraph("FourFigures")
+    nombre_four_figures = resultados.get('display_names', {}).get('FourFigures', 'FourFigures')
+    p_tit_r = doc.add_paragraph(
+        f"{nombre_four_figures} - control y flexibilidad cognitiva"
+    )
     _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_FourFigures'])
 
     p_tit_r.runs[0].bold      = True
@@ -1469,32 +1517,16 @@ def _add_bars_section(doc, factores_info, resultados, tabla_destino_cell=None):
     
     doc.add_paragraph(PARRAFO_sintesis_final[con_nivel])
 
-    
-
-# A continuación unas funciones añadidas en la última pull request que pueden ser útiles para reciclar pero que seguramente no siguen un formato adecuado al de la tabla deseada.
- _add_heading(doc, PARRAFOS_FIJOS['titulo_resultados_especificos'])
-
-    if 'ACS' in resultados['available_tests']:
-        _add_acs_section(doc, resultados, clasificaciones, fmt)
-    if 'ANT' in resultados['available_tests']:
-        _add_ant_section(doc, resultados, clasificaciones, fmt)
-    if 'CPT' in resultados['available_tests']:
-        _add_cpt_section(doc, resultados, clasificaciones, fmt)
-    if 'FourFigures' in resultados['available_tests']:
-        _add_four_figures_section(doc, resultados, clasificaciones, fmt)
-    if 'DigitsMemorization' in resultados['available_tests']:
-        _add_digits_section(doc, resultados, clasificaciones, fmt)
-    if 'DUALTASK' in resultados['available_tests']:
-        _add_dualtask_section(doc, resultados, clasificaciones, fmt)
+    return doc
 
 
-    def guardar_informe(doc, ruta_salida):
-        """
+def guardar_informe(doc, ruta_salida):
+    """
         Guarda el documento generado.
         Args:
             doc:         Documento Word.
             ruta_salida: Ruta donde guardar el archivo.
-        """
+    """
 
     directory = os.path.dirname(ruta_salida)
     if directory:
@@ -1502,6 +1534,6 @@ def _add_bars_section(doc, factores_info, resultados, tabla_destino_cell=None):
 
     doc.save(ruta_salida)
     print(f"Informe generado exitosamente en: {ruta_salida}")
-
-    _add_summary(doc, resultados, clasificaciones, fmt)
     return doc
+
+

@@ -4,8 +4,11 @@ Módulo para convertir el informe DOCX a PDF.
 from __future__ import annotations
 
 import os
+import subprocess
+import sys
 from io import BytesIO
 from typing import Iterator, List, Tuple
+from urllib.parse import unquote
 from xml.sax.saxutils import escape
 
 from docx import Document
@@ -25,6 +28,11 @@ from reportlab.platypus import SimpleDocTemplate, Spacer, Table as RLTable, Tabl
 REL_NS = '{http://schemas.openxmlformats.org/officeDocument/2006/relationships}embed'
 
 
+def _normalizar_ruta(ruta):
+    """Convierte una ruta posiblemente codificada como URL en ruta Windows."""
+    return os.path.abspath(os.path.normpath(unquote(os.fspath(ruta))))
+
+
 def convertir_docx_a_pdf(ruta_docx, ruta_pdf=None):
     """
     Convierte un archivo Word (.docx) a PDF usando LibreOffice en modo headless
@@ -41,6 +49,8 @@ def convertir_docx_a_pdf(ruta_docx, ruta_pdf=None):
         FileNotFoundError: Si el archivo .docx no existe
         RuntimeError: Si la conversión falla
     """
+    ruta_docx = _normalizar_ruta(ruta_docx)
+
     # Verificar que el archivo .docx existe
     if not os.path.exists(ruta_docx):
         raise FileNotFoundError(f"No se encuentra el archivo: {ruta_docx}")
@@ -48,6 +58,8 @@ def convertir_docx_a_pdf(ruta_docx, ruta_pdf=None):
     # Si no se especifica ruta de salida, usar la misma ubicación
     if ruta_pdf is None:
         ruta_pdf = os.path.splitext(ruta_docx)[0] + '.pdf'
+    else:
+        ruta_pdf = _normalizar_ruta(ruta_pdf)
     
     # Obtener el directorio de salida
     directorio_salida = os.path.dirname(ruta_pdf)
@@ -71,16 +83,18 @@ def convertir_docx_a_pdf(ruta_docx, ruta_pdf=None):
         # Crear instancia de Word
         word = win32com.client.Dispatch('Word.Application')
         word.Visible = False
+        doc = None
 
         # Abrir el documento
-        doc = word.Documents.Open(ruta_docx)
+        doc = word.Documents.Open(
+            ruta_docx,
+            ConfirmConversions=False,
+            ReadOnly=True,
+            AddToRecentFiles=False,
+        )
 
         # Guardar como PDF (formato 17 es PDF)
         doc.SaveAs(ruta_pdf, FileFormat=17)
-
-        # Cerrar documento y Word
-        doc.Close()
-        word.Quit()
 
         return os.path.exists(ruta_pdf)
 
@@ -90,6 +104,17 @@ def convertir_docx_a_pdf(ruta_docx, ruta_pdf=None):
     except Exception as e:
         print(f"Error al convertir DOCX a PDF: {e}")
         return False
+    finally:
+        if 'doc' in locals() and doc is not None:
+            try:
+                doc.Close(False)
+            except Exception:
+                pass
+        if 'word' in locals():
+            try:
+                word.Quit()
+            except Exception:
+                pass
 
 
 

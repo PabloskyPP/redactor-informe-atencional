@@ -10,25 +10,24 @@ PARRAFOS_FIJOS = {
     'titulo_general_prueba': "1. Objetivo de la batería de pruebas.",
 
     'objetivo_prueba': (
-        "Este informe está compuesto por una batería de 1 cuestionario (ACS) y 4 pruebas conductuales: ANT, CPT, FourFigures and Dual-Task. "
+        "Este informe está compuesto por una batería de 1 cuestionario (ACS) y 5 pruebas conductuales: ANT, CPT, FourFigures, DigitsMemorization y Dual-Task. "
         "En conjunto, estas pruebas evaluan la capacidad atencional. Como se explica más adelante en detalle, a través de cada prueba se mide un subcomponente de la atención "
-        "diferente: velocidad de procesamiento, memoria operativa, atención sostenida, atención discriminativa, control ejecutivo, flexibilidad cognitiva, etc."
+        "diferente: velocidad de procesamiento, memoria operativa, atención sostenida, control ejecutivo, flexibilidad cognitiva, etc."
     ),
 
     'titulo_procedimiento': "2. Descripción de las tareas.",
 
     'descripcion_procedimiento0': (
-        "La prueba tiene una duración total de 20 minutos aproximadamente. Durante este tiempo el participante debe completar un cuestionario y 4 pruebas conductuales. A continuación se describen los procedimientos de cada prueba."
+        "La prueba tiene una duración total de 40 minutos aproximadamente. Durante este tiempo el participante debe completar un cuestionario y 5 pruebas conductuales. A continuación se describen los procedimientos de cada prueba."
     ),
-
 
     'descripcion_procedimiento1.1': (
         "En primer lugar, al participante se le pide responder (Nada, Algo, Mucho) a un total de 20 preguntas breves vinculadas a diferentes habilidades o problemas atencionales, p.ej: "
-        "'Me cuesta concentrarme cuando estoy muy excitado con algo.', 'Puedo rápidamente cambiar de una tarea a otra.', etc.\n"
+        "'Me cuesta concentrarme cuando estoy muy excitado con algo.', 'Puedo rápidamente cambiar de una tarea a otra.', etc."
     ),
 
     'descripcion_procedimiento2.1': (
-        "Para la primera prueba ANT (Atentional Network Test) la persona tiene que observar una serie de símbolos. "
+        "Siguientemente, se comienza la evaluación conductual con la prueba ANT (Atentional Network Test). Aquí la persona tiene que observar una serie de símbolos. "
         "Entre estos, una flecha central horizontal, ⬅ o ➡, de la cual el evaluado tiene que indicar el sentido hacia el que señala (izquierda o derecha). "
         "Sin embargo, esta flecha central se presenta precedida y continuada por otras 2 líneas a cada lado, que pueden ser: simples líneas rectas o flechas, en el mismo u opuesto sentido a la flecha central objetivo. "
         "Véase un ejemplo de estos posibles estímulos centrales en la siguiente imagen:"
@@ -76,24 +75,22 @@ PARRAFOS_FIJOS = {
         "engañosa, y la emisión de respuestas controlas frente la impulsividad. \n"
         "• Flexibilidad cognitiva. Relacionada con el cambio dinámico del foco atencional"
         "entre tareas. Mide la rapidez y eficacia con la que una persona es capaz de " 
-        "adaptarse a cambios en las reglas que definen la tarea y conducta a desempeñar. "
+        "adaptarse a cambios en las reglas que definen la tarea y conducta a desempeñar. \n"
         "• Memoria operativa. Necesario para realizar un procesamiento y respuesta breves ante momentos "
         "de gran cantidad de información y demanda cognitiva. Mide la cantidad de información que se puede "
-        "mantener consciente y analizar simultáneamente."
+        "mantener consciente y analizar simultáneamente. \n"
         "• Velocidad de procesamiento. Necesario para entender una tarea y dar respuesta con la mayor rapidez posible. "
-        " Se refiere al tiempo que se necesita para percibir, procesar y responder a la información. "
+        " Se refiere al tiempo que se necesita para percibir, procesar y responder a la información. \n"
         "•   Preferencia o tendencia por un estilo atencional de distribución paralela de la atención o de "
-        "cambio focal (switching atencional): "
+        "cambio focal (switching atencional): \n"
         "1. "
         "Un estilo de distribución paralela de la atención. "
         "En este patrón, el participante mantiene un reparto relativamente equilibrado y constante de los recursos "
-        "atencionales entre dos tareas simultáneas."
-        "2. 
+        "atencionales entre dos tareas simultáneas. \n"
+        "2. "
         "Estilo de cambio focal (switching atencional). "
         "En este patrón, cuando dos tareas concurren la atención se desplaza de forma asimétrica hacia el estímulo más saliente o urgente, "
-        "y retorna a la tarea más constante cuando la carga de trabajo y demanda cognitiva decrece. \n"
-        "• Hiperactividad. Grado de inquietud física y de movimiento innecesario durante la tarea."
-       
+        "y retorna a la tarea más constante cuando la carga de trabajo y demanda cognitiva decrece. \n"       
     ),
 
     'titulo_resultados': "Presentación de los resultados de {nombre_completo}",
@@ -122,9 +119,10 @@ PARRAFOS_FIJOS = {
 
     'titulo_DualTask': "Dual Task - prueba multitarea de atención dividida",
 
-    'introduccion_analisis_tareas_DualTask': "A continuación, nos centramos en el rendimiento pormenorizado de cada tarea por separado."
+    'introduccion_analisis_tareas_DualTask': "A continuación, nos centramos en el rendimiento pormenorizado de cada tarea por separado.",
 
     'título_sintesis_final': "Finalmente, a modo de síntensis revisamos el desempeño global y dimensional de las capacidades atencionales de {nombre}. A fin de señalar las posibles debilidades y fortalezas y áreas en las que cabe prestar más atención futura." 
+
  }
 
 
@@ -271,7 +269,7 @@ PARRAFO_CPT_TR = {
 
     'normal': """El número de elementos procesados se sitúa dentro de los valores esperables para su grupo normativo, indicando una velocidad de procesamiento adecuada, con un ritmo de trabajo ajustado a las demandas temporales de la tarea""",
     
-    'bajo y E normal o alto': """El bajo volumen de elementos procesados sugiere una velocidad de procesamiento reducida. {nombre} requiere de más tiempo de lo normal para procesar y discriminar la información. Esto puede incapacitar y emperorar el desempeño, especialmente ante tareas con limitación temporal o de desempeño rápido."""
+    'bajo y E normal o alto': """El bajo volumen de elementos procesados sugiere una velocidad de procesamiento reducida. {nombre} requiere de más tiempo de lo normal para procesar y discriminar la información. Esto puede incapacitar y emperorar el desempeño, especialmente ante tareas con limitación temporal o de desempeño rápido.""",
 # Álvaro. Necesidad calcular una PT de E
     'bajo y E bajo': """El bajo volumen de elementos procesados sugiere una velocidad de procesamiento reducida. Un vistazo al reducido número de errores cometidos (omisiones y comisiones en conjunto) señalan la prevalencia de un estilo atencional y de trabajo más reflexivo, ganando mayor precisión a costa de menor velocidad de respuesta. Aunque esto puede ser ventajoso para el desempeño de tareas más precisas, también puede suponer cierta desventaja ante tareas con limitación temporal y de desempeño rápido. No saber regular el estilo atencional más oportuno a las demandas de una tarea puede suponer una deficiencia atencional, y un problema solventable con entrenamiento."""
 }
@@ -306,16 +304,16 @@ PARRAFO_CPT_CON = {
 
 PARRAFO_CPT_VAR = {
 # Álvaro. Calcular presencia Fatiga o automatismo por prueba t entre el índice CON del primer y tercer tercio prueba? Necesidad baremar esta dif.?
-    ('alto', 'nada'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación constante y a una mayor facilidad para distraerse. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados."""
+    ('alto', 'nada'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación constante y a una mayor facilidad para distraerse. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados.""",
 
 # dentro de la condición VAR se tratan las condiciones 'Fatiga' y 'Automatizacion' si dif. sign. negativa o positiva respectivamente entre el primer (primeras 4 series) y tercer tercio (últimas 4 series) de la prueba.
-    ('alto', 'fatiga'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación y a una mayor facilidad para distraerse. En particular, aparece aquí cierto cansancio o fatiga con el transcurso de la tarea, ya que la serie de peor rendimiento se obtuvo más hacia el final de la tarea, en comparación con la de mayor rendimiento. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados."""
+    ('alto', 'fatiga'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación y a una mayor facilidad para distraerse. En particular, aparece aquí cierto cansancio o fatiga con el transcurso de la tarea, ya que la serie de peor rendimiento se obtuvo más hacia el final de la tarea, en comparación con la de mayor rendimiento. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados.""",
 
 # Si promedio CON 4 primeras series es 5 puntos mayor que promedio 4 últimas
-    ('alto', 'automatismo'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una notable capacidad para adaptarse y automatizar la ejecución a largo plazo."""
+    ('alto', 'automatismo'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una notable capacidad para adaptarse y automatizar la ejecución a largo plazo.""",
 
 # Si promedio CON 4 primeras series es 5 puntos menos que promedio 4 últimas
-    ('alto', 'dificultadinicial'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una dificultad inicial para asimilar y acomodarse rápidamente a la nueva tarea."""
+    ('alto', 'dificultadinicial'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una dificultad inicial para asimilar y acomodarse rápidamente a la nueva tarea.""",
 
     'normal': """ El último aspecto para mencionar es en relación a la curva de trabajo trazada en el perfil gráfico adjunto en este informe. Aquí se puede ver que el rendimiento de {nombre} durante la prueba ha resultado estable y consistente entre series. Esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales aquí evaluados resulta típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte o la aparición de cansancio, respectivamente, son menos probables.""",
 
