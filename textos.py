@@ -624,7 +624,7 @@ PARRAFOS_CONDICIONALES_OPCIONALES_DUALTASK = {
 
 # Este PARRAFO es opcional, condicional de si el rendimiento en C en T2 es normal o alto. En este caso elegir la opción impulsividad si TR_C es menor TR_A. Y elegir la opción distraibilidad si TR_C es mayor que TR_A. Si no hay una diferencia significativa entre TR_C y TR_A, no añadir este párrafo.
 PARRAFO_DUALTASK_final_dif_TR_A_y_C = {
-    'impulsividad':"""La precisión de {nombre} al emitir respuestas acertadas se ha visto perjudicado parece que en gran parte debido a la impulsividad. Esta representa otra área de la atención donde existe margen de mejora.  Y donde se recomiendan actividades de control atencional interno o voluntario. Por ejemplo, con ejercicios de mindfulness, o con la adopción mediante retroalimentación o instrucciones verbales de un estilo atencional y de trabajo más reflexivo, lento pero preciso.""",
+    'impulsividad':"""La precisión de {nombre} al emitir respuestas acertadas se ha visto perjudicado parece que en gran parte debido a la impulsividad. Esta representa otra área de la atención donde existe margen de mejora. Y donde se recomiendan actividades de control atencional interno o voluntario. Por ejemplo, con ejercicios de mindfulness, o con la adopción mediante retroalimentación o instrucciones verbales de un estilo atencional y de trabajo más reflexivo, lento pero preciso.""",
 
     'distraibilidad':"""Se ha registrado un deterioro en la precisión de respuesta en la tarea 2, debido a puntuales fallas de distraibilidad, y durante las cuales el procesamiento de la información de la tarea ha sido mínimo. Es importante valorar el grado de deterioro en el rendimiento de la tarea T2. Ya que de ser alto, esto significaría un problema de distraibilidad persistente y de importante interferencia en el adecuado desempeño atencional."""
     }
@@ -707,7 +707,6 @@ PARRAFO_sintesis_atencionsostenida = {
 
 }
 
-
 PARRAFO_sintesis_controlejecutivo = {
     # Si solo 1 o 2 de los 8 índices es desfavorable
     'poco malo':"""Con respecto al control ejecutivo (atención selectiva + control inhibitorio). El rendimiento ha sido normal en su mayoría, a excepción de algún caso puntual de rendimiento defiente: {tarea_deficit_controlejecutivo}. En general, {nombre} puede discriminar la información relevante e irrelevante e inhibir respuestas impulsivas de manera adecuada. Aunque debido bien al cansancio/saturación acumulado, o la dificultad de la tarea, puede eventualmente presentar dificultades para mantener una atención selectiva y control inhibitorio adecuado.""",
@@ -743,7 +742,6 @@ PARRAFO_sintesis_controlejecutivo = {
     'muy bueno':"""Con respecto al control ejecutivo (atención selectiva + control inhibitorio). El rendimiento ha sido excepcional. {nombre} tiene una capacidad muy por encima del promedio para discriminar la información relevante e irrelevante e inhibir las respuestas impulsivas. Esto es indicativo de altas capacidades.""",
 
 }
-
 
 PARRAFO_sintesis_flexibilidadcognitiva = {
 # Tono menos contundente (parece) porque esta dimensión se mide con un único índice.

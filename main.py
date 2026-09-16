@@ -26,7 +26,7 @@ def main():
     carpeta_informes = os.path.join(script_dir, "informes_generados")
     os.makedirs(carpeta_informes, exist_ok=True)
 
-    carpeta_pdf = os.path.join("C:\Users\Pablo\OneDrive\Escritorio\Informes ConCiencia\Atencional")
+    carpeta_pdf = os.path.join('C:/Users/Pablo/OneDrive/Escritorio/Informes ConCiencia/Atencional')
     os.makedirs(carpeta_pdf, exist_ok=True)
 
     print("=" * 70)
