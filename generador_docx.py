@@ -6,7 +6,13 @@ from __future__ import annotations
 import os
 from datetime import datetime
 from typing import Iterable, List, Optional
-
+import math
+import io
+import math
+import io
+from docx.oxml.ns import qn, nsdecls
+from docx.oxml import OxmlElement, parse_xml
+from PIL import Image, ImageDraw, ImageFont
 from docx import Document
 from docx.shared import Pt, Inches, RGBColor, Emu, Cm
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
