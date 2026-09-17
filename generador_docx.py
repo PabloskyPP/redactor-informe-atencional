@@ -17,6 +17,7 @@ from docx import Document
 from docx.shared import Pt, Inches, RGBColor, Emu, Cm
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from docx.enum.section import WD_ORIENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
@@ -330,10 +331,12 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     doc = Document()
 
     for section in doc.sections:
-        section.top_margin    = Inches(1)
-        section.bottom_margin = Inches(1)
-        section.left_margin   = Inches(1)
-        section.right_margin  = Inches(1)
+        section.orientation = WD_ORIENT.LANDSCAPE
+        section.page_width, section.page_height = section.page_height, section.page_width
+        section.top_margin    = Inches(0.5)
+        section.bottom_margin = Inches(0.5)
+        section.left_margin   = Inches(0.5)
+        section.right_margin  = Inches(0.5)
 
     nombre_completo = resultados.get('nombre_completo') or nombre_caso
     nombre          = resultados.get('nombre')          or nombre_caso
@@ -417,8 +420,14 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # Tabla PDs, PTs y clasificaciones
     tabla = doc.add_table(rows=2, cols=8)
 
-    # Aplicar estilo simple con bordes negros y encabezado con fondo gris claro
+    # Tabla unificada: cada prueba ocupa una fila y sus índices son párrafos
+    # dentro de las celdas, sin tablas anidadas.
     tabla.style = 'Table Grid'
+    tabla.autofit = False
+    anchos = [1.25, 1.1, 1.35, 1.75, 1.75, 1.4, 1.4, 1.9]
+    for fila in tabla.rows:
+        for indice, ancho in enumerate(anchos):
+            fila.cells[indice].width = Inches(ancho)
     
     # Aplicar fondo gris claro al encabezado (filas 0 y 1)
     for row_idx in [0, 1]:
@@ -478,9 +487,12 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
 
                 
     
-    # Agregar filas de datos
-    tabla.add_row()  # Fila 2 para ANT
-    tabla.add_row()  # Fila 3 para CPT
+    # Agregar una fila de datos para cada prueba disponible.
+    for _ in range(5):
+        tabla.add_row()
+    for fila in tabla.rows[2:]:
+        for indice, ancho in enumerate(anchos):
+            fila.cells[indice].width = Inches(ancho)
     
     # Función auxiliar para crear tabla anidada en celda [0]
     def _crear_tabla_anidada_prueba(celda_destino, nombre_prueba):
@@ -489,39 +501,12 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         - Izquierda: nombre de la prueba
         - Derecha: 3 filas con 'Índice', 'PD', 'Rendimiento'
         """
-        # Crear tabla anidada: 2 columnas x 3 filas
-        tabla_anidada = celda_destino.add_table(rows=3, cols=2)
-        tabla_anidada.style = 'Table Grid'
-        
-        # Columna izquierda: nombre de la prueba (mergear verticalmente)
-        for i in range(3):
-            tabla_anidada.rows[i].cells[0].text = nombre_prueba if i == 0 else ''
-        
-        # Mergear las celdas de la columna izquierda
-        cell_0_0 = tabla_anidada.rows[0].cells[0]._tc
-        tcPr = cell_0_0.get_or_add_tcPr()
-        vMerge = OxmlElement('w:vMerge')
-        vMerge.set(qn('w:val'), 'restart')
-        tcPr.append(vMerge)
-        
-        for i in range(1, 3):
-            cell_i_0 = tabla_anidada.rows[i].cells[0]._tc
-            tcPr = cell_i_0.get_or_add_tcPr()
-            vMerge = OxmlElement('w:vMerge')
-            tcPr.append(vMerge)
-        
-        # Columna derecha: Índice, PD, Rendimiento
-        tabla_anidada.rows[0].cells[1].text = 'Índice'
-        tabla_anidada.rows[1].cells[1].text = 'PD'
-        tabla_anidada.rows[2].cells[1].text = 'Rendimiento'
-        
-        # Centrar texto
-        for row in tabla_anidada.rows:
-            for cell in row.cells:
-                for para in cell.paragraphs:
-                    para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        
-        return tabla_anidada
+        celda_destino.text = str(nombre_prueba)
+        for para in celda_destino.paragraphs:
+            para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+            for run in para.runs:
+                run.bold = True
+        return celda_destino
     
     # Función auxiliar para llenar tabla anidada en celda de datos
     def _llenar_tabla_anidada_datos(celda_destino, nombre_indice, valor_pd, valor_rendimiento):
@@ -531,20 +516,16 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         - Fila 2: Valor PD
         - Fila 3: Valor Rendimiento
         """
-        tabla_anidada = celda_destino.add_table(rows=3, cols=1)
-        tabla_anidada.style = 'Table Grid'
-        
-        tabla_anidada.rows[0].cells[0].text = str(nombre_indice)
-        tabla_anidada.rows[1].cells[0].text = str(valor_pd)
-        tabla_anidada.rows[2].cells[0].text = str(valor_rendimiento)
-        
-        # Centrar texto
-        for row in tabla_anidada.rows:
-            for cell in row.cells:
-                for para in cell.paragraphs:
-                    para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        
-        return tabla_anidada
+        if celda_destino.paragraphs[0].text:
+            celda_destino.add_paragraph()
+        valores = (nombre_indice, valor_pd, valor_rendimiento)
+        for indice, valor in enumerate(valores):
+            para = celda_destino.paragraphs[0] if indice == 0 and not celda_destino.paragraphs[0].text else celda_destino.add_paragraph()
+            para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+            run = para.add_run(str(valor))
+            if indice == 0:
+                run.bold = True
+        return celda_destino
 
 
     # A continuación, se recupera una función eliminada en el último pull request que responde al formato de tabla correcto y deseado para el informe.
@@ -567,21 +548,15 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         if not indices_datos:
             return None
 
-        tabla_anidada = celda_destino.add_table(rows=3, cols=len(indices_datos))
-        tabla_anidada.style = 'Table Grid'
-        
-        for col_idx, (nombre_indice, valor_pd, valor_rendimiento) in enumerate(indices_datos):
-            tabla_anidada.rows[0].cells[col_idx].text = str(nombre_indice)
-            tabla_anidada.rows[1].cells[col_idx].text = str(valor_pd)
-            tabla_anidada.rows[2].cells[col_idx].text = str(valor_rendimiento)
-        
-        # Centrar texto en todas las celdas
-        for row in tabla_anidada.rows:
-            for cell in row.cells:
-                for para in cell.paragraphs:
-                    para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        
-        return tabla_anidada
+        for nombre_indice, valor_pd, valor_rendimiento in indices_datos:
+            if celda_destino.paragraphs[0].text:
+                para = celda_destino.add_paragraph()
+            else:
+                para = celda_destino.paragraphs[0]
+            para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+            run = para.add_run(f'{nombre_indice}: {valor_pd} | {valor_rendimiento}')
+            run.bold = True
+        return celda_destino
     
     # Asignación de contenido celdads para cada fila
 
@@ -739,7 +714,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     )
 
  # Fila 4: prueba FourFigures o FiveDigits, según la prueba que haya en el excel
-    row_cpt = tabla.rows[3].cells
+    row_cpt = tabla.rows[4].cells
     # Copilot. Añadir condicional a prueba recuperada del excel
     _crear_tabla_anidada_prueba(
         row_cpt[0],
@@ -794,7 +769,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     )
     
     # Centrar el texto en todas las celdas de datos
-    for row_idx in range(2, 4):
+    for row_idx in range(2, 7):
         for cell_idx in range(1, 8):  # Comenzar desde celda 1 (0 ya tiene tabla anidada)
             cell = tabla.rows[row_idx].cells[cell_idx]
             for paragraph in cell.paragraphs:
@@ -802,7 +777,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
 
 
     # Fila 5: prueba Dual-Task
-    row_cpt = tabla.rows[3].cells
+    row_cpt = tabla.rows[5].cells
     # Copilot. Añadir condicional
     _crear_tabla_anidada_prueba(row_cpt[0], 'Dual-Task')
     
@@ -864,7 +839,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
 
     
     # Fila 6: prueba DIgitsMemorization
-    row_cpt = tabla.rows[3].cells
+    row_cpt = tabla.rows[6].cells
     # Copilot. Añadir condicional
     _crear_tabla_anidada_prueba(row_cpt[0], 'Memorización de Dígitos')
     
@@ -914,9 +889,9 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # Columna 7: Velocidad de procesamiento
     _llenar_tabla_anidada_datos(
         row_cpt[7],
-        '',
-        '',
-        '',
+        '-',
+        '-',
+        '-',
     )
     
     # Pie de tabla con leyenda de siglas
