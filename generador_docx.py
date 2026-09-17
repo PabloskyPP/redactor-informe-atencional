@@ -376,7 +376,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     if _image_is_valid(imagen_ant):
         parrafo_imagen_ant = doc.add_paragraph()
         parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(4))
+        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
 
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento3.1'])
     imagen_ant = os.path.join(script_dir, 'imagenes', 'CPT estimulos.png')
@@ -418,13 +418,13 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # ========================================================================
     
     # Tabla PDs, PTs y clasificaciones
-    tabla = doc.add_table(rows=2, cols=8)
+    tabla = doc.add_table(rows=2, cols=9)
 
     # Tabla unificada: cada prueba ocupa una fila y sus índices son párrafos
     # dentro de las celdas, sin tablas anidadas.
     tabla.style = 'Table Grid'
     tabla.autofit = False
-    anchos = [1.25, 1.1, 1.35, 1.75, 1.75, 1.4, 1.4, 1.9]
+    anchos = [1.05, 0.8, 0.9, 1.15, 1.35, 1.35, 1.0, 1.0, 1.4]
     for fila in tabla.rows:
         for indice, ancho in enumerate(anchos):
             fila.cells[indice].width = Inches(ancho)
@@ -436,38 +436,40 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # ========== FILA 0: Encabezados principales ==========
     hdr_cells = tabla.rows[0].cells
-    hdr_cells[0].text = ''
-    hdr_cells[1].text = 'Arousal'
-    hdr_cells[2].text = 'Atención Sostenida'
-    hdr_cells[3].text = 'Control Ejecutivo'
-    hdr_cells[5].text = 'Flexibilidad Cognitiva'
-    hdr_cells[6].text = 'Memoria operativa'
-    hdr_cells[7].text = 'Velocidad de procesamiento'
+    hdr_cells[0].text = 'Prueba'
+    hdr_cells[1].text = ''
+    hdr_cells[2].text = 'Arousal'
+    hdr_cells[3].text = 'Atención Sostenida'
+    hdr_cells[4].text = 'Control Ejecutivo'
+    hdr_cells[6].text = 'Flexibilidad Cognitiva'
+    hdr_cells[7].text = 'Memoria operativa'
+    hdr_cells[8].text = 'Velocidad de procesamiento'
     
     # Hacer merge horizontal de las celdas 3 y 4 en la fila 0 para "Control Ejecutivo"
     # Usando vMerge para combinar con la fila siguiente
-    tcPr = hdr_cells[3]._element.get_or_add_tcPr()
+    tcPr = hdr_cells[4]._element.get_or_add_tcPr()
     tcMer = OxmlElement('w:gridSpan')
     tcMer.set(qn('w:val'), '2')
     tcPr.append(tcMer)
     
     # Eliminar el contenido de la celda 4 ya que está mergeada
-    hdr_cells[4].text = ''
+    hdr_cells[5].text = ''
     
     # ========== FILA 1: Subrencabezados para Control Ejecutivo ==========
     sub_hdr = tabla.rows[1].cells
     sub_hdr[0].text = ''
-    sub_hdr[1].text = ''
+    sub_hdr[1].text = 'Índice / PD / Rendimiento'
     sub_hdr[2].text = ''
-    sub_hdr[3].text = 'Atención Selectiva'
-    sub_hdr[4].text = 'Control Inhibitorio (impulsividad)'
-    sub_hdr[5].text = ''
+    sub_hdr[3].text = ''
+    sub_hdr[4].text = 'Atención Selectiva'
+    sub_hdr[5].text = 'Control Inhibitorio (impulsividad)'
     sub_hdr[6].text = ''
     sub_hdr[7].text = ''
+    sub_hdr[8].text = ''
     
     # Hacer merge vertical de las celdas que no tienen subrencabezados
     # Para las columnas: 1 (Arousal), 2 (Atención Sostenida), 5 (Flexibilidad), 6 (Memoria), 7 (Velocidad)
-    for col_idx in [1, 2, 5, 6, 7]:
+    for col_idx in [0, 2, 3, 6, 7, 8]:
         # Agregar vMerge restart a la fila 0
         tcPr_start = hdr_cells[col_idx]._element.get_or_add_tcPr()
         vMerge_start = OxmlElement('w:vMerge')
@@ -507,6 +509,30 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
             for run in para.runs:
                 run.bold = True
         return celda_destino
+
+    def _establecer_etiquetas(celda_destino):
+        celda_destino.text = ''
+        for indice, texto in enumerate(('Índice', 'PD', 'Rendimiento')):
+            para = celda_destino.paragraphs[0] if indice == 0 else celda_destino.add_paragraph()
+            para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+            run = para.add_run(texto)
+            run.bold = True
+            if indice < 2:
+                _borde_horizontal(para, color='808080')
+        return celda_destino
+
+    def _borde_horizontal(parrafo, color='B7B7B7', grosor='4'):
+        p_pr = parrafo._p.get_or_add_pPr()
+        p_borders = p_pr.find(qn('w:pBdr'))
+        if p_borders is None:
+            p_borders = OxmlElement('w:pBdr')
+            p_pr.append(p_borders)
+        bottom = OxmlElement('w:bottom')
+        bottom.set(qn('w:val'), 'single')
+        bottom.set(qn('w:sz'), grosor)
+        bottom.set(qn('w:space'), '1')
+        bottom.set(qn('w:color'), color)
+        p_borders.append(bottom)
     
     # Función auxiliar para llenar tabla anidada en celda de datos
     def _llenar_tabla_anidada_datos(celda_destino, nombre_indice, valor_pd, valor_rendimiento):
@@ -516,15 +542,15 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         - Fila 2: Valor PD
         - Fila 3: Valor Rendimiento
         """
-        if celda_destino.paragraphs[0].text:
-            celda_destino.add_paragraph()
-        valores = (nombre_indice, valor_pd, valor_rendimiento)
-        for indice, valor in enumerate(valores):
-            para = celda_destino.paragraphs[0] if indice == 0 and not celda_destino.paragraphs[0].text else celda_destino.add_paragraph()
+        celda_destino.text = ''
+        for indice, valor in enumerate((nombre_indice, valor_pd, valor_rendimiento)):
+            para = celda_destino.paragraphs[0] if indice == 0 else celda_destino.add_paragraph()
             para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
             run = para.add_run(str(valor))
             if indice == 0:
                 run.bold = True
+            if indice < 2:
+                _borde_horizontal(para)
         return celda_destino
 
 
@@ -546,16 +572,22 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         - Fila 2: Valores Rendimiento
         """
         if not indices_datos:
-            return None
+            indices_datos = [('-', '-', '-')]
 
-        for nombre_indice, valor_pd, valor_rendimiento in indices_datos:
-            if celda_destino.paragraphs[0].text:
-                para = celda_destino.add_paragraph()
-            else:
-                para = celda_destino.paragraphs[0]
+        celda_destino.text = ''
+        filas = [
+            ' | '.join(str(indice) for indice, _, _ in indices_datos),
+            ' | '.join(str(pd) for _, pd, _ in indices_datos),
+            ' | '.join(str(nivel) for _, _, nivel in indices_datos),
+        ]
+        for indice, valor in enumerate(filas):
+            para = celda_destino.paragraphs[0] if indice == 0 else celda_destino.add_paragraph()
             para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-            run = para.add_run(f'{nombre_indice}: {valor_pd} | {valor_rendimiento}')
-            run.bold = True
+            run = para.add_run(valor)
+            if indice == 0:
+                run.bold = True
+            if indice < 2:
+                _borde_horizontal(para)
         return celda_destino
     
     # Asignación de contenido celdads para cada fila
@@ -563,10 +595,11 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # Fila 2: prueba ANT
     row_ant = tabla.rows[2].cells
     _crear_tabla_anidada_prueba(row_ant[0], 'ANT')
+    _establecer_etiquetas(row_ant[1])
     
     # Columna 1: Arousal (Red de Alerta)
     _llenar_tabla_anidada_datos(
-        row_ant[1],
+        row_ant[2],
         'Red de Alerta',
         str(round(resultados.get('PD_ANT_TR_alerta', 0), 4)),
         str(clasificaciones.get('ANT_TR_alerta', '-'))
@@ -574,7 +607,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 2: Atención Sostenida - Múltiples índices (A y TR)
     _llenar_tabla_anidada_multiples_indices(
-        row_ant[2],
+        row_ant[3],
         [
          ('Dif. A* 1º vs 3º',
              str(round(resultados.get('PD_ANT_A_principio_vs_final', 0), 4)),
@@ -588,7 +621,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
 # Copilot. Los índices de C y Red ejecutiva son comunes a la atención selectiva y el control inhibitorio, anidar de esta manera dentro de la columna control ejecutivo.
     # Columna 3: Control Ejecutivo - Atención Selectiva - Múltiples índices (Red de orientación, C y Red ejecutiva)
     _llenar_tabla_anidada_multiples_indices(
-        row_ant[3],
+        row_ant[4],
         [
           ('Red de orientación',
              str(round(resultados.get('ANT_TR_orientacion', 0), 4)),
@@ -604,7 +637,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 4: Control Ejecutivo - Control Inhibitorio (vacío para ANT)
     _llenar_tabla_anidada_multiples_indices(
-        row_ant[4],
+        row_ant[5],
         [
          ('Dif. TR 1º vs 3º',
              str(round(resultados.get('PD_ANT_C', 0), 4)),
@@ -617,7 +650,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 5: Flexibilidad Cognitiva
     _llenar_tabla_anidada_datos(
-        row_ant[5],
+        row_ant[6],
         'Flexibilidad',
         str(resultados.get('PT_TR_alerta', 0)),
         '-'
@@ -625,7 +658,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 6: Memoria operativa
     _llenar_tabla_anidada_datos(
-        row_ant[6],
+        row_ant[7],
         'Memoria',
         str(resultados.get('PT_TR_orientacion', 0)),
         '-'
@@ -633,7 +666,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 7: Velocidad de procesamiento - Múltiples índices (O y TR)
     _llenar_tabla_anidada_multiples_indices(
-        row_ant[7],
+        row_ant[8],
         [
             ('O*',
              str(round(resultados.get('PD_ANT_O', 0), 4)),
@@ -651,10 +684,11 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         row_cpt[0],
         'D2' if 'D2' in resultados.get('available_tests', []) else 'CPT'
     )
+    _establecer_etiquetas(row_cpt[1])
     
     # Columna 1: Arousal
     _llenar_tabla_anidada_datos(
-        row_cpt[1],
+        row_cpt[2],
         'CON*',
         str(resultados.get('PD_CPT_CON', 0)),
         str(clasificaciones.get('CPT_CON', '-'))
@@ -662,7 +696,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 2: Atención Sostenida: VAR
     _llenar_tabla_anidada_multiples_indices(
-        row_cpt[2],
+        row_cpt[3],
         [
             (
                 'VAR*',
@@ -675,7 +709,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 3: Control ejecutivo - Atención Selectiva
     _llenar_tabla_anidada_datos(
-        row_cpt[3],
+        row_cpt[4],
         'O',
         str(round(resultados.get('PD_CPT_O', 0), 4)),
         str(clasificaciones.get('CPT_O', '-'))
@@ -683,7 +717,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 4: Control Ejecutivo - Control Inhibitorio (Fatiga A)
     _llenar_tabla_anidada_datos(
-        row_cpt[4],
+        row_cpt[5],
         'C*',
         str(resultados.get('PD_CPT_C', 0)),
         str(clasificaciones.get('CPT_C', '-'))
@@ -691,7 +725,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 5: Flexibilidad Cognitiva
     _llenar_tabla_anidada_datos(
-        row_cpt[5],
+        row_cpt[6],
         '',
         '',
         '',
@@ -699,7 +733,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 6: Memoria operativa
     _llenar_tabla_anidada_datos(
-        row_cpt[6],
+        row_cpt[7],
         '',
         '',
         '',
@@ -707,7 +741,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 7: Velocidad de procesamiento (R como número de elementos procesados, fijado en base al último elemento de la serie respondido)
     _llenar_tabla_anidada_datos(
-        row_cpt[7],
+        row_cpt[8],
         'R*',
         str(resultados.get('PD_CPT_R', 0)),
         str(clasificaciones.get('CPT_R', '-'))
@@ -720,10 +754,11 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         row_cpt[0],
         'FiveDigits' if 'FiveDigits' in resultados.get('available_tests', []) else 'FourFigures'
     )
+    _establecer_etiquetas(row_cpt[1])
     
     # Columna 1: Arousal
     _llenar_tabla_anidada_datos(
-        row_cpt[1],
+        row_cpt[2],
         'A',
         str(resultados.get('PD_FourFigures_A', 0)),
         str(clasificaciones.get('FourFIgures_A', '-'))
@@ -731,13 +766,13 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 2: Atención Sostenida: VAR
     _llenar_tabla_anidada_multiples_indices(
-        row_cpt[2],
+        row_cpt[3],
         [],
     )
     
     # Columna 3 y 4: Control ejecutivo
     _llenar_tabla_anidada_datos(
-        row_cpt[3],
+        row_cpt[4],
         'C',
         str(resultados.get('PD_FourFigures_C', 0)),
         str(clasificaciones.get('FourFIgures_C', '-'))
@@ -745,7 +780,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 5: Flexibilidad Cognitiva
     _llenar_tabla_anidada_datos(
-        row_cpt[5],
+        row_cpt[6],
         'Dif. A P4 obtenida vs esperada*',
         str(resultados.get('PD_FourFigures_Dif_A_P4', 0)),
         # Aquí alto y color verde si la diferencia es positiva, y rojo si es negativa. No color si normal
@@ -754,7 +789,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 6: Memoria operativa
     _llenar_tabla_anidada_datos(
-        row_cpt[6],
+        row_cpt[7],
         '',
         '',
         '',
@@ -762,7 +797,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 7: Velocidad de procesamiento (R como número de elementos procesados, fijado en base al último elemento de la serie respondido)
     _llenar_tabla_anidada_datos(
-        row_cpt[7],
+        row_cpt[8],
         'TR',
         str(resultados.get('PD_FourFigures_TR', 0)),
         str(clasificaciones.get('FourFigures_TR', '-'))
@@ -770,7 +805,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Centrar el texto en todas las celdas de datos
     for row_idx in range(2, 7):
-        for cell_idx in range(1, 8):  # Comenzar desde celda 1 (0 ya tiene tabla anidada)
+        for cell_idx in range(1, 9):
             cell = tabla.rows[row_idx].cells[cell_idx]
             for paragraph in cell.paragraphs:
                 paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
@@ -780,10 +815,11 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     row_cpt = tabla.rows[5].cells
     # Copilot. Añadir condicional
     _crear_tabla_anidada_prueba(row_cpt[0], 'Dual-Task')
+    _establecer_etiquetas(row_cpt[1])
     
     # Columna 1: Arousal
     _llenar_tabla_anidada_datos(
-        row_cpt[1],
+        row_cpt[2],
         'O',
         str(resultados.get('PD_DUALTASK_O', 0)),
         str(clasificaciones.get('DUALTAS_O', '-'))
@@ -791,7 +827,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 2: Atención Sostenida - Múltiples índices (PSV T2, A y TR T1)
     _llenar_tabla_anidada_multiples_indices(
-        row_cpt[2],
+        row_cpt[3],
         [
            ('Dif. PSV* 1º y 3º tercio',
              str(round(resultados.get('PD_DUALTASK_PSV', 0), 4)),
@@ -807,7 +843,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 3 y 4: Control ejecutivo
     _llenar_tabla_anidada_datos(
-        row_cpt[3],
+        row_cpt[4],
         'C',
         str(resultados.get('PD_DUALTASK_C', 0)),
         str(clasificaciones.get('DUALTASK_C', '-'))
@@ -815,7 +851,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 5: Flexibilidad Cognitiva
     _llenar_tabla_anidada_datos(
-        row_cpt[5],
+        row_cpt[6],
         '',
         '',
         '',
@@ -823,7 +859,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 6: Memoria operativa
     _llenar_tabla_anidada_datos(
-        row_cpt[6],
+        row_cpt[7],
         '',
         '',
         '',
@@ -831,7 +867,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 7: Velocidad de procesamiento
     _llenar_tabla_anidada_datos(
-        row_cpt[7],
+        row_cpt[8],
         'TR',
         str(resultados.get('PD_DUALTASK_TR', 0)),
         str(clasificaciones.get('DUALTASK_TR', '-'))
@@ -842,10 +878,11 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     row_cpt = tabla.rows[6].cells
     # Copilot. Añadir condicional
     _crear_tabla_anidada_prueba(row_cpt[0], 'Memorización de Dígitos')
+    _establecer_etiquetas(row_cpt[1])
     
     # Columna 1: Arousal
     _llenar_tabla_anidada_datos(
-        row_cpt[1],
+        row_cpt[2],
         '',
         '',
         '',
@@ -853,13 +890,13 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 2: Atención Sostenida
     _llenar_tabla_anidada_multiples_indices(
-        row_cpt[2],
+        row_cpt[3],
         [],
     )
     
     # Columna 3 y 4: Control ejecutivo
     _llenar_tabla_anidada_datos(
-        row_cpt[3],
+        row_cpt[4],
         '',
         '',
         '',
@@ -867,7 +904,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 5: Flexibilidad Cognitiva
     _llenar_tabla_anidada_datos(
-        row_cpt[5],
+        row_cpt[6],
         '',
         '',
         '',
@@ -875,7 +912,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 6: Memoria operativa - Múltiples Índices (PD_directo y PD_inverso)
     _llenar_tabla_anidada_multiples_indices(
-        row_cpt[6],
+        row_cpt[7],
         [
             ('PD directo*',
              str(round(resultados.get('PD_DigitsMemorization_directo', 0), 4)),
@@ -888,7 +925,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     
     # Columna 7: Velocidad de procesamiento
     _llenar_tabla_anidada_datos(
-        row_cpt[7],
+        row_cpt[8],
         '-',
         '-',
         '-',
