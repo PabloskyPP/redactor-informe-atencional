@@ -102,7 +102,7 @@ def main():
         if ok:
             print("    Gráfico CPT generado correctamente")
         else:
-            print("    Advertencia: gráfico Ikigai no generado (se omitirá en el DOCX)")
+            print("    Advertencia: gráfico CPT no generado (se omitirá en el DOCX)")
     except Exception as e:
         print(f"    Advertencia: {e}")
 

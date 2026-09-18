@@ -23,7 +23,7 @@ PARRAFOS_FIJOS = {
 
     'descripcion_procedimiento1.1': (
         "1) En primer lugar el cuestionario ACS. Al participante se le pide responder (Nada, Algo, Mucho) a un total de 20 preguntas breves vinculadas a diferentes habilidades o problemas atencionales, p.ej: "
-        "'Me cuesta concentrarme cuando estoy muy excitado con algo.', 'Puedo rápidamente cambiar de una tarea a otra.', etc."
+        "'Me cuesta concentrarme cuando estoy muy excitado con algo', o 'Puedo rápidamente cambiar de una tarea a otra'."
     ),
 
     'descripcion_procedimiento2.1': (
@@ -97,11 +97,11 @@ PARRAFOS_FIJOS = {
         "y retorna a la tarea más constante cuando la carga de trabajo y demanda cognitiva decrece. \n"       
     ),
 
-    'titulo_resultados': "Presentación de los resultados de {nombre_completo}",
+    'titulo_resultados': "Resumen del rendimiento y perfil atencional de {nombre_completo}",
 
     'texto_resultados': (
-        "A continuación se muestran los resultados de {nombre} a partir de un gráfico para "
-        "cada prueba y unos párrafos explicativos que integran y sintetizan los hallazgos obtenidos."
+        "A continuación se muestran los resultados de {nombre} mediante tablas, gráficos y "
+        "párrafos explicativos que integran y sintetizan los hallazgos obtenidos:"
     ),
 
     'titulo_resultados_generales': "En términos generales",
@@ -110,8 +110,6 @@ PARRAFOS_FIJOS = {
     'titulo_resultados_específicos': "Profundizando en cada prueba atencional",
 
     'titulo_ACS': "ACS - cuestionario de control atencional",
-
-    'texto_resultados_ACS': "Empezamos mostrando la percepción autodeclarada sobre las capacidades atencionales propias. A través del cuestionario ACS, {nombre} afirma tener la siguiente capacidad atencional:",
 
     'titulo_ANT': "ANT - prueba de eficiencia de redes neuronales atencionales",
 
@@ -125,7 +123,9 @@ PARRAFOS_FIJOS = {
 
     'introduccion_analisis_tareas_DualTask': "A continuación, nos centramos en el rendimiento pormenorizado de cada tarea por separado.",
 
-    'título_sintesis_final': "Finalmente, a modo de síntensis revisamos el desempeño global y dimensional de las capacidades atencionales de {nombre}. A fin de señalar las posibles debilidades y fortalezas y áreas en las que cabe prestar más atención futura." 
+    'titulo_sintesis_final': "Síntesis final y recomendaciones",
+
+    'introduccion_sintesis_final': "Finalmente, a modo de síntensis revisamos el desempeño global y dimensional de las capacidades atencionales de {nombre}. A fin de señalar las posibles debilidades y fortalezas y áreas en las que cabe prestar más atención futura." 
 
  }
 
@@ -138,11 +138,11 @@ PARRAFOS_FIJOS = {
 
 
 PARRAFO_ACS_atenciongeneral = {
-    'bajo':"""En general, una capacidad atencional baja, con dificultades para aislarse de distracciones y atender la tarea deseada.""",
+    'bajo':"""Empezamos mostrando la percepción autodeclarada sobre las capacidades atencionales propias. A través del cuestionario ACS, {nombre} afirma tener, en general, una capacidad atencional baja, con dificultades para aislarse de distracciones y atender la tarea deseada.""",
 
-    'normal':"""En general, una capacidad atencional adecuada. A excepción de algunas dificultades puntuales, se tiene capacidad para aislarse de distracciones y atender la tarea deseada.""",
+    'normal':"""Empezamos mostrando la percepción autodeclarada sobre las capacidades atencionales propias. A través del cuestionario ACS, {nombre} afirma tener, en general, una capacidad atencional adecuada. A excepción de algunas dificultades puntuales, se tiene capacidad para aislarse de distracciones y atender la tarea deseada.""",
 
-    'alto':"""En general, una capacidad atencional excelente. No se percibe ningún problema o dificultad para aislarse de las distracciones y atender una tarea o varias tareas al máximo.""",
+    'alto':"""Empezamos mostrando la percepción autodeclarada sobre las capacidades atencionales propias. A través del cuestionario ACS, {nombre} afirma tener, en general, una capacidad atencional excelente. No se percibe ningún problema o dificultad para aislarse de las distracciones y atender una tarea o varias tareas al máximo.""",
  }
 
 PARRAFO_ACS_foco = {
@@ -493,14 +493,11 @@ PARRAFO_DUALTASK_PSV_cuando_concurrencia = {
 
 
 PARRAFO_DUALTASK_PSV = {
-    'bajo':"""
-En la tarea 1 la precisión del seguimiento visomotor ha sido inferior al promedio; señalando así dificultades en las capacidades visomotoras y de movimiento fino. Esta habilidad es importante para la capacidad de seguir estímulos en movimiento y realizar movimientos coordinados ojo mano, tales como escribir, pintar o construir. Dificultades en esta dimensión representa una mayor probabilidad de presentar problemas de disgrafía.""",
+    'bajo':"""En la tarea 1 la precisión del seguimiento visomotor ha sido inferior al promedio; señalando así dificultades en las capacidades visomotoras y de movimiento fino. Esta habilidad es importante para la capacidad de seguir estímulos en movimiento y realizar movimientos coordinados ojo mano, tales como escribir, pintar o construir. Dificultades en esta dimensión representa una mayor probabilidad de presentar problemas de disgrafía.""",
 
-    'normal':""" 
-En la tarea 1 la precisión del seguimiento visomotor ha resultado normal, y tanto así las adecuadas capacidades visomotoras y de movimiento fino. Esta habilidad es importante para la capacidad de seguir estímulos en movimiento y realizar movimientos coordinados ojo mano, tales como escribir, pintar o construir.""",
+    'normal':"""En la tarea 1 la precisión del seguimiento visomotor ha resultado normal, y tanto así las adecuadas capacidades visomotoras y de movimiento fino. Esta habilidad es importante para la capacidad de seguir estímulos en movimiento y realizar movimientos coordinados ojo mano, tales como escribir, pintar o construir.""",
 
-    'alto':"""
-En la tarea 1 la precisión del seguimiento visomotor ha sido superior al promedio, y tanto así las sobresalientes capacidades visomotoras y de movimiento fino. Esta habilidad es importante para la capacidad de seguir estímulos en movimiento y realizar movimientos coordinados ojo mano, tales como escribir, pintar o construir.""",
+    'alto':"""En la tarea 1 la precisión del seguimiento visomotor ha sido superior al promedio, y tanto así las sobresalientes capacidades visomotoras y de movimiento fino. Esta habilidad es importante para la capacidad de seguir estímulos en movimiento y realizar movimientos coordinados ojo mano, tales como escribir, pintar o construir.""",
 }
 
 
@@ -561,8 +558,7 @@ PARRAFO_DUALTASK_Fatiga = {
     
     'no F':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. A lo cual, resulta que no se ha encontrado indicio de cansancio en ninguna de las dimensiones cognitivas y atencionales evaluada, lo que indica una buena resistencia y capacidad de atención cognitiva.""",
 
-    'F_PSV':"""Queda comparar el rendimiento de {nombre} hacia el  principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado indicios una rápida aparición cansancio y fatiga, consistente en un progresivo peor rendimiento en la precisión de seguimiento visomotor de la tarea 1. Es decir, dificultad para mantener la atención sostenida con el paso del tiempo.
-       """,
+    'F_PSV':"""Queda comparar el rendimiento de {nombre} hacia el  principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado indicios una rápida aparición cansancio y fatiga, consistente en un progresivo peor rendimiento en la precisión de seguimiento visomotor de la tarea 1. Es decir, dificultad para mantener la atención sostenida con el paso del tiempo.""",
     
     'F_A':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado indicios una rápida aparición de cansancio y fatiga, consistente en un progresivo peor rendimiento en la precisión en la tarea 2. Es decir, dificultad para mantener la capacidad de discriminar, atender y responder adecuadamente a la información relevante frente la irrelevante y engañosa.""",
 
@@ -866,18 +862,12 @@ PARRAFO_sintesis_final = {
 
 
 # Caso Normal: Máx 4 PT baja y/o otras 4 PTs altas de las 23 PTs
-    'normal':"""Finalmente, {nombre} ha mostrado un desempeño adecuado, sin deficiencia atencional alguna en cualquiera de las áreas evaluadas. 
-    Por lo tanto, no hay motivos para indagar más en estas habilidades neuropsicológicas de la atención y el procesamiento de información. 
-    Además queda obsoleta la necesidad de invertir en un refuerzo adicional de estas habilidades que de por si se ajustan a lo normal y esperable para una persona de su edad.""",
+    'normal':"""Finalmente, {nombre} ha mostrado un desempeño adecuado, sin deficiencia atencional alguna en cualquiera de las áreas evaluadas. Por lo tanto, no hay motivos para indagar más en estas habilidades neuropsicológicas de la atención y el procesamiento de información. Además queda obsoleta la necesidad de invertir en un refuerzo adicional de estas habilidades que de por si se ajustan a lo normal y esperable para una persona de su edad.""",
 
 # Caso Bueno: 5 o más PTs altas y no 1 o ninguna PT baja
-    'bueno':"""Finalmente, {nombre} ha mostrado desempeño adecuado, incluso por encima del promedio. El funcionamiento y capacidad atencional de {nombre} es sobresaliente. 
-     Un resultado tan positivo incluso puede ser señal de altas capacidades. Más evaluación al respecto es recomendable ya ante una condición de altas capacidades puede traer también 
-     problemas a futuro, tales como desinterés, desapetencia y falta de disciplina. Aunque detectado a tiempo puede ser una fortaleza a aprovechar.""",
+    'bueno':"""Finalmente, {nombre} ha mostrado desempeño adecuado, incluso por encima del promedio. El funcionamiento y capacidad atencional de {nombre} es sobresaliente. Un resultado tan positivo incluso puede ser señal de altas capacidades. Más evaluación al respecto es recomendable ya ante una condición de altas capacidades puede traer también problemas a futuro, tales como desinterés, desapetencia y falta de disciplina. Aunque detectado a tiempo puede ser una fortaleza a aprovechar.""",
 
 # Caso Muy Bueno: 10 o más PTs altas y no PTs baja
-    'muy bueno':"""Finalmente, el desempeño ha resultado muy por encima del promedio. El funcionamiento y capacidad atencional de {nombre} es escepcionalmente bueno. 
-     Este resultado señala que {nombre} tiene altas capacidades. Una evaluación y consideración especial de esta condición es recomendable, ya que en casos como este se avoga por un reacondicionamiento de 
-     la enseñanza recibida a la altura de sus capacidades. Esto a fin de aprovechar este potencial al máximo y evitar la aparición de factores perjudiciales en el aprendizaje, tales como desinterés, desapetencia y falta de disciplina.""",
+    'muy bueno':"""Finalmente, el desempeño ha resultado muy por encima del promedio. El funcionamiento y capacidad atencional de {nombre} es escepcionalmente bueno. Este resultado señala que {nombre} tiene altas capacidades. Una evaluación y consideración especial de esta condición es recomendable, ya que en casos como este se avoga por un reacondicionamiento de la enseñanza recibida a la altura de sus capacidades. Esto a fin de aprovechar este potencial al máximo y evitar la aparición de factores perjudiciales en el aprendizaje, tales como desinterés, desapetencia y falta de disciplina.""",
 
 }

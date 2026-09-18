@@ -295,7 +295,7 @@ def _calcular_ant(resultados: dict, datos: dict) -> None:
         _safe_mean(rt[df['cue'].astype(str).str.lower() == 'nocue']),
     )
     resultados['PD_ANT_TR_orientacion'] = _difference_or_none(
-        _safe_mean(rt[df['cue'].astype(str).str.lower() == 'center']),
+        _safe_mean(rt[df['cue'].astype(str).str.lower() == 'double']),
         _safe_mean(rt[df['cue'].astype(str).str.lower() == 'spatial']),
     )
     resultados['PD_ANT_TR_ejecutivo'] = _difference_or_none(
@@ -369,7 +369,7 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
     resultados['TR_min'] = int(min(tr_por_fila)) if tr_por_fila else 0
     resultados['VAR'] = resultados['TR_max'] - resultados['TR_min']
 
-    resultados['PD_CPT_TR'] = resultados['TR_total']
+    resultados['PD_CPT_N'] = resultados['TR_total']
     resultados['PD_CPT_A'] = resultados['TA_total']
     resultados['PD_CPT_O'] = resultados['O_total']
     resultados['PD_CPT_C'] = resultados['C_total']
@@ -382,6 +382,20 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
         float(sum(con_por_fila[:4]) / len(con_por_fila[:4])) - float(sum(con_por_fila[-4:]) / len(con_por_fila[-4:]))
         if len(con_por_fila) >= 4 else None
     )
+    if len(ta_por_fila) >= 2:
+        first_count = max(1, len(ta_por_fila) // 3)
+        last_count = max(1, len(ta_por_fila) // 3)
+        resultados['PD_CPT_A_principio_vs_final'] = _difference_or_none(
+            _safe_mean(pd.Series(ta_por_fila[-last_count:])),
+            _safe_mean(pd.Series(ta_por_fila[:first_count])),
+        )
+        resultados['PD_CPT_TR_principio_vs_final'] = _difference_or_none(
+            _safe_mean(pd.Series(tr_por_fila[-last_count:])),
+            _safe_mean(pd.Series(tr_por_fila[:first_count])),
+        )
+    else:
+        resultados['PD_CPT_A_principio_vs_final'] = None
+        resultados['PD_CPT_TR_principio_vs_final'] = None
 
     resultados['celdas_seleccionadas'] = {
         'seleccionadas': [
@@ -400,7 +414,7 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
             ('CPT_VAR', 'VAR', resultados['PD_CPT_VAR'], 'PT_CPT_VAR'),
             ('CPT_O', 'O', resultados['PD_CPT_O'], 'PT_CPT_O'),
             ('CPT_C', 'C', resultados['PD_CPT_C'], 'PT_CPT_C'),
-            ('CPT_TR', 'Elementos procesados', resultados['PD_CPT_TR'], 'PT_CPT_TR'),
+            ('CPT_N', 'Elementos procesados', resultados['PD_CPT_N'], 'PT_CPT_N'),
             ('CPT_TOT', 'TOT', resultados['PD_CPT_TOT'], 'PT_CPT_TOT'),
         ],
     )
@@ -468,7 +482,7 @@ def _calcular_digits(resultados: dict, datos: dict) -> None:
     resultados['PD_DigitsMemorization_inverso'] = inverso
     resultados['PD_DigitsMemorization_creciente'] = creciente
     resultados['PD_DigitsMemorization_total'] = directo + inverso + creciente
-    resultados['PD_DigitsMemorization_promedio'] = (directo + inverso + creciente) / 3
+    resultados['PD_Digits_Memorization_M'] = (directo + inverso + creciente) / 3
 
     _registrar_resultado_prueba(
         resultados,
@@ -478,7 +492,7 @@ def _calcular_digits(resultados: dict, datos: dict) -> None:
             ('DigitsMemorization_directo', 'Directo', directo, 'PT_DigitsMemorization_directo'),
             ('DigitsMemorization_inverso', 'Inverso', inverso, 'PT_DigitsMemorization_inverso'),
             ('DigitsMemorization_creciente', 'Creciente', creciente, 'PT_DigitsMemorization_creciente'),
-            ('DigitsMemorization_promedio', 'Promedio', resultados['PD_DigitsMemorization_promedio'], 'PT_DigitsMemorization_promedio'),
+            ('Digits_Memorization_M', 'M', resultados['PD_Digits_Memorization_M'], 'PT_Digits_Memorization_M'),
         ],
     )
 

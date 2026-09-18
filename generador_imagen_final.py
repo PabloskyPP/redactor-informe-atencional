@@ -451,7 +451,7 @@ def generar_desde_resultados(resultados, script_dir=None):
     if script_dir is None:
         script_dir = os.path.dirname(os.path.abspath(__file__))  # Obtener directorio del script actual
 
-    ruta_base = os.path.join(script_dir, 'grafico_CPT.png')  # Ruta de la imagen base
+    ruta_base = os.path.join(script_dir, 'imagenes', 'grafico_CPT.png')  # Ruta de la imagen base
     ruta_salida = os.path.join(script_dir, "grafico_CPT_final.png")  # Ruta de la imagen final
 
 

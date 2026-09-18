@@ -31,7 +31,7 @@ BAREMOS_PROVISIONALES: Dict[str, BaremoProvisional] = {
     'CPT_VAR': BaremoProvisional(0, 50, invertir=True),
     'CPT_O': BaremoProvisional(0, 120, invertir=True),
     'CPT_C': BaremoProvisional(0, 120, invertir=True),
-    'CPT_TR': BaremoProvisional(0, 658),
+    'CPT_N': BaremoProvisional(0, 658),
     'CPT_TOT': BaremoProvisional(-50, 658),
     'FourFigures_A': BaremoProvisional(0, 128),
     'FourFigures_C': BaremoProvisional(0, 32, invertir=True),
@@ -40,7 +40,7 @@ BAREMOS_PROVISIONALES: Dict[str, BaremoProvisional] = {
     'DigitsMemorization_directo': BaremoProvisional(0, 12),
     'DigitsMemorization_inverso': BaremoProvisional(0, 12),
     'DigitsMemorization_creciente': BaremoProvisional(0, 12),
-    'DigitsMemorization_promedio': BaremoProvisional(0, 12),
+    'Digits_Memorization_M': BaremoProvisional(0, 12),
     'DUALTASK_PSV': BaremoProvisional(0, 30, invertir=True),
     'DUALTASK_A': BaremoProvisional(0, 12),
     'DUALTASK_C': BaremoProvisional(0, 12, invertir=True),
@@ -138,6 +138,15 @@ def _clasificar_cpt_var(resultados: dict, clasificaciones: dict) -> None:
         clasificaciones['CPT_VAR_condicion'] = 'nada'
 
 
+def _clasificar_cpt_diferencias(resultados: dict, clasificaciones: dict) -> None:
+    clasificaciones['CPT_A_principio_vs_final'] = _clasificar_diferencia(
+        resultados.get('PD_CPT_A_principio_vs_final'), -0.1, 0.1
+    )
+    clasificaciones['CPT_TR_principio_vs_final'] = _clasificar_diferencia(
+        resultados.get('PD_CPT_TR_principio_vs_final'), -50, 50
+    )
+
+
 def _clasificar_dualtask(resultados: dict, clasificaciones: dict) -> None:
     psv = clasificaciones.get('DUALTASK_PSV', 'normal')
     a = clasificaciones.get('DUALTASK_A', 'normal')
@@ -200,6 +209,13 @@ def _clasificar_dualtask(resultados: dict, clasificaciones: dict) -> None:
             clasificaciones['DUALTASK_TR_A_vs_C'] = 'positivo'
         elif diff_tr < -0.03:
             clasificaciones['DUALTASK_TR_A_vs_C'] = 'negativo'
+
+    clasificaciones['DUALTASK_A_principio_vs_final'] = _clasificar_diferencia(
+        resultados.get('PD_DUALTASK_A_principio_vs_final'), -0.1, 0.1
+    )
+    clasificaciones['DUALTASK_PSV_principio_vs_final'] = _clasificar_diferencia(
+        resultados.get('PD_DUALTASK_PSV_principio_vs_final'), -2, 2
+    )
 
     fatiga_flags = []
     auto_flags = []
@@ -264,6 +280,7 @@ def obtener_puntuaciones(resultados):
     _clasificar_special_tr('DUALTASK', resultados, clasificaciones)
     _clasificar_ant_fatiga(resultados, clasificaciones)
     _clasificar_cpt_var(resultados, clasificaciones)
+    _clasificar_cpt_diferencias(resultados, clasificaciones)
     _clasificar_dualtask(resultados, clasificaciones)
 
     return clasificaciones

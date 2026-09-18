@@ -177,13 +177,14 @@ def crear_pdf_desde_imagen(ruta_imagen, ruta_pdf_salida):
 
 def insertar_imagen_en_pagina_3(ruta_pdf_original, ruta_imagen, ruta_pdf_salida):
     """
-    Inserta una imagen como página 3 en un PDF existente
+    Inserta una imagen como página 10 en un PDF existente.
     
     El resultado será:
     - Página 1: contenido original
     - Página 2: contenido original
-    - Página 3: imagen grafico_CPT_final
-    - Página 4+: resto del contenido original
+    - Páginas 3-9: contenido original
+    - Página 10: imagen grafico_CPT_final
+    - Página 11+: resto del contenido original
     
     Args:
         ruta_pdf_original: Ruta al PDF original (generado desde DOCX)
@@ -212,15 +213,15 @@ def insertar_imagen_en_pagina_3(ruta_pdf_original, ruta_imagen, ruta_pdf_salida)
         # Crear el PDF de salida
         escritor = PdfWriter()
         
-        # Copiar las primeras 2 páginas del PDF original
-        for i in range(min(2, num_paginas)):
+        # Copiar las primeras 9 páginas del PDF original.
+        for i in range(min(9, num_paginas)):  # Aquí se cambia inserción pág grafico_CPT
             escritor.add_page(lector_original.pages[i])
         
-        # Insertar la página con la imagen (página 3)
+        # Insertar la página con la imagen (página 10).
         escritor.add_page(pagina_imagen)
         
-        # Copiar el resto de las páginas del PDF original (desde la página 3 en adelante)
-        for i in range(2, num_paginas):
+        # Copiar el resto de las páginas originales (desde la página 10).
+        for i in range(9, num_paginas):      # También quí se cambia inserción pág grafico_CPT
             escritor.add_page(lector_original.pages[i])
         
         # Guardar el PDF final
@@ -236,7 +237,7 @@ def insertar_imagen_en_pagina_3(ruta_pdf_original, ruta_imagen, ruta_pdf_salida)
         return True
         
     except Exception as e:
-        print(f"Error al insertar imagen CPT en página 3: {e}")
+        print(f"Error al insertar imagen CPT en página 10: {e}")
         return False
 
 
@@ -286,7 +287,7 @@ def generar_pdf_desde_docx(ruta_docx, ruta_pdf=None, verbose=True):
                 ):
                     os.replace(ruta_pdf_con_imagen, ruta_pdf)
                 else:
-                    print("    Advertencia: no se pudo insertar el gráfico CPT en la página 3")
+                    print("    Advertencia: no se pudo insertar el gráfico CPT en la página 10")
             finally:
                 if os.path.exists(ruta_pdf_con_imagen):
                     os.unlink(ruta_pdf_con_imagen)

@@ -1,13 +1,14 @@
 import os
 import tempfile
 import unittest
+from datetime import datetime
 
 import pandas as pd
 from docx import Document
 from PIL import Image
-from pypdf import PdfReader
+from pypdf import PdfReader, PdfWriter
 
-from generador_docx import crear_informe_docx, guardar_informe
+from generador_docx import agregar_portada, crear_informe_docx, guardar_informe
 from generador_pdf import generar_pdf_desde_docx
 from lector_datos import calcular_puntuaciones_directas, leer_datos_excel
 from reglas_psicometricas import obtener_puntuaciones
@@ -139,6 +140,50 @@ class PipelineTests(unittest.TestCase):
                 self.assertTrue(self._pdf_has_xobject(os.path.join(tmpdir, 'solo_nombre.pdf')))
             finally:
                 os.chdir(cwd)
+
+    def test_formato_fecha_aplicacion_en_portada(self):
+        doc = Document()
+        agregar_portada(doc, 'Ana García', {'edad': 36, 'fecha_aplicacion': datetime(2024, 3, 5, 14, 30)})
+        texto = '\n'.join(p.text for p in doc.paragraphs)
+        self.assertIn('Fecha de aplicación: 05/03/2024 14:30', texto)
+        self.assertNotIn('2024-03-05 14:30', texto)
+
+    def test_leyenda_rendimiento_en_tabla(self):
+        datos = leer_datos_excel(SAMPLE_XLSX)
+        resultados = calcular_puntuaciones_directas(datos)
+        clasificaciones = obtener_puntuaciones(resultados)
+
+        doc = crear_informe_docx(resultados, clasificaciones, resultados['nombre_completo'], REPO_DIR)
+        textos = '\n'.join(p.text for p in doc.paragraphs)
+        self.assertIn('Rendimiento deficiente', textos)
+        self.assertIn('Rendimiento excelente', textos)
+        self.assertTrue(textos.count('■') >= 2)
+
+    def test_pdf_inserta_imagen_en_pagina_10(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ruta_original = os.path.join(tmpdir, 'original.pdf')
+            ruta_imagen = os.path.join(tmpdir, 'grafico_CPT_final.png')
+            ruta_final = os.path.join(tmpdir, 'final.pdf')
+
+            escritor = PdfWriter()
+            for _ in range(12):
+                escritor.add_blank_page(width=595, height=842)
+            with open(ruta_original, 'wb') as f:
+                escritor.write(f)
+
+            Image.new('RGB', (20, 20), 'white').save(ruta_imagen)
+
+            from generador_pdf import insertar_imagen_en_pagina_3
+            self.assertTrue(insertar_imagen_en_pagina_3(ruta_original, ruta_imagen, ruta_final))
+
+            paginas = PdfReader(ruta_final).pages
+            self.assertEqual(len(paginas), 13)
+            self.assertTrue(
+                paginas[9].get('/Resources') and paginas[9].get('/Resources').get('/XObject')
+            )
+            self.assertFalse(
+                paginas[2].get('/Resources') and paginas[2].get('/Resources').get('/XObject')
+            )
 
     def test_pdf_preserva_orden_basico_de_parrafos_y_tablas(self):
         with tempfile.TemporaryDirectory() as tmpdir:
