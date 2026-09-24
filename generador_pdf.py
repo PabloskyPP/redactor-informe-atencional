@@ -122,7 +122,7 @@ def convertir_docx_a_pdf(ruta_docx, ruta_pdf=None):
 
 
 
-def crear_pdf_desde_imagen(ruta_imagen, ruta_pdf_salida):
+def crear_pdf_desde_imagen(ruta_imagen, ruta_pdf_salida, orientacion='vertical', rotacion=0):
     """
     Crea un PDF con una sola página conteniendo la imagen
     
@@ -139,13 +139,20 @@ def crear_pdf_desde_imagen(ruta_imagen, ruta_pdf_salida):
         img_width, img_height = img.size
         
         # Calcular el tamaño de página A4 en puntos (1 punto = 1/72 pulgadas)
-        page_width, page_height = A4
+        if orientacion == 'horizontal':
+            page_width, page_height = A4[1], A4[0]
+        else:
+            page_width, page_height = A4
         
         # Calcular la escala para ajustar la imagen a la página manteniendo proporción
         # Dejar un pequeño margen
         margen = 20
-        escala_ancho = (page_width - 2 * margen) / img_width
-        escala_alto = (page_height - 2 * margen) / img_height
+        if rotacion % 180:
+            escala_ancho = (page_width - 2 * margen) / img_height
+            escala_alto = (page_height - 2 * margen) / img_width
+        else:
+            escala_ancho = (page_width - 2 * margen) / img_width
+            escala_alto = (page_height - 2 * margen) / img_height
         escala = min(escala_ancho, escala_alto)
         
         # Dimensiones finales de la imagen
@@ -157,14 +164,26 @@ def crear_pdf_desde_imagen(ruta_imagen, ruta_pdf_salida):
         y = (page_height - final_height) / 2
         
         # Crear el PDF con la imagen
-        c = canvas.Canvas(ruta_pdf_salida, pagesize=A4)
-        c.drawImage(
-            ruta_imagen,
-            x, y,
-            width=final_width,
-            height=final_height,
-            preserveAspectRatio=True
-        )
+        c = canvas.Canvas(ruta_pdf_salida, pagesize=(page_width, page_height))
+        if rotacion % 360:
+            c.translate(page_width / 2, page_height / 2)
+            c.rotate(rotacion)
+            c.drawImage(
+                ruta_imagen,
+                -final_height / 2,
+                -final_width / 2,
+                width=final_width,
+                height=final_height,
+                preserveAspectRatio=True,
+            )
+        else:
+            c.drawImage(
+                ruta_imagen,
+                x, y,
+                width=final_width,
+                height=final_height,
+                preserveAspectRatio=True,
+            )
         c.showPage()
         c.save()
         
@@ -203,7 +222,12 @@ def insertar_imagen_en_pagina_3(ruta_pdf_original, ruta_imagen, ruta_pdf_salida)
         with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp_file:
             pdf_imagen_temp = tmp_file.name
         
-        if not crear_pdf_desde_imagen(ruta_imagen, pdf_imagen_temp):
+        if not crear_pdf_desde_imagen(
+            ruta_imagen,
+            pdf_imagen_temp,
+            orientacion='horizontal',
+            rotacion=0,
+        ):
             return False
         
         # Leer el PDF con la imagen
@@ -214,14 +238,18 @@ def insertar_imagen_en_pagina_3(ruta_pdf_original, ruta_imagen, ruta_pdf_salida)
         escritor = PdfWriter()
         
         # Copiar las primeras 9 páginas del PDF original.
-        for i in range(min(9, num_paginas)):  # Aquí se cambia inserción pág grafico_CPT
+        for i in range(min(9, num_paginas)):
             escritor.add_page(lector_original.pages[i])
         
-        # Insertar la página con la imagen (página 10).
+        # Aplicar -90 grados a la página completa. pypdf representa -90 como
+        # 270 y conserva la imagen centrada dentro de la página.
+        pagina_imagen.rotate(270)
+
+        # Insertar la página horizontal con la imagen (página 10).
         escritor.add_page(pagina_imagen)
         
         # Copiar el resto de las páginas originales (desde la página 10).
-        for i in range(9, num_paginas):      # También quí se cambia inserción pág grafico_CPT
+        for i in range(9, num_paginas):
             escritor.add_page(lector_original.pages[i])
         
         # Guardar el PDF final

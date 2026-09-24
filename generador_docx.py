@@ -17,7 +17,7 @@ from docx import Document
 from docx.shared import Pt, Inches, RGBColor, Emu, Cm, Mm
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
-from docx.enum.section import WD_ORIENT
+from docx.enum.section import WD_ORIENT, WD_SECTION
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
@@ -398,10 +398,12 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # 2. DESCRIPCIÓN DE LA PRUEBA                                         #
     # ------------------------------------------------------------------ #
     _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_general_prueba'])
+    doc.add_paragraph()  # Espacio
     doc.add_paragraph(PARRAFOS_FIJOS['objetivo_prueba'].format(**fmt))
 
     doc.add_paragraph()
     _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_procedimiento'])
+    doc.add_paragraph()  # Espacio
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento0'])
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento1.1'])
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento2.1'])
@@ -418,6 +420,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
         parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
 
+    doc.add_page_break()
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento3.1'])
     imagen_ant = os.path.join(script_dir, 'imagenes', 'CPT estimulos.png')
     if _image_is_valid(imagen_ant):
@@ -426,7 +429,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
 
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento4.1'])
-    imagen_ant = os.path.join(script_dir, 'imagenes', 'FourFigures estimulos.png')
+    imagen_ant = os.path.join(script_dir, 'imagenes', 'NamingNumbers estimulos.png')
     if _image_is_valid(imagen_ant):
         parrafo_imagen_ant = doc.add_paragraph()
         parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
@@ -437,12 +440,20 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
 
     doc.add_page_break()
     _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_indices'])
+    doc.add_paragraph()  # Espacio
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_indices'].format(**fmt))
 
     # ------------------------------------------------------------------ #
     # 3. RESULTADOS                                                        #
     # ------------------------------------------------------------------ #
-    doc.add_page_break()
+    resultados_section = doc.add_section(WD_SECTION.NEW_PAGE)
+    resultados_section.orientation = WD_ORIENT.LANDSCAPE
+    resultados_section.page_width = Mm(297)
+    resultados_section.page_height = Mm(210)
+    resultados_section.top_margin = Inches(0.5)
+    resultados_section.bottom_margin = Inches(0.5)
+    resultados_section.left_margin = Inches(0.5)
+    resultados_section.right_margin = Inches(0.5)
 
 
     titulo_resumen = doc.add_paragraph()
@@ -453,6 +464,8 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     doc.add_paragraph()  # Espacio
 
     doc.add_paragraph(PARRAFOS_FIJOS['texto_resultados'].format(**fmt))
+    doc.add_paragraph()
+    doc.add_paragraph()
 
     # ========================================================================
     # INSERTAR Tabla resultados
@@ -465,6 +478,14 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         available_tests,
     )
 
+    texto_resultados_section = doc.add_section(WD_SECTION.NEW_PAGE)
+    texto_resultados_section.orientation = WD_ORIENT.PORTRAIT
+    texto_resultados_section.page_width = Mm(210)
+    texto_resultados_section.page_height = Mm(297)
+    texto_resultados_section.top_margin = Inches(0.5)
+    texto_resultados_section.bottom_margin = Inches(0.5)
+    texto_resultados_section.left_margin = Inches(0.5)
+    texto_resultados_section.right_margin = Inches(0.5)
 
     _add_textual_results_sections(doc, resultados, clasificaciones, nombre)
 
@@ -1039,7 +1060,6 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
     def subtitulo(texto):
         _add_bold_paragraph(doc, texto)
 
-    doc.add_page_break()
     titulo_resultados_especificos = doc.add_paragraph()
     titulo_resultados_especificos.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
     run = titulo_resultados_especificos.add_run(
