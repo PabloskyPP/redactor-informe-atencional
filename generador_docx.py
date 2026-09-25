@@ -4,6 +4,7 @@ Módulo para generar el informe atencional en formato DOCX.
 from __future__ import annotations
 
 import os
+import re
 from datetime import datetime
 from typing import Iterable, List, Optional
 import math
@@ -134,6 +135,19 @@ def _add_bold_paragraph(doc, text):
     run.bold = True
     return p
 
+
+def _add_markdown_paragraph(doc, text):
+    """Añade un párrafo convirtiendo los fragmentos **...** en negrita real."""
+    paragraph = doc.add_paragraph()
+    fragments = re.split(r'(\*\*.+?\*\*)', text)
+    for fragment in fragments:
+        if not fragment:
+            continue
+        bold = fragment.startswith('**') and fragment.endswith('**')
+        run = paragraph.add_run(fragment[2:-2] if bold else fragment)
+        run.bold = bold
+    return paragraph
+
 def _fmt(resultados, nombre):
     """Devuelve un dict de formato para .format() en los textos."""
     return {'nombre': nombre, 'nombre_completo': resultados.get('nombre_completo', nombre)}
@@ -153,7 +167,7 @@ def _add_group(doc, *text_items):
     """Añade múltiples textos opcionales como párrafos independientes."""
     texts = [t for t in text_items if t]
     for text in texts:
-        doc.add_paragraph(text)
+        _add_markdown_paragraph(doc, text)
 
 def _remove_table_borders(table):
     """Elimina todos los bordes visibles de una tabla."""
@@ -234,9 +248,9 @@ def _add_paragraph(doc: Document, text: Optional[str], **fmt) -> None:
     if not text:
         return
     try:
-        doc.add_paragraph(text.format(**fmt))
+        _add_markdown_paragraph(doc, text.format(**fmt))
     except KeyError:
-        doc.add_paragraph(text)
+        _add_markdown_paragraph(doc, text)
 
 
 def _safe_dict_text(diccionario: dict, key: Optional[str], fallback: Optional[str] = None) -> Optional[str]:
@@ -364,6 +378,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
     doc = Document()
+    doc.styles['Normal'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
 
     for section in doc.sections:
         section.orientation = WD_ORIENT.PORTRAIT
@@ -428,7 +443,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
         parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
 
-    doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento4.1'])
+    _add_markdown_paragraph(doc, PARRAFOS_FIJOS['descripcion_procedimiento4.1.2'])
     imagen_ant = os.path.join(script_dir, 'imagenes', 'NamingNumbers estimulos.png')
     if _image_is_valid(imagen_ant):
         parrafo_imagen_ant = doc.add_paragraph()
@@ -441,7 +456,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     doc.add_page_break()
     _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_indices'])
     doc.add_paragraph()  # Espacio
-    doc.add_paragraph(PARRAFOS_FIJOS['descripcion_indices'].format(**fmt))
+    _add_markdown_paragraph(doc, PARRAFOS_FIJOS['descripcion_indices'].format(**fmt))
 
     # ------------------------------------------------------------------ #
     # 3. RESULTADOS                                                        #

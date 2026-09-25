@@ -2,6 +2,20 @@
 Módulo con los textos para generar el informe vocacional.
 """
 
+import re
+
+
+def poner_en_negrita(texto, *palabras):
+    """Marca en negrita (Markdown) las palabras indicadas."""
+    for palabra in palabras:
+        texto = re.sub(
+            rf"(?<!\w)({re.escape(palabra)})(?!\w)",
+            r"**\1**",
+            texto,
+            flags=re.IGNORECASE,
+        )
+    return texto
+
 # ============================================================================
 # PÁRRAFOS FIJOS (siempre se incluyen)
 # ============================================================================
@@ -44,14 +58,26 @@ PARRAFOS_FIJOS = {
         "Estos elementos se muestran en fila intercalados por estímulos similares pero distractores que se tienen que ignorar. A continuación un ejemplo de fila en el que detectar estos estimulos objetivo entre otros engañosos o distractores:"
     ),
 
-        'descripcion_procedimiento4.1': (
-        "4) Le sigue la prueba FourFigures se presentan 4 series de estímulos uno por uno. "
-        "Cada estímulo se compone de una figura externa y una interna, las cuales pueden compartir o discrepar en su forma (cuadrado, círculo, triángulo y cruz). En algunas partes de la tarea se pregunta por la forma de la figura externa "
-        "y en otras por la de la figura interna. El participante tiene con la mayor rapidez y precisión posible señalar la forma de la figura por la que se está a preguntar en cada momento. Véase a continuación algunos ejemplos de estímulos:"
+        'descripcion_procedimiento4.1.1': (
+        poner_en_negrita(
+            "4) Le sigue la prueba FourFigures. Aquí se presentan 4 series de estímulos uno por uno. ",
+            "Cada estímulo se compone de una figura externa y una interna, las cuales pueden compartir o discrepar en su forma (cuadrado, círculo, triángulo y cruz). En algunas partes de la tarea se pregunta por la forma de la figura externa "
+            "y en otras por la de la figura interna. El participante tiene con la mayor rapidez y precisión posible señalar la forma de la figura por la que se está a preguntar en cada momento. Véase a continuación algunos ejemplos de estímulos:",
+            "prueba FourFigures",
+        )
+    ),
+
+        'descripcion_procedimiento4.1.2': (
+        poner_en_negrita(    
+        "4) Le sigue la prueba NamingNumbers. Aquí se presentan 4 series de estímulos uno por uno. "
+        "En la primera serie el estímulo consiste en un cuadrado entre 1 y 9 puntos dentro, los cuales hay que contar. En las siguientes partes, estos puntos cambian por cifras (1-9). La cifra a mostrar y el número de veces que se muestra difiere. En algunas partes se tiene que indicar la identidad de la cifra y en otras la cantidad de cifras mostradas."
+        " Véase a continuación algunos ejemplos de estímulos:",
+        "prueba NamingNumbers",
+        )
     ),
 
         'descripcion_procedimiento5.1': (
-        "5) La quinta prueba DigitsMemorization consiste en memorizar y repetir listas de números de longitud creciente (de 2 a 9 cifras) en un orden diferente en cada parte: directo, inverso o creciente."
+        "5) La quinta **prueba DigitsMemorization** consiste en memorizar y repetir listas de números de longitud creciente (de 2 a 9 cifras) en un orden diferente en cada parte: directo, inverso o creciente."
     ),
 
         'descripcion_procedimiento6.1': (
@@ -117,6 +143,8 @@ PARRAFOS_FIJOS = {
 
     'titulo_FourFigures': "Four Figures - prueba de control y flexibilidad cognitiva",
 
+    'titulo_NamingNumbers': "Naming Numbers - prueba de control y flexibilidad cognitiva",
+
     'titulo_DigitsMemorization': "Memorización de dígitos - prueba de memoria operativa",
 
     'titulo_DualTask': "Dual Task - prueba multitarea de atención dividida",
@@ -148,18 +176,18 @@ PARRAFO_ACS_atenciongeneral = {
 PARRAFO_ACS_foco = {
     'bajo':"""En particular, se detecta dificultad a la hora de concentrarse y desarrollar un estado de atención focalizada prolongado.""",
 
-    'normal':"""En particular, se detecta una adecuada capacidad para concentrarse y desarrollar un estado de atención focalizada prolongado.""",
+    'normal':"""En particular, se detecta una capacidad adecuada para concentrarse y desarrollar un estado de atención focalizada prolongado.""",
 
     'alto':"""En particular, se detecta una muy buena capacidad para concentrarse y desarrollar un estado de atención focalizada prolongado.""",
 
  }
 
 PARRAFO_ACS_cambio = {
-    'bajo':"""Y por otro lado, se señala dificultad para intercalar y dirigir la atención entre diferentes estímulos o tareas de manera voluntaria y eficiente.""",
+    'bajo':"""Por otro lado, se señala dificultad para intercalar y dirigir la atención entre diferentes estímulos o tareas de manera voluntaria y eficiente.""",
 
-    'normal':"""Y por otro lado, se señala una adecuada capacidad para intercalar y dirigir la atención entre diferentes estímulos o tareas de manera voluntaria y eficiente.""",
+    'normal':"""Por otro lado, se señala una capacidad adecuada para intercalar y dirigir la atención entre diferentes estímulos o tareas de manera voluntaria y eficiente.""",
 
-    'alto':"""Y por otro lado, se señala una gran facilidad para intercalar y dirigir la atención entre diferentes estímulos o tareas de manera voluntaria y eficiente.""",
+    'alto':"""Por otro lado, se señala una gran facilidad para intercalar y dirigir la atención entre diferentes estímulos o tareas de manera voluntaria y eficiente.""",
 
  }
 
@@ -373,7 +401,7 @@ PARRAFO_FourFigures_P4_A_obtenido_vs_esperado = {
 
 
 # ============================================================================
-# 3.3.2 FiveDigits
+# 3.3.2 FiveDigits cambiar a NamingNumbers
 # ============================================================================
 
 # TR - Velocidad de procesamiento

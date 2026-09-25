@@ -209,6 +209,7 @@ def insertar_imagen_en_pagina_3(ruta_pdf_original, ruta_imagen, ruta_pdf_salida)
         # Leer el PDF con la imagen
         lector_imagen = PdfReader(pdf_imagen_temp)
         pagina_imagen = lector_imagen.pages[0]
+        pagina_imagen.rotate(270)
         
         # Crear el PDF de salida
         escritor = PdfWriter()
