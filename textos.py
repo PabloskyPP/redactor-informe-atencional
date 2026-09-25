@@ -4,7 +4,7 @@ Módulo con los textos para generar el informe vocacional.
 
 import re
 
-
+# Añadir funcion markdown con párrafo a resaltar en docx
 def poner_en_negrita(texto, *palabras):
     """Marca en negrita (Markdown) las palabras indicadas."""
     for palabra in palabras:

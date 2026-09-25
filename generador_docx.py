@@ -443,7 +443,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
         parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
 
-    _add_markdown_paragraph(doc, PARRAFOS_FIJOS['descripcion_procedimiento4.1.2'])
+    _add_markdown_paragraph(doc, PARRAFOS_FIJOS['descripcion_procedimiento4.1.2'])  # alguna palabra en negrita
     imagen_ant = os.path.join(script_dir, 'imagenes', 'NamingNumbers estimulos.png')
     if _image_is_valid(imagen_ant):
         parrafo_imagen_ant = doc.add_paragraph()
