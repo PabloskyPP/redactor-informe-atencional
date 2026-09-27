@@ -24,15 +24,15 @@ BAREMOS_PROVISIONALES: Dict[str, BaremoProvisional] = {
     'ANT_O': BaremoProvisional(0, 20, invertir=True),
     'ANT_E': BaremoProvisional(0, 25, invertir=True),
     'ANT_TR': BaremoProvisional(250, 900, invertir=True),
-    'ANT_TR_alerta': BaremoProvisional(-50, 250, invertir=True),
-    'ANT_TR_orientacion': BaremoProvisional(-50, 250, invertir=True),
-    'ANT_TR_ejecutivo': BaremoProvisional(0, 350, invertir=True),
-    'CPT_CON': BaremoProvisional(-50, 100),
-    'CPT_VAR': BaremoProvisional(0, 50, invertir=True),
-    'CPT_O': BaremoProvisional(0, 120, invertir=True),
-    'CPT_C': BaremoProvisional(0, 120, invertir=True),
-    'CPT_N': BaremoProvisional(0, 658),
-    'CPT_TOT': BaremoProvisional(-50, 658),
+    'ANT_TR_alerta': BaremoProvisional(25, 50, invertir=True),
+    'ANT_TR_orientacion': BaremoProvisional(25, 50, invertir=True),
+    'ANT_TR_ejecutivo': BaremoProvisional(25, 50, invertir=True),
+    'CPT_CON': BaremoProvisional(4, 8),
+    'CPT_VAR': BaremoProvisional(0, 50, invertir=True), # VAR ¿qué índice baremado compara: N, TA, CON...?
+    'CPT_O': BaremoProvisional(2, 6, invertir=True),
+    'CPT_C': BaremoProvisional(3, 5, invertir=True),
+    'CPT_N': BaremoProvisional(68, 350),
+    'CPT_TOT': BaremoProvisional(60, 340),
     'FourFigures_A': BaremoProvisional(0, 128),
     'FourFigures_C': BaremoProvisional(0, 32, invertir=True),
     'FourFigures_TR': BaremoProvisional(500, 3500, invertir=True),
@@ -122,7 +122,17 @@ def _clasificar_ant_fatiga(resultados: dict, clasificaciones: dict) -> None:
     tr_nivel = _clasificar_diferencia(resultados.get('PD_ANT_TR_principio_vs_final'), -50, 50)
     clasificaciones['ANT_A_principio_vs_final'] = a_nivel
     clasificaciones['ANT_TR_principio_vs_final'] = tr_nivel
-    clasificaciones['ANT_F_texto'] = f'F_A {a_nivel} y F_TR {tr_nivel}'
+
+    nivel_a_texto = {'bajo': 'negativo', 'normal': 'no sign', 'alto': 'positivo'}
+    a_texto = nivel_a_texto[a_nivel]
+    tr_texto = nivel_a_texto[tr_nivel]
+    clave_texto = f'F_A {a_texto} y F_TR {tr_texto}'
+
+    if a_texto == 'positivo' and tr_texto == 'no sign':
+        if clasificaciones.get('ANT_TR') in ('bajo', 'normal'):
+            clave_texto += ' y TR bajo o normal'
+
+    clasificaciones['ANT_F_texto'] = clave_texto
 
 
 def _clasificar_cpt_var(resultados: dict, clasificaciones: dict) -> None:
@@ -133,7 +143,13 @@ def _clasificar_cpt_var(resultados: dict, clasificaciones: dict) -> None:
     if diff >= 5:
         clasificaciones['CPT_VAR_condicion'] = 'fatiga'
     elif diff <= -5:
-        clasificaciones['CPT_VAR_condicion'] = 'automatismo'
+        con_nivel = clasificaciones.get('CPT_CON')
+        if con_nivel in ('normal', 'alto'):
+            clasificaciones['CPT_VAR_condicion'] = 'automatismo'
+        elif con_nivel == 'bajo':
+            clasificaciones['CPT_VAR_condicion'] = 'dificultadinicial'
+        else:
+            clasificaciones['CPT_VAR_condicion'] = 'nada'
     else:
         clasificaciones['CPT_VAR_condicion'] = 'nada'
 
@@ -146,12 +162,32 @@ def _clasificar_cpt_diferencias(resultados: dict, clasificaciones: dict) -> None
         resultados.get('PD_CPT_TR_principio_vs_final'), -50, 50
     )
 
+# Si tal añadir una función con algún índices o pruebas ()
+def _clasificar_omisiones(resultados: dict, clasificaciones: dict) -> None:
+    limites = {
+        'ANT_O': (1, 4),
+        'CPT_O': (3, 5),
+        'DUALTASK_O': (1, 3),
+    }
+    for clave, (max_bajo, max_normal) in limites.items():
+        valor = resultados.get(f'PD_{clave}')
+        if valor is None:
+            clasificaciones[clave] = 'N/D'
+        elif valor <= max_bajo:
+            clasificaciones[clave] = 'alto'
+        elif valor <= max_normal:
+            clasificaciones[clave] = 'normal'
+        else:
+            clasificaciones[clave] = 'bajo'
+
 
 def _clasificar_dualtask(resultados: dict, clasificaciones: dict) -> None:
     psv = clasificaciones.get('DUALTASK_PSV', 'normal')
     a = clasificaciones.get('DUALTASK_A', 'normal')
     c = clasificaciones.get('DUALTASK_C', 'normal')
-    o = clasificaciones.get('DUALTASK_O', 'normal')
+    o = {'bajo': 'alto', 'normal': 'normal', 'alto': 'bajo'}.get(
+        clasificaciones.get('DUALTASK_O', 'normal'), 'normal'
+    )
     tr = clasificaciones.get('DUALTASK_TR', 'normal')
 
     psv_num = _nivel_a_numero(psv)
@@ -281,6 +317,7 @@ def obtener_puntuaciones(resultados):
     _clasificar_ant_fatiga(resultados, clasificaciones)
     _clasificar_cpt_var(resultados, clasificaciones)
     _clasificar_cpt_diferencias(resultados, clasificaciones)
+    _clasificar_omisiones(resultados, clasificaciones)
     _clasificar_dualtask(resultados, clasificaciones)
 
     return clasificaciones

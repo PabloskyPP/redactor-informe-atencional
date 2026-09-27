@@ -36,15 +36,21 @@ PARRAFOS_FIJOS = {
     ),
 
     'descripcion_procedimiento1.1': (
+    poner_en_negrita(
         "1) En primer lugar el cuestionario ACS. Al participante se le pide responder (Nada, Algo, Mucho) a un total de 20 preguntas breves vinculadas a diferentes habilidades o problemas atencionales, p.ej: "
-        "'Me cuesta concentrarme cuando estoy muy excitado con algo', o 'Puedo rápidamente cambiar de una tarea a otra'."
+        "'Me cuesta concentrarme cuando estoy muy excitado con algo', o 'Puedo rápidamente cambiar de una tarea a otra'.",
+        "cuestionario ACS",
+        )
     ),
 
     'descripcion_procedimiento2.1': (
+    poner_en_negrita(
         "2) Seguidamente, se comienza la evaluación conductual con la prueba ANT (Atentional Network Test). Aquí la persona tiene que observar una serie de símbolos. "
         "Entre estos, una flecha central horizontal, ⬅ o ➡, de la cual el evaluado tiene que indicar el sentido hacia el que señala (izquierda o derecha). "
         "Sin embargo, esta flecha central se presenta precedida y continuada por otras 2 líneas a cada lado, que pueden ser: simples líneas rectas o flechas, en el mismo u opuesto sentido a la flecha central objetivo. "
-        "Véase un ejemplo de estos posibles estímulos centrales en la siguiente imagen:"
+        "Véase un ejemplo de estos posibles estímulos centrales en la siguiente imagen:",
+        "prueba ANT",
+        )
     ),
 
     'descripcion_procedimiento2.2': (
@@ -54,13 +60,16 @@ PARRAFOS_FIJOS = {
     ),
 
         'descripcion_procedimiento3.1': (
-        "3) En la siguiente prueba CPT (Continuous Performance Test) la persona tiene que en un tiempo límite señalar el mayor número de elementos objetivo posible (letras 9 con dos puntos, ni uno más ni uno menos: bien arriba, abajo, o 1 arriba y 1 abajo). "
-        "Estos elementos se muestran en fila intercalados por estímulos similares pero distractores que se tienen que ignorar. A continuación un ejemplo de fila en el que detectar estos estimulos objetivo entre otros engañosos o distractores:"
+        poner_en_negrita(
+            "3) En la siguiente prueba CPT (Continuous Performance Test) la persona tiene que en un tiempo límite señalar el mayor número de elementos objetivo posible (letras 9 con dos puntos, ni uno más ni uno menos: bien arriba, abajo, o 1 arriba y 1 abajo). "
+            "Estos elementos se muestran en fila intercalados por estímulos similares pero distractores que se tienen que ignorar. A continuación un ejemplo de fila en el que detectar estos estimulos objetivo entre otros engañosos o distractores:",
+            "prueba CPT",       
+        )    
     ),
 
         'descripcion_procedimiento4.1.1': (
         poner_en_negrita(
-            "4) Le sigue la prueba FourFigures. Aquí se presentan 4 series de estímulos uno por uno. ",
+            "4) Le sigue la prueba FourFigures. Aquí se presentan 4 series de estímulos uno por uno. "
             "Cada estímulo se compone de una figura externa y una interna, las cuales pueden compartir o discrepar en su forma (cuadrado, círculo, triángulo y cruz). En algunas partes de la tarea se pregunta por la forma de la figura externa "
             "y en otras por la de la figura interna. El participante tiene con la mayor rapidez y precisión posible señalar la forma de la figura por la que se está a preguntar en cada momento. Véase a continuación algunos ejemplos de estímulos:",
             "prueba FourFigures",
@@ -69,21 +78,27 @@ PARRAFOS_FIJOS = {
 
         'descripcion_procedimiento4.1.2': (
         poner_en_negrita(    
-        "4) Le sigue la prueba NamingNumbers. Aquí se presentan 4 series de estímulos uno por uno. "
-        "En la primera serie el estímulo consiste en un cuadrado entre 1 y 9 puntos dentro, los cuales hay que contar. En las siguientes partes, estos puntos cambian por cifras (1-9). La cifra a mostrar y el número de veces que se muestra difiere. En algunas partes se tiene que indicar la identidad de la cifra y en otras la cantidad de cifras mostradas."
-        " Véase a continuación algunos ejemplos de estímulos:",
-        "prueba NamingNumbers",
+            "4) Le sigue la prueba NamingNumbers. Aquí se presentan 4 series de estímulos uno por uno. "
+            "En la primera serie el estímulo consiste en un cuadrado entre 1 y 9 puntos dentro, los cuales hay que contar. En las siguientes partes, estos puntos cambian por cifras (1-9). La cifra a mostrar y el número de veces que se muestra difiere. En algunas partes se tiene que indicar la identidad de la cifra y en otras la cantidad de cifras mostradas."
+            " Véase a continuación algunos ejemplos de estímulos:",
+            "prueba NamingNumbers",
         )
     ),
 
         'descripcion_procedimiento5.1': (
-        "5) La quinta **prueba DigitsMemorization** consiste en memorizar y repetir listas de números de longitud creciente (de 2 a 9 cifras) en un orden diferente en cada parte: directo, inverso o creciente."
+        poner_en_negrita(
+            "5) La quinta prueba DigitsMemorization consiste en memorizar y repetir listas de números de longitud creciente (de 2 a 9 cifras) en un orden diferente en cada parte: directo, inverso o creciente.",
+            "prueba DigitsMemorization",
+        )
     ),
 
         'descripcion_procedimiento6.1': (
-        "6) Por último, la prueba DUAL-TASK demanda realizar dos tareas simultáneamente. Por un lado, una tarea constante de seguimiento de un punto en movimiento con el cursor del ratón. "
-        "Por otro lado, una tarea intermitente de detección de estímulos objetivo frente distractores. Esto es, que además del cursor a seguir, en la pantalla eventualemente aparecen otros dos estímulos: un cuadrado rojo o azul. "
-        "Además de mover el ratón para seguir el punto la persona debe de hacer clic izquierdo cada vez que en pantalla aparece el cuadrado rojo, y evitar pulsarlo cuando el cuadrado es azul."
+        poner_en_negrita(
+            "6) Por último, la prueba DualTask demanda realizar dos tareas simultáneamente. Por un lado, una tarea constante de seguimiento de un punto en movimiento con el cursor del ratón. "
+            "Por otro lado, una tarea intermitente de detección de estímulos objetivo frente distractores. Esto es, que además del cursor a seguir, en la pantalla eventualemente aparecen otros dos estímulos: un cuadrado rojo o azul. "
+            "Además de mover el ratón para seguir el punto la persona debe de hacer clic izquierdo cada vez que en pantalla aparece el cuadrado rojo, y evitar pulsarlo cuando el cuadrado es azul.",
+            "prueba DualTask",
+        )
     ),
 
 
@@ -91,7 +106,7 @@ PARRAFOS_FIJOS = {
     'titulo_indices': "3. Índices que se obtienen.",
 
     'descripcion_indices': (
-        " El desempeño conjunto en todas las tareas permite evaluar con gran consistencia todas las diferentes dimensiones de la atención. \n"
+        " El desempeño conjunto en todas las tareas permite evaluar con gran consistencia todas las diferentes dimensiones de la atención.\n"
         "   • **Arousal (grado de activación)**. Nesario para mantener un estado despierto y capacidad de atención consciente. "
         "Mide el estado de vigilia o de activación/atención en general. \n"
         "   • **Atención sostenida**. Necesaria para mantener el rendimiento durante toda la duración de la "
@@ -99,7 +114,8 @@ PARRAFOS_FIJOS = {
         "largo del tiempo. \n"
         "   • **Atención selectiva**. Requerida para distinguir estímulos señal de "
         "distractores. Mide la capacidad de la persona para identificar y atender únicamente a la "
-        "información relevante para la tarea, e ignorar la información distractora y engañosa. \n"
+        "información relevante para la tarea, e ignorar la información "
+        "distractora y engañosa. \n"
         "   • **Control ejecutivo**. Relacionado con el control voluntario y dirigido de la atención y la "
         "conducta. Mide la capacidad de la persona para inhibir la información irrelevante y "
         "engañosa, y la emisión de respuestas controlas frente la impulsividad. \n"
@@ -200,92 +216,94 @@ PARRAFO_ACS_cambio = {
 
 PARRAFO_ANT_TR = {
 
-    'TR bajo y C alto':"""En primer lugar, {nombre} muestra un tiempo de respuesta rápido, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad. Aunque esto pueda parecer una fortaleza a primeras, cuando revisamos la precisión de estas respuestas vemos que muchas son erróneas. Esto significa entonces un elevado grado de impulsividad, donde {nombre} prioriza velocidad antes que precisión.""",
+    'TR alto y C bajo':"""En primer lugar, {nombre} muestra un tiempo de respuesta rápido, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad. Aunque esto pueda parecer una fortaleza a primeras, cuando revisamos la precisión de estas respuestas vemos que muchas son erróneas. Esto significa entonces un elevado grado de impulsividad, donde {nombre} prioriza velocidad antes que precisión.""",
 
-    'TR bajo y C bajo o normal':"""En primer lugar, {nombre} muestra un tiempo de respuesta rápido, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad.""",
+    'TR alto y C alto o normal':"""En primer lugar, {nombre} muestra un tiempo de respuesta rápido, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad.""",
 
     'TR normal y C normal o alto':"""En primer lugar, {nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad.""",
 
     'TR normal y C bajo':"""En primer lugar, {nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad. Además un breve vistazo al número de comisiones durante la tarea nos muestra la excelente precisión de {nombre} durante la tarea. Ambos índices parecen señalar dos cosas: una sobrada capacidad para procesar esta tarea y otras más difíciles en un tiempo de respuesta adecuado. Y la posible preferencia por un estilo atencional más reflexivo, que prioriza precisión ante velocidad de respuesta.""",
     
-    'TR alto':"""En primer lugar, {nombre} muestra un tiempo de respuesta lento, lo que indica una velocidad de procesamiento de la información y toma de decisiones inferior a la media para su edad. Esto puede deberse a dos cosas. Debido a un déficit en el procesamiento, necesidad de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. Y a la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
+    'TR bajo':"""En primer lugar, {nombre} muestra un tiempo de respuesta lento, lo que indica una velocidad de procesamiento de la información y toma de decisiones significativamente por debajo del promedio. Esto puede deberse a dos cosas. Debido a un déficit en el procesamiento, necesidad de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. Y a la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
 }
 
 PARRAFO_ANT_A = {
 
-    'A bajo':"""{nombre} muestra un porcentaje de aciertos bajo, lo que indica complicaciones para completar eficientemente la tarea presentada. Según este resultado, la capacidad atencional general resulta inferior a la media para su edad.""",
+    'A bajo':"""{nombre} muestra un porcentaje de aciertos bajo, lo que indica complicaciones para completar eficientemente la tarea presentada. Según este resultado, la capacidad atencional general parece ser inferior a la media para su edad.""",
 
-    'A normal':"""{nombre} muestra un porcentaje de aciertos normal, lo que indica una capacidad atencional general adecuada a la esperada para su edad.""",
+    'A normal':"""{nombre} muestra un porcentaje de aciertos normal, lo que parece indicar una capacidad atencional general adecuada a la esperada para su edad.""",
     
-    'A alto':"""{nombre} muestra un porcentaje de aciertos alto, lo que indica una capacidad atencional general superior a la media para su edad.""",
+    'A alto':"""{nombre} muestra un porcentaje de aciertos alto, lo que parece indicar una capacidad atencional general superior a la media para su edad.""",
 }
 
 PARRAFO_ANT_C = {
 
-    'C bajo y TR bajo o normal':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad.""",
+    'C alto y TR bajo o normal':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad.""",
 
-    'C bajo y TR alto':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad. Por otro lado, {nombre} tarda más de lo normal o esperado en emitir sus respuestas. Ambos índices parecen señalar la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
+    'C alto y TR bajo':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad. Por otro lado, {nombre} tarda más de lo normal o esperado en emitir sus respuestas. Ambos índices parecen señalar la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
 
     'C normal':"""Respecto al número de errores de comisión, este fue normal, lo que señala que emite un número de respuestas erróneas igual a lo esperado para su edad. Este resultado señala, a la hora de tomar decisiones, una capacidad adecuada para discriminar la información de manera eficiente y un nivel de impulsividad igual al esperado para su edad.""",
 # Álvaro. En estos dos siguientes párrafos se necesita una dif sign? O dif mínima es suficiente asumiendo una H muy intuitiva de que E impulsiva menor TR y E def. discriminatorio mayor TR. Si necesidad sign.
-    'C alto y TR bajo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. De nuevo, considerando el escepcionalmente rápido tiempo de respuesta vemos que estas comisiones corresponden con respuestas más impulsivas, más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
+    'C bajo y TR alto':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. De nuevo, considerando el escepcionalmente rápido tiempo de respuesta vemos que estas comisiones corresponden con respuestas más impulsivas, más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
 
-    'C alto y TR normal o alto':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. De nuevo considerando el tiempo de respuesta, vemos que estos errores acontecen a una velocidad normal o incluso retardada de la respuesta. Esto sugiere que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
+    'C bajo y TR normal o bajo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. De nuevo considerando el tiempo de respuesta, vemos que estos errores acontecen a una velocidad normal o incluso retardada de la respuesta. Esto sugiere que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
 
 }
 
 PARRAFO_ANT_O = {
-    'O bajo':"""{nombre} presenta un número de errores de omisión bajo, lo que señala que pocas veces no ha respondido cuando debería. Este resultado señala una velocidad de procesamiento de la información y de toma de decisiones bien ajustada a la exigencia temporal de la tarea. Otra explicación puede ser debido a una capacidad superior al promedio para mantener la atención sostenida a lo largo de toda la tarea, sin distraerse o fatigarse, de manera que se dificulte dar una respuesta en los momentos oportunos.""",
+    'O alto':"""{nombre} presenta un número de errores de omisión bajo, lo que señala que pocas veces no ha respondido cuando debería. Este resultado señala una velocidad de procesamiento de la información y de toma de decisiones bien ajustada a la exigencia temporal de la tarea. Otra explicación puede ser debido a una capacidad superior al promedio para mantener la atención sostenida a lo largo de toda la tarea, sin distraerse o fatigarse, de manera que se dificulte dar una respuesta en los momentos oportunos.""",
 
     'O normal':"""{nombre} presenta un número de errores de omisión normal, lo que señala que no ha respondido cuando debería un número de veces igual a lo esperado para su edad. Este resultado señala una velocidad de procesamiento de la información y toma de decisiones adecuada a la exigencia temporal de la tarea. Este índice también puede señalar una capacidad adecuada para mantener la atención sostenida a lo largo de toda la tarea, sin distraerse o fatigarse demasiado, de manera que se dificulte dar una respuesta en los momentos oportunos.""",
     
-    'O alto':"""{nombre} presenta un número de errores de omisión alto, lo que señala que no ha respondido cuando debería un número de veces superior a lo esperado para su edad. Este resultado señala una velocidad de procesamiento de la información y toma de decisiones demasiado lenta para la exigencia temporal de la tarea. Otra explicación puede ser debido a una capacidad inferior al promedio para mantener la atención sostenida a lo largo de toda la tarea. Con tendencia a distraerse o fatigarse, lo que le dificulta dar una respuesta en los momentos oportunos.""",
+    'O bajo':"""{nombre} presenta un número de errores de omisión alto, lo que señala que no ha respondido cuando debería un número de veces superior a lo esperado para su edad. Este resultado señala una velocidad de procesamiento de la información y toma de decisiones demasiado lenta para la exigencia temporal de la tarea. Otra explicación puede ser debido a una capacidad inferior al promedio para mantener la atención sostenida a lo largo de toda la tarea. Con tendencia a distraerse o fatigarse, lo que le dificulta dar una respuesta en los momentos oportunos.""",
 }
 
 PARRAFO_ANT_F = {
-    'F_A bajo y F_TR bajo':"""El rendimiento de {nombre} durante la tarea ha ido mejorando con el avance de la misma, mostrando mejor precisión y velocidad de respuesta al final de la prueba que al principio. Esto indica una buena atención sostenida y resistencia a la fatiga. {nombre} muestra un desempeño especialmente bueno ante tareas simples y repetitivas, las cuales con el tiempo es capaz de automatizar a la perfección, sin cansarse o aburrirse.""", 
+    'F_A positivo y F_TR negativo':"""El rendimiento de {nombre} durante la tarea ha ido mejorando con el avance de la misma, mostrando mejor precisión y velocidad de respuesta al final de la prueba que al principio. Esto indica una buena atención sostenida y resistencia a la fatiga. {nombre} muestra un desempeño especialmente bueno ante tareas simples y repetitivas, las cuales con el tiempo es capaz de automatizar a la perfección, sin cansarse o aburrirse.""", 
 
-    'F_A bajo y F_TR normal':"""A lo largo de la tarea {nombre} muestra una velocidad de respuesta que se mantiene constante, y una precisión que incluso mejora según avanza la misma. Esto indica una buena atención sostenida y resistencia a la fatiga. {nombre} muestra un desempeño especialmente bueno ante tareas simples y repetitivas, las cuales con el tiempo es capaz de automatizar a la perfección, sin cansarse o aburrirse.""",
+    'F_A positivo y F_TR no sign':"""A lo largo de la tarea {nombre} muestra una velocidad de respuesta que se mantiene constante, y una precisión que incluso mejora según avanza la misma. Esto indica una buena atención sostenida y resistencia a la fatiga. {nombre} muestra un desempeño especialmente bueno ante tareas simples y repetitivas, las cuales con el tiempo es capaz de automatizar a la perfección, sin cansarse o aburrirse.""",
 
-    'F_A bajo y F_TR alto':""""A lo largo de la tarea {nombre} muestra una precisión de respuesta que mejora con el avance de la misma, mientras que la velocidad de respuesta se ralentiza. Esto indica una clara preferencia de {nombre} por un estilo atencional más reflexivo, con la adopción de un procesamiento de la información más lento pero preciso. {nombre} parece ser muy capaz de automatizar eficazmente tareas simples y repetitivas. Aunque, a su vez, la falta de excitación de esta tarea monótona le supone un mayor esfuerzo y cansancio por mantener la atención sostenida. Finalmente, {nombre} presenta un importante enlantecimiento en su velocidad de trabajo, el cual puede deberse en parte a la fatiga. O a la preferencia y adopción de un estilo atencional más reflexivo con el transcurso de la tarea.""",
+    'F_A positivo y F_TR positivo':""""A lo largo de la tarea {nombre} muestra una precisión de respuesta que mejora con el avance de la misma, mientras que la velocidad de respuesta se ralentiza. Esto indica una clara preferencia de {nombre} por un estilo atencional más reflexivo, con la adopción de un procesamiento de la información más lento pero preciso. {nombre} parece ser muy capaz de automatizar eficazmente tareas simples y repetitivas. Aunque, a su vez, la falta de excitación de esta tarea monótona le supone un mayor esfuerzo y cansancio por mantener la atención sostenida. Finalmente, {nombre} presenta un importante enlantecimiento en su velocidad de trabajo, el cual puede deberse en parte a la fatiga. O a la preferencia y adopción de un estilo atencional más reflexivo con el transcurso de la tarea.""",
     
-    'F_A normal y F_TR bajo':"""A lo largo de la tarea {nombre} muestra una precisión de respuesta constante, mientras que la velocidad de respuesta aumenta con el avance de la tarea. Esto indica una excelente capacidad de automatización de la tarea, especialmente ante tareas simples y repetitivas como esta. Esta habilidad es útil para reducir el esfuerzo ante tareas monótonas y poco estimulantes, y reducir así el cansancio generado. O incluso, en este caso, aumentando la velocidad con la que se realiza la tarea, sin perder calidad en la precisión.""",
+    'F_A no sign y F_TR negativo':"""A lo largo de la tarea {nombre} muestra una precisión de respuesta constante, mientras que la velocidad de respuesta aumenta con el avance de la tarea. Esto indica una excelente capacidad de automatización de la tarea, especialmente ante tareas simples y repetitivas como esta. Esta habilidad es útil para reducir el esfuerzo ante tareas monótonas y poco estimulantes, y reducir así el cansancio generado. O incluso, en este caso, aumentando la velocidad con la que se realiza la tarea, sin perder calidad en la precisión.""",
     
-    'F_A normal y F_TR normal':"""A lo largo de la tarea {nombre} muestra un rendimiento sumamente constante, sin que su precisión y velocidad de respuesta se vean afectadas. Esto indica una excelente capacidad de atención sostenida y resistencia a la fatiga, incluso, o especialmente, ante tareas simples y monótonas como esta.""",
+    'F_A no sign y F_TR no sign':"""A lo largo de la tarea {nombre} muestra un rendimiento sumamente constante, sin que su precisión y velocidad de respuesta se vean afectadas. Esto indica una excelente capacidad de atención sostenida y resistencia a la fatiga, incluso, o especialmente, ante tareas simples y monótonas como esta.""",
 
-    'F_A normal y F_TR alto':"""A lo largo de la tarea {nombre} muestra una precisión de respuesta constante, mientras que la velocidad de respuesta se ralentiza. Esto indica dos cosas. Por un lado, el enlantecimiento en su velocidad de trabajo sugiere en {nombre} una baja resistencia a la fatiga ante tareas monótonas y poco estimulantes. Por otro lado, este resulta indica la preferencia de {nombre} por un estilo atencional más reflexivo. De esta manera, ante la aparición de cansancio, {nombre} decide tomarse más tiempo en su respuesta, y así poder seguir procesando la información de manera precisa y consciente.""",
+    'F_A no sign y F_TR positivo':"""A lo largo de la tarea {nombre} muestra una precisión de respuesta constante, mientras que la velocidad de respuesta se ralentiza. Esto indica dos cosas. Por un lado, el enlantecimiento en su velocidad de trabajo sugiere en {nombre} una baja resistencia a la fatiga ante tareas monótonas y poco estimulantes. Por otro lado, este resulta indica la preferencia de {nombre} por un estilo atencional más reflexivo. De esta manera, ante la aparición de cansancio, {nombre} decide tomarse más tiempo en su respuesta, y así poder seguir procesando la información de manera precisa y consciente.""",
 
-    'F_A alto y F_TR bajo':"""Con el avance de la tarea {nombre} muestra una aceleración de su velocidad de respuesta, aunque de la mano de un empeoramiento de su precisión. Esto indica dos cosas. Primero, la aparición de cansancio con el avance de la tarea, especialmente ante tareas monótonas y poco estimulantes. En segundo lugar, una clara preferencia y adopción de {nombre} por un estilo atencional más impulsivo, con respuestas más rápidas pero menos precisas. {nombre} parece tener dificultades para reunir una motivación más intrínseca en el desempeño de la tarea. Y así, ante la falta de estimulación, se cansa o aburre más que lo esperado para su edad, afectando negativamente a su esfuerzo, atención sostenida y rendimiento durante la tarea.""",
+    'F_A positivo y F_TR negativo':"""Con el avance de la tarea {nombre} muestra una aceleración de su velocidad de respuesta, aunque de la mano de un empeoramiento de su precisión. Esto indica dos cosas. Primero, la aparición de cansancio con el avance de la tarea, especialmente ante tareas monótonas y poco estimulantes. En segundo lugar, una clara preferencia y adopción de {nombre} por un estilo atencional más impulsivo, con respuestas más rápidas pero menos precisas. {nombre} parece tener dificultades para reunir una motivación más intrínseca en el desempeño de la tarea. Y así, ante la falta de estimulación, se cansa o aburre más que lo esperado para su edad, afectando negativamente a su esfuerzo, atención sostenida y rendimiento durante la tarea.""",
     
-    'F_A alto y F_TR normal':"""A lo largo de la tarea {nombre} muestra una velocidad de respuesta constante, aunque con un empeoramiento en la precisión según avanza la tarea. Esto es indicativo de una baja resistencia a la fatiga, especialmente ante tareas monótonas y poco estimulantes como esta. Con la aparición de cansancio, {nombre} podría esforzarse más para mantener una buena precisión y calidad de respuesta, a costa de tomarse más tiempo para pensar y responder. Pero en este caso, parece que {nombre}, bien por falta de capacidad o de motivación, no adopta este estilo atencional más reflexivo, eficaz ante la aparición de cansancio y deterioro en la calidad de la ejecución.""",
+    'F_A negativo y F_TR no sign y TR bajo o normal':"""A lo largo de la tarea {nombre} muestra una velocidad de respuesta constante, aunque con un empeoramiento en la precisión según avanza la tarea. Esto es indicativo de una baja resistencia a la fatiga, especialmente ante tareas monótonas y poco estimulantes como esta. Con la aparición de cansancio, {nombre} podría esforzarse más para mantener una buena precisión y calidad de respuesta, tomándose más tiempo para pensar y responder. Pero en este caso, parece que {nombre}, bien por falta de capacidad o de motivación, no adopta este estilo atencional más reflexivo, eficaz ante la aparición de cansancio y deterioro en la calidad de la ejecución.""",
 
-    'F_A alto y F_TR alto':"""Con el avance de la tarea {nombre} muestra un enlantecimiento de su velocidad de respuesta y un empeoramiento de su precisión. Esto indica una muy baja resistencia al cansancio o el aburrimiento, especialmente ante tareas monótonas y poco estimulantes como esta. Según este índice {nombre} tiene grandes dificultades para mantener la atención sostenida lo que le lleva a no responder o responder erratica o aleatoriamente ante una tarea. Parece así que el rendimiento de {nombre} dependerá más de cuán estimulante le resulte una actividad. Y tiene por tanto, dificultades para reunir motivación más intrínseca en el desempeño de una tarea, y así poder realizar también estas actividades más monótonas o aburridas pero igualmente importantes para la vida diaria.""",
+    'F_A negativo y F_TR no sign':"""A lo largo de la tarea {nombre} muestra una velocidad de respuesta constante, aunque con un empeoramiento en la precisión según avanza la tarea. Esto es indicativo de una baja resistencia a la fatiga, especialmente ante tareas monótonas y poco estimulantes como esta.""",
+
+    'F_A negativo y F_TR positivo':"""Con el avance de la tarea {nombre} muestra un enlantecimiento de su velocidad de respuesta y un empeoramiento de su precisión. Esto indica una muy baja resistencia al cansancio o el aburrimiento, especialmente ante tareas monótonas y poco estimulantes como esta. Según este índice {nombre} tiene grandes dificultades para mantener la atención sostenida lo que le lleva a no responder o responder erratica o aleatoriamente ante una tarea. Parece así que el rendimiento de {nombre} dependerá más de cuán estimulante le resulte una actividad. Y tiene por tanto, dificultades para reunir motivación más intrínseca en el desempeño de una tarea, y así poder realizar también estas actividades más monótonas o aburridas pero igualmente importantes para la vida diaria.""",
     }
 
 
 PARRAFO_ANT_alerta = {
 
-    'TR_alerta bajo':"""La eficiencia de la red de alerta resultó superior a la media para su edad. Esto se traduce en una excelente capacidad para mantener un alto estado de vigilancia y activación. Es decir, que {nombre} ha estado especialmente despierto durante la tarea. Esto le permite reconectar y atender rápidamente con la tarea en los momentos que aparece información relevante.""",
+    'TR_alerta alto':"""La eficiencia de la red de alerta resultó superior a la media para su edad. Esto se traduce en una excelente capacidad para mantener un alto estado de vigilancia y activación. Es decir, que {nombre} ha estado especialmente despierto durante la tarea. Esto le permite reconectar y atender rápidamente con la tarea en los momentos que aparece información relevante.""",
 
     'TR_alerta normal':"""La eficiencia de la red de alerta resultó adecuada a la media para su edad. Esto se traduce en una capacidad adecuada para mantener un estado de vigilancia y activación durante la tarea. Es decir, que {nombre} ha estado suficientemente despierto durante la tarea. Esto le permite reconectar y atender adecuadamente con la tarea en los momentos que aparece información relevante.""",
     
-    'TR_alerta alto':"""La eficiencia de la red de alerta resultó inferior a la media para su edad. Esto se traduce en una capacidad limitada por dificultades para mantener un alto estado de vigilancia y activación. Es decir, parece que {nombre} ha estado poco despierto durante la tarea. Esto le dificulta reconectar y atender adecuadamente con la tarea en los momentos que aparece información relevante.""",
+    'TR_alerta bajo':"""La eficiencia de la red de alerta resultó significativamente por debajo del promedio. Esto se traduce en una capacidad limitada por dificultades para mantener un alto estado de vigilancia y activación. Es decir, parece que {nombre} ha estado poco despierto durante la tarea. Esto le dificulta reconectar y atender adecuadamente con la tarea en los momentos que aparece información relevante.""",
 }
 PARRAFO_ANT_orientacion = {
 
-    'TR_orientacion bajo':"""Respecto a la red de orientación, {nombre} mostró una eficiencia superior a la media para su edad. Esto se traduce en una excelente capacidad para orientar y dirigir la atención hacia los eventos relevantes de la tarea.""",
+    'TR_orientacion alto':"""Respecto a la red de orientación, {nombre} mostró una eficiencia superior a la media para su edad. Esto se traduce en una excelente capacidad para orientar y dirigir la atención hacia los eventos relevantes de la tarea.""",
 
     'TR_orientacion normal':"""Respecto a la red de orientación, {nombre} mostró una eficiencia adecuada a la media para su edad. Esto se traduce en una capacidad adecuada para orientar y dirigir la atención hacia los eventos relevantes de la tarea.""",
     
-    'TR_orientacion alto':"""Respecto a la red de orientación, {nombre} mostró una eficiencia inferior a la media para su edad. Esto se traduce en una capacidad limitada por dificultades para orientar y dirigir la atención hacia los eventos relevantes de la tarea.""",
+    'TR_orientacion bajo':"""Respecto a la red de orientación, {nombre} mostró una eficiencia significativamente por debajo del promedio. Esto se traduce en una capacidad limitada por dificultades para orientar y dirigir la atención hacia los eventos relevantes de la tarea.""",
 }
 PARRAFO_ANT_ejecutivo = {
 
-    'TR_ejecutivo bajo':"""Finalmente, {nombre} mostró una eficiencia de la red de control ejecutivo superior a la media para su edad. Esto se traduce en una excelente capacidad para inhibir la información irrelevante y distractora y las respuestas impulsivas durante la tarea. Así, mostrando {nombre} un alto control para procesar y ejecutar tareas complejas.""",
+    'TR_ejecutivo alto':"""Finalmente, {nombre} mostró una eficiencia de la red de control ejecutivo superior a la media para su edad. Esto se traduce en una excelente capacidad para inhibir la información irrelevante y distractora y las respuestas impulsivas durante la tarea. Así, mostrando {nombre} un alto control para procesar y ejecutar tareas complejas.""",
 
     'TR_ejecutivo normal':"""Finalmente, {nombre} mostró una eficiencia de la red de control ejecutivo adecuada a la media para su edad. Esto se traduce en una capacidad adecuada para inhibir la información irrelevante y distractora y las respuestas impulsivas durante la tarea. Así, mostrando {nombre} un control adecuado para procesar y ejecutar tareas complejas.""",
     
-    'TR_ejecutivo alto':"""Finalmente, {nombre} mostró una eficiencia de la red de control ejecutivo inferior a la media para su edad. Esto se traduce en una capacidad limitada por dificultades para inhibir la información irrelevante y distractora y las respuestas impulsivas durante la tarea. Así, mostrando {nombre} un control limitado para procesar y ejecutar tareas complejas.""",
+    'TR_ejecutivo bajo':"""Finalmente, {nombre} mostró una eficiencia de la red de control ejecutivo significativamente por debajo del promedio. Esto se traduce en una capacidad limitada por dificultades para inhibir la información irrelevante y distractora y las respuestas impulsivas durante la tarea. Así, mostrando {nombre} un control limitado para procesar y ejecutar tareas complejas.""",
 }
 
 
@@ -293,11 +311,20 @@ PARRAFO_ANT_ejecutivo = {
 # CPT — PÁRRAFOS CONDICIONALES OPCIONALES  . Se usa tanto para la prueba CPT como la D2
 # ============================================================================
 
+# cambiar CON por TOT
+PARRAFO_CPT_CON = {
+    'alto': """El índice de concentración elevado evidencia un excelente equilibrio entre velocidad y precisión, reflejando una elevada concentración y control atencional durante la tarea. Esto sugiere que {nombre} estuvo muy despierto durante la realización de la prueba.""",
+    
+    'normal': """El índice de concentración se sitúa dentro de valores esperables, indicando un equilibrio adecuado entre rapidez y exactitud en la ejecución de la tarea. Este resultado refleja una capacidad de concentración acorde a las demandas de la tarea, sin que se observen dificultades importantes en la regulación del esfuerzo atencional. Según esto, {nombre} estuvo lo suficientemente despierto para realizar adecuadamente la tarea.""",
+    
+    'bajo': """Un nivel bajo en el índice de concentración sugiere dificultades para integrar rapidez y precisión, bien por exceso de velocidad con descuido, bien por lentitud sin compensación en precisión, o bien por ambas, lentitud y descuido. Esto señala que la concentración de {nombre} durante la prueba fue en general pobre, y que seguramente no estuvo lo suficientemente despierto como para realizarla correctamente."""
+}
+
 # TR - Velocidad de procesamiento
 PARRAFO_CPT_TR = {
-    'alto y E bajo o normal': """El elevado número de elementos procesados indica una alta velocidad de procesamiento, asociada a buena capacidad de exploración visual y rapidez en la toma de decisiones.""",
+    'alto y E alto o normal': """El elevado número de elementos procesados indica una excelente velocidad de procesamiento, asociada a escepcional capacidad de exploración visual y rapidez en la toma de decisiones.""",
     
-    'alto y E alto': """El elevado número de elementos procesados indica una alta velocidad de procesamiento, asociada a una rápida exploración visual y rapidez en la toma de decisiones. Esto que a primeras parece positivo cambia al revisar la precisión o calidad de esta capacidad exploratoria y decisional. Vemos aquí que {nombre} bien a omitido información relevante o bien a respondido erroneamente ante información irrelevante. Esto señala un procesamiento de la información superficial, rápido pero defectuoso.""",
+    'alto y E bajo': """El elevado número de elementos procesados indica una muy buena velocidad de procesamiento, asociada a una rápida exploración visual y rapidez en la toma de decisiones. Esto que a primeras parece positivo cambia al revisar la precisión o calidad de esta capacidad exploratoria y decisional. Vemos aquí que {nombre} bien a omitido información relevante o bien a respondido erroneamente ante información irrelevante. Esto señala un procesamiento de la información superficial, rápido pero defectuoso.""",
 
     'normal': """El número de elementos procesados se sitúa dentro de los valores esperables para su grupo normativo, indicando una velocidad de procesamiento adecuada, con un ritmo de trabajo ajustado a las demandas temporales de la tarea""",
     
@@ -308,48 +335,51 @@ PARRAFO_CPT_TR = {
 
 # O - Errores de omisión
 PARRAFO_CPT_O = {
-    'alto': """La presencia de un número elevado de errores de omisión indica dificultades en la atención selectiva y la detección de información relevante. Esto se asocia a lapsus atencionales y un seguimiento inconsistente de la consigna o reglas de la tarea, lo que deriva en un escaneo visual incompleto y una discriminación y respuesta deficiente de la información relevante procesada.""",
+    'bajo': """La presencia de un número elevado de errores de omisión indica dificultades en la atención selectiva y la detección de información relevante. Esto se asocia a lapsus atencionales y un seguimiento inconsistente de la consigna o reglas de la tarea, lo que deriva en un escaneo visual incompleto y una discriminación y respuesta deficiente de la información relevante procesada.""",
     
     'normal': """El número de errores de omisión se sitúa dentro de los valores esperables para su grupo normativo, lo que indica una adecuada atención sostenida y capacidad para detectar los estímulos relevantes a lo largo de la tarea. Este resultado sugiere un escaneo visual correcto y un seguimiento apropiado de la consigna, sin evidenciar lapsus atencionales significativos.""",
     
-    'bajo': """El bajo número de errores de omisión refleja una elevada focalización atencional, con muy buena capacidad para detectar los estímulos relevantes."""
+    'alto': """El bajo número de errores de omisión refleja una elevada focalización atencional, con muy buena capacidad para detectar los estímulos relevantes."""
 }
 
 # C - Errores de comisión
 PARRAFO_CPT_C = {
-    'alto': """El aumento de errores de comisión sugiere dificultades en el control inhibitorio: una mayor impulsividad en la respuesta o cierta deficiencia perceptiva en la discriminación y omisión de la información irrelevante  y engañosa.""",
+    'bajo': """El aumento de errores de comisión sugiere dificultades en el control inhibitorio: una mayor impulsividad en la respuesta o cierta deficiencia perceptiva en la discriminación y omisión de la información irrelevante  y engañosa.""",
     
     'normal': """La frecuencia de errores de comisión se encuentra dentro de rangos normales, lo que refleja un control inhibitorio adecuado, y una impulsiva en la respuesta igual a lo esperado para su edad. Este patrón sugiere una correcta discriminación y omisión de la información irrelevante  y engañosa.""",
     
-    'bajo': """La escasa presencia de errores de comisión indica un alto control inhibitorio, con respuestas cuidadosas y precisas que reflejan una buena capacidad de discriminación y omisión de la información irrelevante y engañosa."""
-}
-
-# CON - Concentración
-PARRAFO_CPT_CON = {
-    'alto': """El índice de concentración elevado evidencia un excelente equilibrio entre velocidad y precisión, reflejando una elevada concentración y control atencional durante la tarea. Esto sugiere que {nombre} estuvo muy despierto durante la realización de la prueba.""",
-    
-    'normal': """El índice de concentración se sitúa dentro de valores esperables, indicando un equilibrio adecuado entre rapidez y exactitud en la ejecución de la tarea. Este resultado refleja una capacidad de concentración acorde a las demandas de la tarea, sin que se observen dificultades importantes en la regulación del esfuerzo atencional. Según esto, {nombre} estuvo lo suficientemente despierto para realizar adecuadamente la tarea.""",
-    
-    'bajo': """Un nivel bajo en el índice de concentración sugiere dificultades para integrar rapidez y precisión, bien por exceso de velocidad con descuido, bien por lentitud sin compensación en precisión, o bien por ambas, lentitud y descuido. Esto señala que la concentración de {nombre} durante la prueba fue en general pobre, y que seguramente no estuvo lo suficientemente despierto como para realizarla correctamente."""
+    'alto': """La escasa presencia de errores de comisión indica un alto control inhibitorio, con respuestas cuidadosas y precisas que reflejan una buena capacidad de discriminación y omisión de la información irrelevante y engañosa."""
 }
 
 
 PARRAFO_CPT_VAR = {
 # Álvaro. Calcular presencia Fatiga o automatismo por prueba t entre el índice CON del primer y tercer tercio prueba? Necesidad baremar esta dif.?
-    ('alto', 'nada'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación constante y a una mayor facilidad para distraerse. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados.""",
+    ('bajo', 'nada'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación constante y a una mayor facilidad para distraerse. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados.""",
 
 # dentro de la condición VAR se tratan las condiciones 'Fatiga' y 'Automatizacion' si dif. sign. negativa o positiva respectivamente entre el primer (primeras 4 series) y tercer tercio (últimas 4 series) de la prueba.
-    ('alto', 'fatiga'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación y a una mayor facilidad para distraerse. En particular, aparece aquí cierto cansancio o fatiga con el transcurso de la tarea, ya que la serie de peor rendimiento se obtuvo más hacia el final de la tarea, en comparación con la de mayor rendimiento. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados.""",
+    ('bajo', 'fatiga'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación y a una mayor facilidad para distraerse. En particular, aparece aquí cierto cansancio o fatiga con el transcurso de la tarea, ya que la serie de peor rendimiento se obtuvo más hacia el final de la tarea, en comparación con la de mayor rendimiento. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados.""",
 
-# Si promedio CON 4 primeras series es 5 puntos mayor que promedio 4 últimas
-    ('alto', 'automatismo'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una notable capacidad para adaptarse y automatizar la ejecución a largo plazo.""",
+# 'automatismo' (positivo) o 'dificultadinicial'(negativo) en f(CON)
+    ('bajo', 'automatismo', 'CON normal o alto' ): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una notable capacidad para adaptarse y automatizar la ejecución a largo plazo.""",
 
-# Si promedio CON 4 primeras series es 5 puntos menos que promedio 4 últimas
-    ('alto', 'dificultadinicial'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una dificultad inicial para asimilar y acomodarse rápidamente a la nueva tarea.""",
+    ('bajo', 'dificultadinicial', 'CON bajo'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una dificultad inicial para asimilar y acomodarse rápidamente a la nueva tarea.""",
 
-    'normal': """ El último aspecto para mencionar es en relación a la curva de trabajo trazada en el perfil gráfico adjunto en este informe. Aquí se puede ver que el rendimiento de {nombre} durante la prueba ha resultado estable y consistente entre series. Esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales aquí evaluados resulta típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte o la aparición de cansancio, respectivamente, son menos probables.""",
+    ('normal', 'nada'): """ El último aspecto para mencionar es en relación a la variabilidad del rendimiento, trazada en el perfil gráfico adjunto en este informe. Aquí se puede ver que el rendimiento de {nombre} durante la prueba ha resultado estable y consistente entre series. Esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales aquí evaluados resulta típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte o la aparición de cansancio, respectivamente, son menos probables.""",
 
-    'bajo': """El bajo nivel de variabilidad observado sugiere una alta consistencia y estabilidad en el rendimiento, indicando una buena resistencia al cansancio o fatiga y una buena capacidad para sostener el esfuerzo atencional de forma uniforme durante toda la tarea. Además, esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales anteriormente evaluados resulta aún más típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte, distracciones puntuales o la aparición de cansancio, respectivamente, son menos probables."""
+    ('normal', 'fatiga'): """ El último aspecto para mencionar es en relación a la variabilidad del rendimiento, trazada en el perfil gráfico adjunto en este informe. Aquí se puede ver que el rendimiento de {nombre} durante la prueba ha resultado estable y consistente entre series. Esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales aquí evaluados resulta típico y constante en su persona. Y que por tanto, otras explicaciones aleatorias a su mejor o peor rendimiento son menos probables. Sin embargo, sí que parece que el rendimiento general se ha podido ver perjudicado debido a cierto cansancio o fatiga hacia el final de la tarea.""",
+
+    ('normal','automatismo', 'CON normal o alto' ): """ El último aspecto para mencionar es en relación a la variabilidad del rendimiento, trazada en el perfil gráfico adjunto en este informe. Aquí se puede ver que el rendimiento de {nombre} durante la prueba ha resultado estable y consistente entre series. Esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales aquí evaluados resulta típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, sí que se encuentra bastante diferencia entre las primeras y las últimas series de la tarea. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilida corresponde con una resaltable capacidad para adaptarse y automatizar la ejecución a largo plazo.""",
+
+    ('normal', 'dificultadinicial', 'CON bajo'): """ El último aspecto para mencionar es en relación a la variabilidad del rendimiento, trazada en el perfil gráfico adjunto en este informe. Aquí se puede ver que el rendimiento de {nombre} durante la prueba ha resultado estable y consistente entre series. Esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales aquí evaluados resulta típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, sí que se encuentra bastante diferencia entre las primeras y las últimas series de la tarea. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad corresponde con una importante dificultad inicial para asimilar y acomodarse rápidamente a la nueva tarea.""",
+
+    ('alto', 'nada'): """El bajo nivel de variabilidad observado sugiere una alta consistencia y estabilidad en el rendimiento, indicando una buena resistencia al cansancio o fatiga y una buena capacidad para sostener el esfuerzo atencional de forma uniforme durante toda la tarea. Además, esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales anteriormente evaluados resulta aún más típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte, distracciones puntuales o la aparición de cansancio, respectivamente, son menos probables.""",
+   
+    ('alto','fatiga'): """ El bajo nivel de variabilidad observado sugiere una alta consistencia y estabilidad en el rendimiento, indicando una buena capacidad para sostener el esfuerzo atencional de forma uniforme durante toda la tarea. Además, esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales anteriormente evaluados resulta aún más típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte, distracciones puntuales o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, en esta tarea sí que se ha mostrado un cansancio o fatiga con el transcurso de la tarea, lo que pudo influir en un declive en la puntuación de {nombre} en los demás aspectos atencionales en esta tarea evaluados.""",
+   
+    ('alto','automatismo', 'CON normal o alto' ): """ El bajo nivel de variabilidad observado sugiere una alta consistencia y estabilidad en el rendimiento, indicando una buena resistencia al cansancio o fatiga y una buena capacidad para sostener el esfuerzo atencional de forma uniforme durante toda la tarea. Además, esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales anteriormente evaluados resulta aún más típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte, distracciones puntuales o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, sí que se encuentra bastante diferencia entre las primeras y últimas series de la tarea. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad corresponde con una resaltable capacidad para adaptarse y automatizar la ejecución a largo plazo.""",
+   
+    ('alto', 'dificultadinicial', 'CON bajo'): """ El bajo nivel de variabilidad observado sugiere una alta consistencia y estabilidad en el rendimiento, indicando una buena resistencia al cansancio o fatiga y una buena capacidad para sostener el esfuerzo atencional de forma uniforme durante toda la tarea. Además, esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales anteriormente evaluados resulta aún más típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte, distracciones puntuales o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, sí que se encuentra bastante diferencia entre las primeras y las últimas series de la tarea. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad corresponde con una importante dificultad inicial para asimilar y acomodarse rápidamente a la nueva tarea.""",
+
 }
 
 # ============================================================================
@@ -358,13 +388,13 @@ PARRAFO_CPT_VAR = {
 
 # TR - Velocidad de procesamiento
 PARRAFO_FourFigures_TR = {
-   'TR bajo':"""{nombre} muestra un tiempo de respuesta rápido, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad.""",
+   'TR alto':"""{nombre} muestra un tiempo de respuesta rápido, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad.""",
 
-    'TR normal y C normal o alto':"""{nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad.""",
+    'TR normal y C normal o bajo':"""{nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad.""",
 
-    'TR normal y C bajo':"""{nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad. Además un breve vistazo al número de comisiones durante la tarea nos muestra la excelente precisión de {nombre} durante la tarea. Ambos índices parecen señalar dos cosas. Primero una sobrada capacidad para procesar esta tarea y otras más difíciles en un tiempo de respuesta adecuado. Y segundo, una posible preferencia por un estilo atencional más reflexivo, que prioriza precisión ante velocidad de respuesta.""",
+    'TR normal y C alto':"""{nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad. Además un breve vistazo al número de comisiones durante la tarea nos muestra la excelente precisión de {nombre} durante la tarea. Ambos índices parecen señalar dos cosas. Primero una sobrada capacidad para procesar esta tarea y otras más difíciles en un tiempo de respuesta adecuado. Y segundo, una posible preferencia por un estilo atencional más reflexivo, que prioriza precisión ante velocidad de respuesta.""",
     
-    'TR alto':"""{nombre} muestra un tiempo de respuesta lento, lo que indica una velocidad de procesamiento de la información y toma de decisiones inferior a la media para su edad. Esto puede deberse a un déficit en el procesamiento, necesidad de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. O la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas. Véase a continuación, el apartado de 'Comisiones' para valorar esta segunda posibilidad.""",
+    'TR bajo':"""{nombre} muestra un tiempo de respuesta lento, lo que indica una velocidad de procesamiento de la información y toma de decisiones significativamente por debajo del promedio. Esto puede deberse a un déficit en el procesamiento, necesidad de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. O la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas. Véase a continuación, el apartado de 'Comisiones' para valorar esta segunda posibilidad.""",
 }
 
 PARRAFO_FourFigures_A = {
@@ -378,44 +408,44 @@ PARRAFO_FourFigures_A = {
 
 # C - Errores de comisión
 PARRAFO_FourFigures_C = {
-    'C bajo y TR bajo o normal':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad.""",
+    'C alto y TR bajo o normal':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad.""",
 
-    'C bajo y TR alto':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad. Por otro lado, {nombre} tarda más de lo normal o esperado en emitir sus respuestas. Ambos índices parecen señalar la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
+    'C alto y TR bajo':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad. Por otro lado, {nombre} tarda más de lo normal o esperado en emitir sus respuestas. Ambos índices parecen señalar la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
 
     'C normal':"""Respecto al número de errores de comisión, este fue normal, lo que señala que emite un número de respuestas erróneas igual a lo esperado para su edad. Este resultado señala, a la hora de tomar decisiones, una capacidad adecuada para discriminar la información de manera eficiente y un nivel de impulsividad igual al esperado para su edad.""",
 
-    'C alto y TR bajo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando la suma rapidez con la que se responde vemos que estos errores de comisión se deben a una escepcionalmente alta impulsividdad, con respuestas más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
+    'C bajo y TR alto':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando la suma rapidez con la que se responde vemos que estos errores de comisión se deben a una escepcionalmente alta impulsividdad, con respuestas más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
 
-    'C alto y TR normal o alto':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando el velocidad normal o lenta con el que se responde, vemos que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
+    'C bajo y TR normal o bajo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando el velocidad normal o lenta con el que se responde, vemos que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
 }
 
 # Flexibilidad cognitiva. Diferencia puntuación obtenida en P4 vs puntuación esperada en P4 en base a puntuación obtenida en P2 y P3.
 PARRAFO_FourFigures_P4_A_obtenido_vs_esperado = {
-# Álvaro. Comparar prueba significación prueba t o PT en comparación con la muestra? Aquí avogo por PT dada la mayor facilidad de P2 y P3 frente la tarea FiveDigits, en la cual propongo usar sign. prueba t.
-    'alto': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva o capacidad de adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento incluso superior al esperado, prueba de una excelente capacidad para adaptarse y dirigir su atención a voluntad.""",
+# Álvaro. Comparar prueba significación prueba t o PT en comparación con la muestra? Aquí avogo por PT dada la mayor facilidad de P2 y P3 frente la tarea NamingNumbers, en la cual propongo usar sign. prueba t.
+    'alto': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento incluso superior al esperado, prueba de una excelente capacidad para adaptarse y dirigir su atención a voluntad.""",
 
-    'normal': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva o capacidad de adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento normal e igual a lo esperable. Esto prueba una adecuada capacidad para adaptarse y dirigir su atención a voluntad.""",
+    'normal': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento normal e igual a lo esperable. Esto prueba una adecuada capacidad para adaptarse y dirigir su atención a voluntad.""",
     
-    'bajo': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva o capacidad de adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento inferior al esperado. Esto muestra una alta rigidez cognitiva o dificultad para cambiar el foco atencional rápidamente y adaptarse a una nueva forma de procesar y responder a una tarea."""
+    'bajo': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento inferior al esperado. Esto muestra una alta rigidez cognitiva o dificultad para cambiar el foco atencional rápidamente y adaptarse a una nueva forma de procesar y responder a una tarea."""
 }
 
 
 # ============================================================================
-# 3.3.2 FiveDigits cambiar a NamingNumbers
+# 3.3.2 NamingNumbers
 # ============================================================================
 
 # TR - Velocidad de procesamiento
-PARRAFO_FiveDigits_TR = {
-   'TR bajo':"""{nombre} muestra un tiempo de respuesta rápido, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad.""",
+PARRAFO_NamingNumbers_TR = {
+   'TR alto':"""{nombre} muestra un tiempo de respuesta rápido, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad.""",
 
-    'TR normal y C normal o alto':"""{nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad.""",
+    'TR normal y C normal o bajo':"""{nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad.""",
 
-    'TR normal y C bajo':"""{nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad. Además un breve vistazo al número de comisiones durante la tarea nos muestra la excelente precisión de {nombre} durante la tarea. Ambos índices parecen señalar dos cosas. Primero una sobrada capacidad para procesar esta tarea y otras más difíciles en un tiempo de respuesta adecuado. Y segundo, una posible preferencia por un estilo atencional más reflexivo, que prioriza precisión ante velocidad de respuesta.""",
+    'TR normal y C alto':"""{nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad. Además un breve vistazo al número de comisiones durante la tarea nos muestra la excelente precisión de {nombre} durante la tarea. Ambos índices parecen señalar dos cosas. Primero una sobrada capacidad para procesar esta tarea y otras más difíciles en un tiempo de respuesta adecuado. Y segundo, una posible preferencia por un estilo atencional más reflexivo, que prioriza precisión ante velocidad de respuesta.""",
     
-    'TR alto':"""{nombre} muestra un tiempo de respuesta lento, lo que indica una velocidad de procesamiento de la información y toma de decisiones inferior a la media para su edad. Esto puede deberse a un déficit en el procesamiento, necesidad de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. O la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas. Véase a continuación, el apartado de 'Comisiones' para valorar esta segunda posibilidad.""",
+    'TR bajo':"""{nombre} muestra un tiempo de respuesta lento, lo que indica una velocidad de procesamiento de la información y toma de decisiones significativamente por debajo del promedio. Esto puede deberse a un déficit en el procesamiento, necesidad de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. O la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas. Véase a continuación, el apartado de 'Comisiones' para valorar esta segunda posibilidad.""",
 }
 
-PARRAFO_FiveDigits_A = {
+PARRAFO_NamingNumbers_A = {
     'alto': """El elevado número de aciertos indica una atención general excelente, asociada a un estado de activación o vigilia excepcional. {nombre} estuvo completamente despierto a lo largo de toda esta tarea, lo que también debería haber favorecido el desempeño en otras dimensiones atencionales.""",
     
     'normal': """El número de aciertos obtenido es adecuado y dentro de la norma para su edad. Esto señala un adecuado estado de activación o vigilia durante la prueba.""",
@@ -425,30 +455,30 @@ PARRAFO_FiveDigits_A = {
 
 
 # C - Errores de comisión
-PARRAFO_FiveDigits_C = {
-    'C bajo y TR bajo o normal':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad.""",
+PARRAFO_NamingNumbers_C = {
+    'C alto y TR alto o normal':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad.""",
 
-    'C bajo y TR alto':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad. Por otro lado, {nombre} tarda más de lo normal o esperado en emitir sus respuestas. Ambos índices parecen señalar la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
+    'C alto y TR bajo':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad. Por otro lado, {nombre} tarda más de lo normal o esperado en emitir sus respuestas. Ambos índices parecen señalar la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
 
     'C normal':"""Respecto al número de errores de comisión, este fue normal, lo que señala que emite un número de respuestas erróneas igual a lo esperado para su edad. Este resultado señala, a la hora de tomar decisiones, una capacidad adecuada para discriminar la información de manera eficiente y un nivel de impulsividad igual al esperado para su edad.""",
 
-    'C alto y TR bajo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando la suma rapidez con la que se responde vemos que estos errores de comisión se deben a una escepcionalmente alta impulsividdad, con respuestas más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
+    'C bajo y TR bajo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando la suma rapidez con la que se responde vemos que estos errores de comisión se deben a una escepcionalmente alta impulsividdad, con respuestas más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
 
-    'C alto y TR normal o alto':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando el velocidad normal o lenta con el que se responde, vemos que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
+    'C bajo y TR normal o alto':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando el velocidad normal o lenta con el que se responde, vemos que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
 
 }
 
 # Flexibilidad cognitiva. Diferencia puntuación obtenida en P4 vs puntuación esperada en P4 en base a puntuación obtenida en P2 y P3.
-PARRAFO_FiveDigits_P4 = {
+PARRAFO_NamingNumbers_P4 = {
 # Álvaro. Comparar prueba significación prueba t o PT en comparación con la muestra? Aquí avogo por usar sign. prueba t.
-    'alto': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva o capacidad de adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento superior al esperable. Esto destaca positivamente su capacidad para adaptarse y dirigir la atención a voluntad.""",
+    'alto': """Por último, comparamos el rendimiento obtenido en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento superior al esperable. Esto destaca positivamente su capacidad para adaptarse y dirigir la atención a voluntad.""",
 
 # Quitar distinción en f(A) si al final se usa una PT.
-    'normal y A normal o alto': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva o capacidad de adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento igual a lo esperable en la línea de su rendimiento general. Esto evidencia una adecuada flexibilidad cognitiva, capacidad para adaptarse y dirigir la atención a voluntad..""",
+    'normal y A normal o alto': """Por último, comparamos el rendimiento obtenido en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento igual a lo esperable en la línea de su rendimiento general. Esto evidencia una adecuada flexibilidad cognitiva, capacidad para adaptarse y dirigir la atención a voluntad..""",
 
-    'normal y A bajo': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva o capacidad de adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento igual a lo esperable en la línea de su rendimiento general. Esto disminuye la posibilidad de una deficiencia atencional particularmente ligada a problemas de flexibilidad cognitiva, o la capacidad para cambiar el foco atencional rápidamente y a voluntad.""",
+    'normal y A bajo': """Por último, comparamos el rendimiento obtenido en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento igual a lo esperable en la línea de su rendimiento general. Esto disminuye la posibilidad de una deficiencia atencional particularmente ligada a problemas de flexibilidad cognitiva, o la capacidad para cambiar el foco atencional rápidamente y a voluntad.""",
     
-    'bajo': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva o capacidad de adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento inferior al esperado. Esto muestra una alta rigidez cognitiva o dificultad para cambiar el foco atencional rápidamente y adaptarse a una nueva forma de procesar y responder a una tarea."""
+    'bajo': """Por último, comparamos el rendimiento obtenido en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento inferior al esperado. Esto muestra una alta rigidez cognitiva o dificultad para cambiar el foco atencional rápidamente y adaptarse a una nueva forma de procesar y responder a una tarea."""
 
 }
 
@@ -574,11 +604,11 @@ PARRAFO_DUALTASK_TR = {
 
     'TR normal':"""Por último, {nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad.""",
     
-    'TR alto y C alto':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones inferior a la media para su edad. Este resultado puede señala que {nombre} requiere de más tiempo para procesar la misma cantidad de información que otros individuos de su edad.""",
+    'TR alto y C alto':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones significativamente por debajo del promedio. Este resultado puede señala que {nombre} requiere de más tiempo para procesar la misma cantidad de información que otros individuos de su edad.""",
 
-    'TR alto y C normal':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones inferior a la media para su edad. Este resultado puede señalar dos fenómenos diferentes: la necesidad de {nombre} de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. Y la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
+    'TR alto y C normal':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones significativamente por debajo del promedio. Este resultado puede señalar dos fenómenos diferentes: la necesidad de {nombre} de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. Y la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
 
-    'TR alto y C bajo':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones inferior a la media para su edad. Considerando el reducido número de comisiones parece que prevalece un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
+    'TR alto y C bajo':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones significativamente por debajo del promedio. Considerando el reducido número de comisiones parece que prevalece un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
 }
 
 #F_A si fatiga (diferencia significativa) en precisión T1, F_TR en TR T2, TR_PSV si precisión T1

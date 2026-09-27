@@ -11,7 +11,8 @@ from pypdf import PdfReader, PdfWriter
 from generador_docx import agregar_portada, crear_informe_docx, guardar_informe
 from generador_pdf import generar_pdf_desde_docx
 from lector_datos import calcular_puntuaciones_directas, leer_datos_excel
-from reglas_psicometricas import obtener_puntuaciones
+from reglas_psicometricas import _clasificar_cpt_var, obtener_puntuaciones
+from textos import PARRAFO_CPT_VAR
 
 
 REPO_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -110,6 +111,34 @@ class PipelineTests(unittest.TestCase):
         self.assertIn('Disponible', table_text)
         self.assertIn('PT', table_text)
         self.assertIsInstance(resultados['PT_DUALTASK_A'], int)
+
+    def test_cpt_var_selecciona_parrafo_segun_con(self):
+        for clave_parrafo, texto_esperado in PARRAFO_CPT_VAR.items():
+            var_nivel, condicion_esperada = clave_parrafo[:2]
+            con_nivel = (
+                'bajo' if len(clave_parrafo) == 3 and clave_parrafo[2] == 'CON bajo'
+                else 'normal'
+            )
+            diferencia = {
+                'nada': 0,
+                'fatiga': 5,
+                'automatismo': -5,
+                'dificultadinicial': -5,
+            }[condicion_esperada]
+            clasificaciones = {'CPT_CON': con_nivel, 'CPT_VAR': var_nivel}
+            _clasificar_cpt_var(
+                {'PD_CPT_CON_principio_vs_final': diferencia},
+                clasificaciones,
+            )
+            with self.subTest(clave_parrafo=clave_parrafo):
+                self.assertEqual(clasificaciones['CPT_VAR_condicion'], condicion_esperada)
+
+                doc = crear_informe_docx(
+                    {'available_tests': ['CPT']},
+                    clasificaciones,
+                )
+                texto_esperado = texto_esperado.format(nombre='caso')
+                self.assertIn(texto_esperado, [paragraph.text for paragraph in doc.paragraphs])
 
     def test_pdf_export_con_imagen_y_ruta_sin_directorio(self):
         datos = leer_datos_excel(SAMPLE_XLSX)

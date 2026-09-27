@@ -344,7 +344,17 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
         attempted = group.loc[selected.loc[group.index] | timestamp.loc[group.index].gt(0), 'letter_num']
         tr_row = int(attempted.max()) if not attempted.empty else 0
         ta_row = int((target.loc[group.index] & selected.loc[group.index]).sum())
-        o_row = int((target.loc[group.index] & ~selected.loc[group.index]).sum())
+        # O: target stimuli not responded just before last target responded
+        group_selected = group[selected.loc[group.index]]
+        if not group_selected.empty:
+            ultimo_letter_num = group_selected['letter_num'].max()
+            df_antes = group[group['letter_num'] <= ultimo_letter_num]
+            o_row = len(df_antes[(target.loc[df_antes.index]) & 
+                                   (~selected.loc[df_antes.index])])
+        else:
+            o_row = int((target.loc[group.index] & ~selected.loc[group.index]).sum())
+        
+
         c_row = int((~target.loc[group.index] & selected.loc[group.index]).sum())
         con_row = ta_row - c_row
 

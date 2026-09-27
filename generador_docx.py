@@ -61,6 +61,10 @@ from textos import (
     PARRAFO_FourFigures_C,
     PARRAFO_FourFigures_P4_A_obtenido_vs_esperado,
     PARRAFO_FourFigures_TR,
+    PARRAFO_NamingNumbers_A,
+    PARRAFO_NamingNumbers_C,
+    PARRAFO_NamingNumbers_P4,
+    PARRAFO_NamingNumbers_TR,
     PARRAFO_sintesis_arousal,
     PARRAFO_sintesis_atencionsostenida,
     PARRAFO_sintesis_controlejecutivo,
@@ -420,8 +424,8 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_procedimiento'])
     doc.add_paragraph()  # Espacio
     doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento0'])
-    doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento1.1'])
-    doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento2.1'])
+    _add_markdown_paragraph(doc, PARRAFOS_FIJOS['descripcion_procedimiento1.1'])
+    _add_markdown_paragraph(doc, PARRAFOS_FIJOS['descripcion_procedimiento2.1'])
     imagen_ant = os.path.join(script_dir, 'imagenes', 'ANT estimulo central.png')
     if _image_is_valid(imagen_ant):
         parrafo_imagen_ant = doc.add_paragraph()
@@ -433,30 +437,40 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     if _image_is_valid(imagen_ant):
         parrafo_imagen_ant = doc.add_paragraph()
         parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
+        imagen_contextual = parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
+        imagen_contextual.height = int(imagen_contextual.height * 1.15)
 
     doc.add_page_break()
-    doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento3.1'])
+    _add_markdown_paragraph(doc, PARRAFOS_FIJOS['descripcion_procedimiento3.1'])
     imagen_ant = os.path.join(script_dir, 'imagenes', 'CPT estimulos.png')
     if _image_is_valid(imagen_ant):
         parrafo_imagen_ant = doc.add_paragraph()
         parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
         parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
 
-    _add_markdown_paragraph(doc, PARRAFOS_FIJOS['descripcion_procedimiento4.1.2'])  # alguna palabra en negrita
-    imagen_ant = os.path.join(script_dir, 'imagenes', 'NamingNumbers estimulos.png')
-    if _image_is_valid(imagen_ant):
-        parrafo_imagen_ant = doc.add_paragraph()
-        parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
+    if 'FourFigures' in resultados.get('available_tests', []):
+        if resultados.get('display_names', {}).get('FourFigures') == 'NamingNumbers':
+            descripcion_tarea = PARRAFOS_FIJOS['descripcion_procedimiento4.1.2']
+            imagen_tarea = 'NamingNumbers estimulos.png'
+        else:
+            descripcion_tarea = PARRAFOS_FIJOS['descripcion_procedimiento4.1.1']
+            imagen_tarea = 'FourFigures estimulos.png'
+        _add_markdown_paragraph(doc, descripcion_tarea)
+        imagen_ant = os.path.join(script_dir, 'imagenes', imagen_tarea)
+        if _image_is_valid(imagen_ant):
+            parrafo_imagen_ant = doc.add_paragraph()
+            parrafo_imagen_ant.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+            parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
 
-    doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento5.1'])
-    doc.add_paragraph(PARRAFOS_FIJOS['descripcion_procedimiento6.1'])
+    _add_markdown_paragraph(doc, PARRAFOS_FIJOS['descripcion_procedimiento5.1'])
+    _add_markdown_paragraph(doc, PARRAFOS_FIJOS['descripcion_procedimiento6.1'])
 
     doc.add_page_break()
     _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_indices'])
     doc.add_paragraph()  # Espacio
-    _add_markdown_paragraph(doc, PARRAFOS_FIJOS['descripcion_indices'].format(**fmt))
+    descripcion_indices = PARRAFOS_FIJOS['descripcion_indices'].format(**fmt)
+    for linea in descripcion_indices.splitlines():
+        _add_markdown_paragraph(doc, linea)
 
     # ------------------------------------------------------------------ #
     # 3. RESULTADOS                                                        #
@@ -565,7 +579,7 @@ CABECERA = [
 #   - clave_PD / clave_clasificacion: claves en los dicts ``resultados`` y
 #     ``clasificaciones``. Pueden ser una tupla de alias (se usa la primera que
 #     exista). '{T}' se sustituye por el nombre de la prueba que esté disponible
-#     (CPT/D2, FourFigures/FiveDigits).
+#     (CPT/D2, FourFigures/NamingNumbers).
 #   - tipo (color de la fila Rendimiento):
 #       'clasif' -> rojo si malo, verde si bueno, sin color si normal
 #       'sign'   -> amarillo si 'sign'; sin color si 'no sign'
@@ -603,8 +617,8 @@ BLOQUES = [
             (12, 2, "N*", "PD_{T}_N", "{T}_N", "clasif"),
         ],
     },
-    {   # ── FourFigures o FiveDigits (excluyentes) ─────────────────────────
-        "variantes": ("FourFigures", "FiveDigits"),
+    {   # ── FourFigures o NamingNumbers (excluyentes) ─────────────────────────
+        "variantes": ("FourFigures", "NamingNumbers"),
         "celdas": [
             (2, 2, "A", "PD_{T}_A", "{T}_A", "clasif"),
             (4, 2, NEGRO),
@@ -702,7 +716,7 @@ def resolver_pruebas(available_tests):
     """
     Devuelve [(bloque, nombre_prueba_mostrado), ...] solo con los bloques
     disponibles, en el orden de la rejilla. En los bloques con dos variantes
-    excluyentes (CPT/D2, FourFigures/FiveDigits) se conserva únicamente la
+    excluyentes (CPT/D2, FourFigures/NamingNumbers) se conserva únicamente la
     variante presente; si no hay ninguna, el bloque se omite.
     """
     disponibles = {_clave_prueba(t) for t in available_tests}
@@ -1172,10 +1186,14 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
         parrafo_con_nivel(PARRAFO_CPT_O, 'Errores de omisión (O)', 'CPT_O', mostrar_titulo=False)
         parrafo_con_nivel(PARRAFO_CPT_C, 'Errores de comisión (C)', 'CPT_C', mostrar_titulo=False)
         parrafo_con_nivel(PARRAFO_CPT_CON, 'Concentración (CON)', 'CPT_CON')
-        subtitulo('🔹 Variabilidad del rendimiento (VAR)')
+        subtitulo('🔹 Atención sostenida / Fatiga')
         var_nivel = nivel('CPT_VAR')
         var_condicion = clasificaciones.get('CPT_VAR_condicion', 'nada')
         var_key = (var_nivel, var_condicion)
+        if var_condicion == 'automatismo':
+            var_key = (var_nivel, var_condicion, 'CON normal o alto')
+        elif var_condicion == 'dificultadinicial':
+            var_key = (var_nivel, var_condicion, 'CON bajo')
         texto_var = PARRAFO_CPT_VAR.get(var_key)
         if texto_var is None and var_nivel in PARRAFO_CPT_VAR:
             texto_var = PARRAFO_CPT_VAR[var_nivel]
@@ -1184,13 +1202,49 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
 
     if 'FourFigures' in resultados.get('available_tests', []):
         doc.add_page_break()
-        titulo_prueba(PARRAFOS_FIJOS['titulo_FourFigures'])
+        es_naming_numbers = resultados.get('display_names', {}).get('FourFigures') in (
+            'FiveDigits', 'NamingNumbers'
+        )
+        titulo_key = 'titulo_NamingNumbers' if es_naming_numbers else 'titulo_FourFigures'
+        titulo_prueba(PARRAFOS_FIJOS[titulo_key])
         doc.add_paragraph()
         doc.paragraphs[-2].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-        parrafo_con_nivel(PARRAFO_FourFigures_TR, 'Velocidad de procesamiento / Tiempo de respuesta (TR)', 'FourFigures_TR_texto')
-        parrafo_con_nivel(PARRAFO_FourFigures_A, 'Número de aciertos (A)', 'FourFigures_A')
-        parrafo_con_nivel(PARRAFO_FourFigures_C, 'Errores de comisión (C)', 'FourFigures_C_texto')
-        parrafo_con_nivel(PARRAFO_FourFigures_P4_A_obtenido_vs_esperado, 'Flexibilidad cognitiva', 'FourFigures_P4_A_obtenido_vs_esperado')
+        if es_naming_numbers:           # Revisar si aquí 1212- 1228 no se debería coger NamingNumber_ en vez de FourFigures_
+            nivel_tr = clasificaciones.get('FourFigures_TR', 'normal')
+            nivel_c = clasificaciones.get('FourFigures_C', 'normal')
+            if nivel_tr == 'normal':
+                clave_tr = 'TR normal y C normal o bajo' if nivel_c == 'bajo' else 'TR normal y C alto'
+            else:
+                clave_tr = f'TR {nivel_tr}'
+
+            if nivel_c == 'normal':
+                clave_c = 'C normal'
+            elif nivel_c == 'alto':
+                clave_c = 'C alto y TR bajo' if nivel_tr == 'bajo' else 'C alto y TR alto o normal'
+            else:
+                clave_c = 'C bajo y TR bajo' if nivel_tr == 'bajo' else 'C bajo y TR normal o alto'
+
+            nivel_a = clasificaciones.get('FourFigures_A', 'normal')
+            nivel_p4 = clasificaciones.get('FourFigures_P4_A_obtenido_vs_esperado')
+            if nivel_p4 == 'normal':
+                clave_p4 = 'normal y A bajo' if nivel_a == 'bajo' else 'normal y A normal o alto'
+            else:
+                clave_p4 = nivel_p4
+
+            for textos, clave in (
+                (PARRAFO_NamingNumbers_TR, clave_tr),
+                (PARRAFO_NamingNumbers_A, nivel_a),
+                (PARRAFO_NamingNumbers_C, clave_c),
+                (PARRAFO_NamingNumbers_P4, clave_p4),
+            ):
+                texto = textos.get(clave)
+                if texto:
+                    doc.add_paragraph(texto.format(nombre=nombre))
+        else:
+            parrafo_con_nivel(PARRAFO_FourFigures_TR, 'Velocidad de procesamiento / Tiempo de respuesta (TR)', 'FourFigures_TR_texto')
+            parrafo_con_nivel(PARRAFO_FourFigures_A, 'Número de aciertos (A)', 'FourFigures_A')
+            parrafo_con_nivel(PARRAFO_FourFigures_C, 'Errores de comisión (C)', 'FourFigures_C')
+            parrafo_con_nivel(PARRAFO_FourFigures_P4_A_obtenido_vs_esperado, 'Flexibilidad cognitiva', 'FourFigures_P4_A_obtenido_vs_esperado')
 
     if 'DUALTASK' in resultados.get('available_tests', []):
         doc.add_page_break()
