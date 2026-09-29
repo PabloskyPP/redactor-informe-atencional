@@ -229,16 +229,16 @@ PARRAFO_ANT_TR = {
 
 PARRAFO_ANT_A = {
 
-    'A bajo':"""{nombre} muestra un porcentaje de aciertos bajo, lo que indica complicaciones para completar eficientemente la tarea presentada. Según este resultado, la capacidad atencional general parece ser inferior a la media para su edad.""",
+    'A bajo':"""Se registra un escaso número de aciertos, lo que indica complicaciones para completar eficientemente la tarea presentada. Según este resultado, la capacidad atencional general parece ser inferior al promedio de su edad.""",
 
-    'A normal':"""{nombre} muestra un porcentaje de aciertos normal, lo que parece indicar una capacidad atencional general adecuada a la esperada para su edad.""",
+    'A normal':"""Se registra un número normal de aciertos, lo que parece indicar una capacidad atencional general adecuada a la esperada para su edad.""",
     
-    'A alto':"""{nombre} muestra un porcentaje de aciertos alto, lo que parece indicar una capacidad atencional general superior a la media para su edad.""",
+    'A alto':"""Se registra un alto número de aciertos, lo que de primeras sugiere una muy buena capacidad atencional en general.""",
 }
 
 PARRAFO_ANT_C = {
 
-    'C alto y TR bajo o normal':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad.""",
+    'C alto y TR alto o normal':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad.""",
 
     'C alto y TR bajo':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad. Por otro lado, {nombre} tarda más de lo normal o esperado en emitir sus respuestas. Ambos índices parecen señalar la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
 
@@ -311,16 +311,8 @@ PARRAFO_ANT_ejecutivo = {
 # CPT — PÁRRAFOS CONDICIONALES OPCIONALES  . Se usa tanto para la prueba CPT como la D2
 # ============================================================================
 
-# cambiar CON por TOT
-PARRAFO_CPT_CON = {
-    'alto': """El índice de concentración elevado evidencia un excelente equilibrio entre velocidad y precisión, reflejando una elevada concentración y control atencional durante la tarea. Esto sugiere que {nombre} estuvo muy despierto durante la realización de la prueba.""",
-    
-    'normal': """El índice de concentración se sitúa dentro de valores esperables, indicando un equilibrio adecuado entre rapidez y exactitud en la ejecución de la tarea. Este resultado refleja una capacidad de concentración acorde a las demandas de la tarea, sin que se observen dificultades importantes en la regulación del esfuerzo atencional. Según esto, {nombre} estuvo lo suficientemente despierto para realizar adecuadamente la tarea.""",
-    
-    'bajo': """Un nivel bajo en el índice de concentración sugiere dificultades para integrar rapidez y precisión, bien por exceso de velocidad con descuido, bien por lentitud sin compensación en precisión, o bien por ambas, lentitud y descuido. Esto señala que la concentración de {nombre} durante la prueba fue en general pobre, y que seguramente no estuvo lo suficientemente despierto como para realizarla correctamente."""
-}
 
-# TR - Velocidad de procesamiento
+# TR equivale a CPT_N 'N' = número de elementos procesados
 PARRAFO_CPT_TR = {
     'alto y E alto o normal': """El elevado número de elementos procesados indica una excelente velocidad de procesamiento, asociada a escepcional capacidad de exploración visual y rapidez en la toma de decisiones.""",
     
@@ -331,6 +323,14 @@ PARRAFO_CPT_TR = {
     'bajo y E normal o alto': """El bajo volumen de elementos procesados sugiere una velocidad de procesamiento reducida. {nombre} requiere de más tiempo de lo normal para procesar y discriminar la información. Esto puede incapacitar y emperorar el desempeño, especialmente ante tareas con limitación temporal o de desempeño rápido.""",
 # Álvaro. Necesidad calcular una PT de E
     'bajo y E bajo': """El bajo volumen de elementos procesados sugiere una velocidad de procesamiento reducida. Un vistazo al reducido número de errores cometidos (omisiones y comisiones en conjunto) señalan la prevalencia de un estilo atencional y de trabajo más reflexivo, ganando mayor precisión a costa de menor velocidad de respuesta. Aunque esto puede ser ventajoso para el desempeño de tareas más precisas, también puede suponer cierta desventaja ante tareas con limitación temporal y de desempeño rápido. No saber regular el estilo atencional más oportuno a las demandas de una tarea puede suponer una deficiencia atencional, y un problema solventable con entrenamiento."""
+}
+
+PARRAFO_CPT_TOT = {
+    'alto': """Por otro lado, el índice de TOT señala un excelente equilibrio entre velocidad y precisión, donde aún analizando muchos casos, se descuidan pocos estímulos señal y se erra poco con los distractores. Esto refleja un estado muy despierto y una elevada concentración durante la tarea.""",
+    
+    'normal': """Por otro lado, el índice de TOT se sitúa dentro de valores esperables, indicando un equilibrio adecuado entre velocidad y precisión durante la ejecución de la tarea. Esto refleja un estado de activación y concentración adecuado para las demandas de la tarea.""",
+    
+    'bajo': """Por otro lado, el bajo índice de TOT señala dificultades para integrar rapidez y precisión, bien por exceso de velocidad con descuido, bien por excesiva parsimonia, o bien por ambas, lentitud y descuido. Esto señala que la concentración de {nombre} durante la prueba fue en general pobre, y que seguramente no estuvo lo suficientemente despierto como para realizarla correctamente."""
 }
 
 # O - Errores de omisión
@@ -344,46 +344,248 @@ PARRAFO_CPT_O = {
 
 # C - Errores de comisión
 PARRAFO_CPT_C = {
-    'bajo': """El aumento de errores de comisión sugiere dificultades en el control inhibitorio: una mayor impulsividad en la respuesta o cierta deficiencia perceptiva en la discriminación y omisión de la información irrelevante  y engañosa.""",
+    'bajo': """Por otro lado, el aumento de errores de comisión sugiere dificultades en el control inhibitorio: una mayor impulsividad en la respuesta o cierta deficiencia perceptiva en la discriminación y omisión de la información irrelevante  y engañosa.""",
     
-    'normal': """La frecuencia de errores de comisión se encuentra dentro de rangos normales, lo que refleja un control inhibitorio adecuado, y una impulsiva en la respuesta igual a lo esperado para su edad. Este patrón sugiere una correcta discriminación y omisión de la información irrelevante  y engañosa.""",
+    'normal': """Por otro lado, la frecuencia de errores de comisión se encuentra dentro de rangos normales, lo que refleja un control inhibitorio adecuado, y una impulsiva en la respuesta igual a lo esperado para su edad. Este patrón sugiere una correcta discriminación y omisión de la información irrelevante  y engañosa.""",
     
-    'alto': """La escasa presencia de errores de comisión indica un alto control inhibitorio, con respuestas cuidadosas y precisas que reflejan una buena capacidad de discriminación y omisión de la información irrelevante y engañosa."""
+    'alto': """Por otro lado, la escasa presencia de errores de comisión indica un alto control inhibitorio, con respuestas cuidadosas y precisas que reflejan una buena capacidad de discriminación y omisión de la información irrelevante y engañosa."""
 }
 
 
 PARRAFO_CPT_VAR = {
-# Álvaro. Calcular presencia Fatiga o automatismo por prueba t entre el índice CON del primer y tercer tercio prueba? Necesidad baremar esta dif.?
+# Álvaro. Calcular presencia Fatiga o automatismo por prueba t entre el índice TOT del primer y tercer tercio prueba? Necesidad baremar esta dif.?
     ('bajo', 'nada'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación constante y a una mayor facilidad para distraerse. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados.""",
 
 # dentro de la condición VAR se tratan las condiciones 'Fatiga' y 'Automatizacion' si dif. sign. negativa o positiva respectivamente entre el primer (primeras 4 series) y tercer tercio (últimas 4 series) de la prueba.
     ('bajo', 'fatiga'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series, vinculada a dificultades para mantener la motivación y a una mayor facilidad para distraerse. En particular, aparece aquí cierto cansancio o fatiga con el transcurso de la tarea, ya que la serie de peor rendimiento se obtuvo más hacia el final de la tarea, en comparación con la de mayor rendimiento. Esto influye a su vez a un declive en la puntuación de {nombre} en los demás aspectos atencionales anteriormente evaluados.""",
 
-# 'automatismo' (positivo) o 'dificultadinicial'(negativo) en f(CON)
-    ('bajo', 'automatismo', 'CON normal o alto' ): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una notable capacidad para adaptarse y automatizar la ejecución a largo plazo.""",
+# 'automatismo' (positivo) o 'dificultadinicial'(negativo) en f(TOT)
+    ('bajo', 'automatismo', 'TOT normal o alto' ): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una notable capacidad para adaptarse y automatizar la ejecución a largo plazo.""",
 
-    ('bajo', 'dificultadinicial', 'CON bajo'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una dificultad inicial para asimilar y acomodarse rápidamente a la nueva tarea.""",
+    ('bajo', 'dificultadinicial', 'TOT bajo'): """{nombre} mostró un rendimiento muy variable entre su mejor y peor serie. Véase esta variabilidad en la gráfica superior y su curva de trabajo, la línea zigzagueante que une el último elemento procesado de cada serie. Este dato puede indicar una falta de atención sostenida entre diferentes series. Además se observa que el rendimiento fue en mejora progresiva, con las peores series al principio de la tarea y las de mejor rendimiento hacia el final. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad se trata más bien de una dificultad inicial para asimilar y acomodarse rápidamente a la nueva tarea.""",
 
     ('normal', 'nada'): """ El último aspecto para mencionar es en relación a la variabilidad del rendimiento, trazada en el perfil gráfico adjunto en este informe. Aquí se puede ver que el rendimiento de {nombre} durante la prueba ha resultado estable y consistente entre series. Esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales aquí evaluados resulta típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte o la aparición de cansancio, respectivamente, son menos probables.""",
 
     ('normal', 'fatiga'): """ El último aspecto para mencionar es en relación a la variabilidad del rendimiento, trazada en el perfil gráfico adjunto en este informe. Aquí se puede ver que el rendimiento de {nombre} durante la prueba ha resultado estable y consistente entre series. Esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales aquí evaluados resulta típico y constante en su persona. Y que por tanto, otras explicaciones aleatorias a su mejor o peor rendimiento son menos probables. Sin embargo, sí que parece que el rendimiento general se ha podido ver perjudicado debido a cierto cansancio o fatiga hacia el final de la tarea.""",
 
-    ('normal','automatismo', 'CON normal o alto' ): """ El último aspecto para mencionar es en relación a la variabilidad del rendimiento, trazada en el perfil gráfico adjunto en este informe. Aquí se puede ver que el rendimiento de {nombre} durante la prueba ha resultado estable y consistente entre series. Esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales aquí evaluados resulta típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, sí que se encuentra bastante diferencia entre las primeras y las últimas series de la tarea. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilida corresponde con una resaltable capacidad para adaptarse y automatizar la ejecución a largo plazo.""",
+    ('normal','automatismo', 'TOT normal o alto' ): """ El último aspecto para mencionar es en relación a la variabilidad del rendimiento, trazada en el perfil gráfico adjunto en este informe. Aquí se puede ver que el rendimiento de {nombre} durante la prueba ha resultado estable y consistente entre series. Esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales aquí evaluados resulta típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, sí que se encuentra bastante diferencia entre las primeras y las últimas series de la tarea. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilida corresponde con una resaltable capacidad para adaptarse y automatizar la ejecución a largo plazo.""",
 
-    ('normal', 'dificultadinicial', 'CON bajo'): """ El último aspecto para mencionar es en relación a la variabilidad del rendimiento, trazada en el perfil gráfico adjunto en este informe. Aquí se puede ver que el rendimiento de {nombre} durante la prueba ha resultado estable y consistente entre series. Esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales aquí evaluados resulta típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, sí que se encuentra bastante diferencia entre las primeras y las últimas series de la tarea. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad corresponde con una importante dificultad inicial para asimilar y acomodarse rápidamente a la nueva tarea.""",
+    ('normal', 'dificultadinicial', 'TOT bajo'): """ El último aspecto para mencionar es en relación a la variabilidad del rendimiento, trazada en el perfil gráfico adjunto en este informe. Aquí se puede ver que el rendimiento de {nombre} durante la prueba ha resultado estable y consistente entre series. Esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales aquí evaluados resulta típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, sí que se encuentra bastante diferencia entre las primeras y las últimas series de la tarea. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad corresponde con una importante dificultad inicial para asimilar y acomodarse rápidamente a la nueva tarea.""",
 
     ('alto', 'nada'): """El bajo nivel de variabilidad observado sugiere una alta consistencia y estabilidad en el rendimiento, indicando una buena resistencia al cansancio o fatiga y una buena capacidad para sostener el esfuerzo atencional de forma uniforme durante toda la tarea. Además, esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales anteriormente evaluados resulta aún más típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte, distracciones puntuales o la aparición de cansancio, respectivamente, son menos probables.""",
    
     ('alto','fatiga'): """ El bajo nivel de variabilidad observado sugiere una alta consistencia y estabilidad en el rendimiento, indicando una buena capacidad para sostener el esfuerzo atencional de forma uniforme durante toda la tarea. Además, esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales anteriormente evaluados resulta aún más típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte, distracciones puntuales o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, en esta tarea sí que se ha mostrado un cansancio o fatiga con el transcurso de la tarea, lo que pudo influir en un declive en la puntuación de {nombre} en los demás aspectos atencionales en esta tarea evaluados.""",
    
-    ('alto','automatismo', 'CON normal o alto' ): """ El bajo nivel de variabilidad observado sugiere una alta consistencia y estabilidad en el rendimiento, indicando una buena resistencia al cansancio o fatiga y una buena capacidad para sostener el esfuerzo atencional de forma uniforme durante toda la tarea. Además, esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales anteriormente evaluados resulta aún más típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte, distracciones puntuales o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, sí que se encuentra bastante diferencia entre las primeras y últimas series de la tarea. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad corresponde con una resaltable capacidad para adaptarse y automatizar la ejecución a largo plazo.""",
+    ('alto','automatismo', 'TOT normal o alto' ): """ El bajo nivel de variabilidad observado sugiere una alta consistencia y estabilidad en el rendimiento, indicando una buena resistencia al cansancio o fatiga y una buena capacidad para sostener el esfuerzo atencional de forma uniforme durante toda la tarea. Además, esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales anteriormente evaluados resulta aún más típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte, distracciones puntuales o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, sí que se encuentra bastante diferencia entre las primeras y últimas series de la tarea. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad corresponde con una resaltable capacidad para adaptarse y automatizar la ejecución a largo plazo.""",
    
-    ('alto', 'dificultadinicial', 'CON bajo'): """ El bajo nivel de variabilidad observado sugiere una alta consistencia y estabilidad en el rendimiento, indicando una buena resistencia al cansancio o fatiga y una buena capacidad para sostener el esfuerzo atencional de forma uniforme durante toda la tarea. Además, esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales anteriormente evaluados resulta aún más típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte, distracciones puntuales o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, sí que se encuentra bastante diferencia entre las primeras y las últimas series de la tarea. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad corresponde con una importante dificultad inicial para asimilar y acomodarse rápidamente a la nueva tarea.""",
+    ('alto', 'dificultadinicial', 'TOT bajo'): """ El bajo nivel de variabilidad observado sugiere una alta consistencia y estabilidad en el rendimiento, indicando una buena resistencia al cansancio o fatiga y una buena capacidad para sostener el esfuerzo atencional de forma uniforme durante toda la tarea. Además, esto es indicativo de que la ejecución de {nombre} en los aspectos atencionales anteriormente evaluados resulta aún más típico y constante en su persona. Y que por tanto, otras explicaciones a su mejor o peor rendimiento, como la suerte, distracciones puntuales o la aparición de cansancio, respectivamente, son menos probables. Sin embargo, sí que se encuentra bastante diferencia entre las primeras y las últimas series de la tarea. Teniendo también en cuenta el índice CON promedio, vemos que esta variabilidad corresponde con una importante dificultad inicial para asimilar y acomodarse rápidamente a la nueva tarea.""",
 
 }
 
+
 # ============================================================================
-# 3.3.1 FourFigures
+# 3.3 DUAL-TASK
+# ============================================================================
+
+
+# PD_Total - Según puntuación directa total y correspondiente percentil. Nuevo índice T2 P sale de A - C
+PARRAFO_DUALTASK_General_PSV_y_A = {
+
+    'PSV alto y T2 P alto':"""El rendimiento general en la prueba es escepcionalmente bueno, a la vez que estable entre las dos tareas. En la tarea de seguimiento visomotor se registra un rendimiento continuo excelente, mientras que en la segunda tarea más disruptiva y vinculada a los reflejos, también se obtuvo un número de aciertos superior al promedio. Esto ya de primeras nos sugiere una sobresaliente capacidad atencional, y más importante aún, una muy buena capacidad de gestión de los recursos atencionales para atender y responder a más de una tarea al mismo tiempo.""",
+
+    'PSV alto y T2 P normal':"""El rendimiento general en la prueba es excelente. En particular, en la tarea de seguimiento visomotor se registra un rendimiento de atención sostenida por encima del promedio. Mientras, en la segunda tarea más disruptiva y vinculada a los reflejos, se mantuvo un rendimiento en cuestión de aciertos, algo peor en comparación con la otra tarea, pero igualmente bueno, adecuado a lo esperable para su edad. Esto corresponde a una buena capacidad de gestión de los recursos atencionales para atender y responder a más de una tarea al mismo tiempo, sin desatender ninguna en exceso.""",
+
+    'PSV normal y T2 P alto':"""El rendimiento general en la prueba es positivo y estable entre tareas. En particular, en la tarea de desempeño disruptivo y dependiente de reflejos, donde el número de aciertos registrado está por encima del promedio. Mientras, en la segunda tarea, de seguimiento visomotor continuado, se mantuvo un rendimiento algo peor en comparación con la otra tarea, pero igualmente bueno, adecuado a lo esperable para su edad. Esto corresponde a una buena capacidad de gestión de los recursos atencionales para atender y responder a más de una tarea al mismo tiempo, sin desatender ninguna en exceso.""",
+
+    'PSV normal y T2 P normal':"""El rendimiento general en la prueba es adecuado y estable entre tareas. Esto índica una capacidad adecuada de gestión de los recursos atencionales para atender y responder a más de una tarea al mismo tiempo, sin desatender ninguna tarea en exceso.""",
+
+    'PSV normal y T2 P bajo':"""El rendimiento general en la prueba es algo inestable entre tareas. Esto indica una capacidad limitada de gestión de los recursos atencionales para atender y responder a más de una tarea al mismo tiempo. Mientras que el seguimiento visomotor continuado se mantiene adecuadamente, la segunda tarea de desempeño disruptivo y dependiente de reflejos, se desatiende en exceso obteniendo un rendimiento deficiente, por debajo de lo normal.""",
+
+    'PSV bajo y T2 P normal':"""El rendimiento general en la prueba es algo inestable entre tareas. Esto indica una capacidad limitada de gestión de los recursos atencionales para atender y responder a más de una tarea al mismo tiempo. Mientras que el desempeño en la segunda tarea, vinculada a la detección de estímulos disruptivos y respuestas rápidas, resulta adecuado, el seguimiento visomotor asociado a la primera tarea se desatiende, originando un rendimiento deficiente, por debajo de lo normal.""",
+
+    'PSV alto y T2 P bajo':"""El rendimiento general en la prueba resulta sumamente inestable y variable entre tareas. Esto indica que {nombre} tiene importantes dificultades para gestionar sus recursos atencionales y poder atender y responder a más de una tarea al mismo tiempo. Bien por preferencia o por capacidad atencional, toda la atención parece haberse depositado en la tarea de seguimiento visomotor, para la cual el rendimiento ha sido sobresaliente. Por otra parte sin embargo, la segunda tarea de respuesta ocasional y rápida se ha desatendido hasta el punto de obtener un número de aciertos significativamente por debajo del promedio. Las dificultades para gestionar equitativamente los recursos atencionales y cognitivos en función de la demanda de trabajo derivan en un resultado total insuficiente. Para ejemplificar esto, es como si una persona pudiese leer muy rápido pero sólo hablar lentamente, resultando en que sólo pueda leer lentamente en voz alta.""",
+
+    'PSV bajo y T2 P alto':"""El rendimiento general en la prueba resulta sumamente inestable y variable entre tareas. Esto indica que {nombre} tiene importantes dificultades para gestionar sus recursos atencionales y poder atender y responder a más de una tarea al mismo tiempo. Bien por preferencia o por capacidad atencional, toda la atención parece haberse depositado en la tarea de respuesta refleja y ocasional, para la cual el rendimiento ha sido sobresaliente. Por otra parte sin embargo, la tarea de constante seguimiento visomotor parece haberse desatendido casi por completo, resultando en un rendimiento significativamente por debajo del promedio. Las dificultades para gestionar equitativamente los recursos atencionales y cognitivos en función de la demanda de trabajo derivan en un resultado total insuficiente. Para ejemplificar esto, es como si una persona pudiese leer muy rápido pero sólo hablar lentamente, resultando en que sólo pueda leer lentamente en voz alta.""",
+
+    'PSV bajo y T2 P bajo':"""El rendimiento general en la prueba está muy por debajo del promedio. Tanto en la tarea de constante seguimiento visomotor como en la de respuesta refleja ocasional el desempeño ha sido deficiente. Un resultado tan negativo es incluso poco probable y bien puede deberse a una ejecución poco seria, de respuesta aleatoria o ausente, que no es representativa de la capacidad atencional real de la persona. Si por el contrario, la persona ha intentado rendir al máximo durante esta prueba, estos resultados señalan entonces una capacidad atencional general limitada, o inferior a lo normal y esperable para una persona de su edad. También importantes dificultades en la gestión de sus recursos atencionales para atender y responder a más de una tarea al mismo tiempo.""",
+}
+PARRAFO_DUALTASK_si_inestable = {
+    'PSV alto y T2 P normal o bajo':"""La existencia de cierto desbalance en la gestión de la atención dirigida a cada tarea sugiere una preferencia cognitiva por las tareas que demandan una atención sostenida y ejecución constante, frente a las tareas basadas en reflejos que demandan una ejecución rápida e intermitente o disruptiva. Esta preferencia cognitiva supone una mejor aptitud para actividades donde importa la persistencia, la concentración prolongada y el ritmo estable, tales como: leer, redactar y pintar de forma extendida, meditar, hacer senderismo o natación.""",
+    'PSV normal y T2 P bajo':"""La existencia de cierto desbalance en la gestión de la atención dirigida a cada tarea sugiere una preferencia cognitiva por las tareas que demandan una atención sostenida y ejecución constante, frente a las tareas basadas en reflejos que demandan una ejecución rápida e intermitente o disruptiva. Esta preferencia cognitiva supone una mejor aptitud para actividades donde importa la persistencia, la concentración prolongada y el ritmo estable, tales como: leer, redactar y pintar de forma extendida, meditar, hacer senderismo o natación.""",
+
+    'PSV normal o bajo y T2 P alto':"""La existencia de cierto desbalance en la gestión de la atención dirigida a cada tarea sugiere una preferencia cognitiva por las tareas basadas en reflejos que demandan una ejecución rápida e intermitente o disruptiva, frente a las tareas atención sostenida y ejecución constante. Esta preferencia cognitiva supone una mejor aptitud para actividades donde predominan los picos de acción intensa, decisiones rápidas y cambios abruptos, tales como: improvisación teatral o en oratoria, deportes (fútbol, baloncesto, boxeo) y videojuegos frenéticos.""",
+    'PSV bajo y T2 P normal':"""La existencia de cierto desbalance en la gestión de la atención dirigida a cada tarea sugiere una preferencia cognitiva por las tareas basadas en reflejos que demandan una ejecución rápida e intermitente o disruptiva, frente a las tareas atención sostenida y ejecución constante. Esta preferencia cognitiva supone una mejor aptitud para actividades donde predominan los picos de acción intensa, decisiones rápidas y cambios abruptos, tales como: improvisación teatral o en oratoria, deportes (fútbol, baloncesto, boxeo) y videojuegos frenéticos.""",
+}
+
+# Revisar. Cambiar memoria de trabajo x  operativa si correlación con MemorizationDigits
+# Confirmar si este índice realmente correlaciona con memoria de trabajo en DigitsNumbers. Este y el siguiente párrafo se obtienen por la dif. sign y baremada de PSV en evento concurrente o (concurrente + after) frente unrelated. 
+PARRAFO_DUALTASK_memoria_trabajo_cuando_concurrencia = {
+    'bajo':"""Respecto a la memoria de trabajo, se ve que el seguimiento visomotor en la tarea 1 se deteriora significativamente en los momentos de mayor carga de trabajo y demanda cognitiva. Esto es, en los momentos que hay que atender a la tarea 1 y 2, información procedente de diversas fuentes. Existe por tanto una capacidad limitada, para atender y procesar simultáneamente una cantidad de información inferior al del promedio.""",
+
+    'normal':"""Respecto a la memoria de trabajo, se ve que el seguimiento visomotor en la tarea 1 se mantiene estable en los momentos de mayor carga de trabajo y demanda cognitiva. Esto es, en los momentos que hay que atender simultánemamente a la tarea 1 y 2, información procedente de diversas fuentes. Existe por tanto suficiente capacidad para atender y procesar más cantidad de información simultáneamente.""",
+
+    'alto y T2 P bajo':"""Respecto a la memoria de trabajo, se ve que el seguimiento visomotor en la tarea 1 se mantiene incluso más estable de lo esperable en los momentos de mayor carga de trabajo y demanda cognitiva. Esto es, en los momentos que hay que atender simultáneamente a la tarea 1 y 2, información procedente de diversas fuentes. Sin embargo, también vemos que el desempeño en la segunda tarea resulta deficiente. Este resultado esta por lo tanto facilitado por la completa desatención de la tarea 2, no siendo así indicativo de una buena memoria operativa. Por el contrario, es de esperar que la cantidad de información que {nombre} es capaz de procesar de manera simultánea sea menor a la del promedio.""",
+
+    'alto y T2 P normal o alto':"""Respecto a la memoria de trabajo, se ve que el seguimiento visomotor en la tarea 1 se mantiene incluso más estable de lo esperable en los momentos de mayor carga de trabajo y demanda cognitiva. Esto es, en los momentos que hay que atender simultáneamente a la tarea 1 y 2, información procedente de diversas fuentes. Mientras que tampoco se desatiende el adecuado desempeño en la segunda tarea. Este resultado señala una excelente memoria operativa. Esto es, la capacidad para atender y procesar mayor cantidad de información que el promedio de manera simultánea.""",
+}
+
+# Deterior significa dif. sign. PSV concurrent vs unrelated ¿y también baremada?
+PARRAFO_DUALTASK_estilo_atencional_cuando_concurrencia = {
+    'deterioro y T2 normal o alto':"""Por otro lado, en estos momentos de concurrencia de tareas y mayor demanda atencional, mientras que la precisión de seguimiento en la tarea 1 empeora, el desempeño en la tarea 2 se mantiene satisfactorio. Esto sugiere una preferencia y prevalencia de un estilo atencional caracterizado por el cambio focal intermitente entre tareas. {nombre} no atiende a ambas tareas simultáneamente, sino que deja de atender la primera tarea de desempeño continuo cuando la segunda tarea de respuesta rápida y ocasional demanda más atención. Volviéndo rápidamente a atender la primera cuando la demanda atencional de la segunda se reduce o desaparece.""",
+
+    'deterioro y T2 P bajo':"""Por otro lado, en estos momentos de concurrencia de tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 empeora, mientras que también la atención en la tarea 2 resulta insuficiente, en particular, con relación a una precisión de respuesta inferior al promedio. El deterioro en el rendimiento repartido por igual entre ambas tareas parece señalar la preferencia y prevalencia por un estilo atencional caracterizado por la distribución paralela de la atención. A fin de atender y responder lo mejor posible a las dos tareas, {nombre} opta por hacer más difuso y amplio su foco atencional. Manteniendo así una atención estable y simultánea para las dos tareas. Sin embargo, 'el que mucho abarca poco aprieta'. Debido a una limitada memoria operativa, {nombre} encuentra dificultades para procesar tanta información, lo que termina repercutiendo negativamente en su rendimiento.""",
+    
+    'deterioro y T2 TR bajo':"""Por otro lado, en estos momentos de concurrencia de tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 empeora, mientras que también la atención en la tarea 2 resulta insuficiente, en particular con relación a una velocidad de respuesta inferior al promedio. Este deterioro en el rendimiento repartido por igual entre ambas tareas parece señalar la preferencia y prevalencia por un estilo atencional caracterizado por la distribución paralela de la atención. A fin de atender y responder lo mejor posible a las dos tareas, {nombre} opta por hacer más difuso y amplio su foco atencional. Manteniendo así una atención estable y simultánea para las dos tareas. Sin embargo, 'el que mucho abarca poco aprieta'. Debido a una limitada memoria operativa, {nombre} encuentra dificultades para procesar tanta información, lo que termina repercutiendo negativamente en su rendimiento.""",
+
+    'deterioro y T2 P y TR bajo':"""Por otro lado, en estos momentos de concurrencia de tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 empeora, mientras que también la atención en la tarea 2 resulta insuficiente, con relación tanto a la precisión como a la velocidad en la respuesta, ambas inferiores al promedio. El estilo atencional aquí presente está caracterizado por el cambio focal intermitente entre tareas. Sin embargo, {nombre} presenta dificultades para dirigir adecuadamente su atención y para procesar tanta información. El tener que procesar una segunda tarea simultáneamente únicamente le provoca una gran distracción y perjuicio durante la prueba.""",
+
+    'no deterioro y T2 P y TR normal o alto':"""Por otro lado, en estos momentos de concurrencia de tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 no se ve apenas afectada, a la vez que se mantiene un buen rendimiento en la segunda tarea. Esto sugiere una preferencia y prevalencia por un estilo atencional caracterizado por la distribución paralela de la atención. A fin de atender y responder efectivamente a las dos tareas, {nombre} opta por hacer más difuso y amplio su foco atencional. Manteniendo así una atención estable y simultánea para las dos tareas.""",
+
+    'no deterioro y T2 P bajo':"""Por otro lado, en estos momentos de concurrencia de tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 no se ve apenas afectada, mientras que la atención en la tarea 2 resulta insuficiente, en particular con relación a una precisión de respuesta inferior al promedio. Esto sugiere dificultades en la gestión de la atención y la excesiva carga de trabajo en contextos dinámicos y de multitarea. Y también, una preferencia y tendencia a focalizar más recursos cognitivos en una única tarea.""",
+
+    'no deterioro y T2 TR bajo':"""Por otro lado, en estos momentos de concurrencia de tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 no se ve apenas afectada, mientras que la atención en la tarea 2 resulta insuficiente, en particular con relación a una velocidad de respuesta inferior al promedio. Esto sugiere dificultades en la gestión de la atención y la excesiva carga de trabajo en contextos dinámicos y de multitarea. Y también, una preferencia y tendencia a focalizar más recursos cognitivos en una única tarea.""",
+
+    'no deterioro y T2 P y TR bajo':"""Por otro lado, en estos momentos de concurrencia de tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 no se ve apenas afectada, mientras que la atención en la tarea 2 resulta insuficiente, con relación tanto a la precisión como a la velocidad en la respuesta, ambas inferiores al promedio. Esto señala dificultades en la gestión de la atención y la excesiva carga de trabajo en contextos dinámicos y de multitarea. Y también, una preferencia y tendencia a focalizar todos los recursos cognitivos en una única tarea.""",
+}
+
+PARRAFO_DUALTASK_PSV = {
+    'bajo':"""En la tarea 1 la precisión del seguimiento visomotor inferior al promedio señala dificultades en las capacidades visomotoras y de movimiento fino. Esta habilidad es importante para la capacidad de seguir estímulos en movimiento y realizar movimientos coordinados ojo mano, tales como escribir, pintar o construir. Dificultades en esta dimensión representa una mayor probabilidad de presentar problemas de disgrafía.""",
+
+    'normal':"""En la tarea 1 la precisión del seguimiento visomotor igual al promedio señala adecuadas capacidades visomotoras y de movimiento fino. Esta habilidad es importante para la capacidad de seguir estímulos en movimiento y realizar movimientos coordinados ojo mano, tales como escribir, pintar o construir.""",
+
+    'alto':"""En la tarea 1 la precisión del seguimiento visomotor superior al promedio señala sobresalientes capacidades visomotoras y de movimiento fino. Esta habilidad es importante para la capacidad de seguir estímulos en movimiento y realizar movimientos coordinados ojo mano, tales como escribir, pintar o construir.""",
+}
+
+# Este párrafo no se utiliza actualmente. Los A contabilizan para el párrafo de Rendimiento General 'PARRAFO_DUALTASK_General_PSV_y_A'. Cambiar si tal después de confirmar su ubicación en arousal o at. sostenida tras correlaciones.
+PARRAFO_DUALTASK_A = {
+
+    'A bajo':"""Para la tarea 2 encontramos en primer lugar bajo número de aciertos. Esto puede ser indicativo de un estado de vigilancia o de atención sostenida deficiente durante la prueba.""",
+
+    'A normal':"""Para la tarea 2 encontramos en primer lugar un número de aciertos normal. Esto puede ser indicativo de un adecuado estado de vigilancia y de atención sostenida durante la prueba.""",
+    
+    'A alto':"""Para la tarea 2 encontramos en primer lugar un elevado número de aciertos. Esto puede ser indicativo de un sobresaliente estado de vigilancia o de atención sostenida.""",
+}
+
+PARRAFO_DUALTASK_O = {
+    'O alto':"""A su vez el número de errores de omisión resulta bajo. Es decir, que pocas veces no se ha respondido cuando se debería. Este resultado señala una velocidad de procesamiento de la información y de toma de decisiones bien ajustada a la exigencia temporal de la tarea. Otra explicación factible es la de una capacidad superior al promedio para mantener la atención sostenida a lo largo de la tarea, sin distraerse o fatigarse, de manera que se dificulte emitir una respuesta en los momentos oportunos.""",
+
+    'O normal':"""A su vez el número de errores de omisión resulta normal, Es decir, que no se ha respondido cuando se debería un número de veces igual a lo esperado para su edad. Este resultado señala una velocidad de procesamiento de la información y toma de decisiones adecuada a la exigencia temporal de la tarea. Este índice también puede señalar una capacidad adecuada para mantener la atención sostenida a lo largo de la tarea, sin distraerse o fatigarse demasiado, de manera que se dificulte emitir una respuesta en los momentos oportunos.""",
+    
+    'O bajo':"""A su vez el número de errores de omisión resulta alto. Es decir, que no se ha respondido cuando se debería un número de veces superior a lo esperado para su edad. Este resultado señala una velocidad de procesamiento de la información y toma de decisiones demasiado lenta para la exigencia temporal de la tarea. Otra explicación factible es la de una capacidad inferior al promedio para mantener la atención sostenida a lo largo de la tarea: con tendencia a distraerse o fatigarse, y dificultad para emitir una respuesta en los momentos oportunos.""",
+}
+
+PARRAFO_DUALTASK_C = {
+
+    'C alto':"""Finalmente el número de errores de comisión es bajo. Es decir, que pocas veces {nombre} emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente, y una muy baja impulsividad.""",
+
+    'C normal':"""Finalmente el número de errores de comisión es normal. Es decir, que {nombre} emite un número de respuestas erróneas igual a lo esperado para su edad. Este resultado señala, a la hora de tomar decisiones, una capacidad adecuada para discriminar la información de manera eficiente y un nivel de impulsividad igual al esperado para su edad.""",
+
+    'C bajo':"""Finalemnte el número de errores de comisión es alto. Es decir, que {nombre} emite un número de respuestas erróneas superior a lo esperado para su edad. Este resultado puede señalar dos cosas: una capacidad inferior al promedio para discriminar la información de manera eficiente, y/o un nivel de impulsividad superior al esperado para su edad.""",
+}
+
+# Añadir este PARRAFO_TR_A_vs_C sólo cuando C es normal o alto
+PARRAFO_DUALTASK_TR_A_vs_C = {
+    'C normal y TR_A_vs_C positivo':"""Si miramos al tiempo de respuesta de las comisiones frente a los aciertos, vemos que los errores de comisión de {nombre} acontecen a una mayor velocidad de respuesta en comparación con los aciertos. Esto señala que los errores de precisión se deben a respuestas más impulsivas.""",
+    'C normal y TR_A_vs_C negativo':"""Si miramos al tiempo de respuesta de las comisiones frente a los aciertos, vemos que los errores de comisión de {nombre} acontecen a una menor velocidad de respuesta en comparación con los aciertos. Esto señala que los errores de precisión se deben, no tanto a un problema de impulsividad, pero a dificultades puntuales en la percepción y el procesamiento de la información.""",
+
+    'C alto y TR_A_vs_C positivo':"""Si miramos al tiempo de respuesta de las comisiones frente a los aciertos, vemos que los errores de comisión de {nombre} acontecen a una mayor velocidad de respuesta en comparación con los aciertos. Esto señala que el problema atencional está especialmente vinculado a una elevada impulsividad, con respuestas más rápidas pero menos precisas.""",
+    'C alto y TR_A_vs_C negativo':"""Si miramos al tiempo de respuesta de las comisiones frente a los aciertos, vemos que los errores de comisión de {nombre} acontecen a una menor velocidad de respuesta en comparación con los aciertos. Esto señala que el problema atencional no está tan vinculado a la impulsividad, sino a importantes dificultades en la percepción y el procesamiento de la información, que incapacitan a {nombre} para discriminar la información de manera eficiente.""",
+
+}
+
+# Parrafo condicional de C para posibilidad de identificar la prevalencia de un estilo atencional reflexivo o impulsivo
+PARRAFO_DUALTASK_TR = {
+
+    'TR alto y C normal o alto':"""Por último, {nombre} muestra un tiempo de respuesta bajo, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad.""",
+    'TR alto y C bajo':"""Por último, {nombre} muestra un tiempo de respuesta bajo, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad. Aunque esta mayor velocidad también puede deberse a la evidente preferencia o tendencia de {nombre} por un estilo atencional más impulsivo, con respuestas más rápidas pero menos precisas.""",
+
+    'TR normal':"""Por último, {nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad.""",
+    
+    'TR bajo y C bajo':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones significativamente por debajo del promedio. Este resultado puede señala que {nombre} requiere de más tiempo para procesar la misma cantidad de información que otros individuos de su edad.""",
+
+    'TR bajo y C normal':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones significativamente por debajo del promedio. Este resultado puede señalar dos fenómenos diferentes: la necesidad de {nombre} de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. Y la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
+
+    'TR bajo y C alto':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones significativamente por debajo del promedio. Considerando el reducido número de comisiones parece que prevalece un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
+}
+
+#F_A si fatiga (diferencia significativa) en precisión T1, F_TR en TR T2, TR_PSV si precisión T1
+PARRAFO_DUALTASK_Fatiga = {
+    
+    'no F':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. A lo cual, resulta que no se ha encontrado indicio de cansancio en ninguna de las dimensiones cognitivas y atencionales evaluada, lo que indica una buena resistencia y capacidad de atención cognitiva.""",
+
+    'F PSV':"""Queda comparar el rendimiento de {nombre} hacia el  principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado una rápida aparición de cansancio y fatiga, consistente en un progresivo empeoramiento de la precisión de seguimiento visomotor de la tarea 1. Es decir, dificultad para mantener la atención sostenida con el paso del tiempo.""",
+    
+    'F A':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado una rápida aparición de cansancio y fatiga, consistente en un progresivo empeoramiento de la precisión en la tarea 2. Es decir, dificultad para mantener la capacidad de discriminar, atender y responder adecuadamente a la información relevante frente la irrelevante y engañosa.""",
+
+    'F TR':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado una rápida aparición de cansancio y fatiga, consistente en un progresivo empeoramiento de la velocidad de procesamiento y respuesta en la tarea 2. Es decir, dificultad para mantener un ritmo acelerado en el despeño de la tarea.""",
+
+    'F PSV y F A':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado un importante cansancio y fatiga. Consistente en un progresivo empeoramiento de la precisión de seguimiento visomotor de la tarea 1. Esto indica una aparición rápida de fatiga cognitiva y dificultades para mantener la atención sostenida con el paso del tiempo. La fatiga también ha provocado un deterioro de la precisión en la segunda tarea. Esto es, dificultades para mantener la precisión con la que se discrimina, atiende y responde a la información relevante frente la irrelevante y engañosa.""",
+
+    'F PSV y F TR':""""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado un importante cansancio y fatiga. Consistente en un progresivo empeoramiento de la precisión de seguimiento visomotor de la tarea 1. Esto indica una aparición rápida de fatiga cognitiva y dificultades para mantener la atención sostenida con el paso del tiempo. La fatiga también ha provocado un deterioro del tiempo de respuesta la segunda tarea. Esto es, dificultades para mantener la misma velocidad de procesamiento y respuesta durante el breve tiempo de duración de la prueba.""",
+    
+    'F A y F TR':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado un importante cansancio y fatiga durante la prueba. Consistente en un progresivo empeoramiento de la precisión en la tarea 2: dificultad para mantener la capacidad de discriminar, atender y responder adecuadamente a la información relevante frente la irrelevante y engañosa. La fatiga también ha provocado un deterioro del tiempo de respuesta en esta segunda tarea. Esto es, dificultades para mantener la misma velocidad de procesamiento y respuesta durante el breve tiempo de duración de la prueba.""",
+
+    'F PSV, F A y F TR':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado un importante cansancio y fatiga durante la prueba, viéndose afectado su rendimiento en todos los índices de la prueba, incluyendo: la precisión de seguimiento visomotor de la tarea 1 o dificultades para mantener la atención sostenida en general. Una reducción de la precisión en la tarea 2, y dificultad para mantener la capacidad de discriminar, atender y responder adecuadamente a la información relevante frente la irrelevante y engañosa. Y, finalmente, un deterioro del tiempo de respuesta en la segunda tarea. Esto es, dificultades para mantener la misma velocidad de procesamiento y respuesta durante el breve tiempo de duración de la prueba.""",
+    }
+
+# Este Párrafo_automatización puede no añadirse si no hay una diferencia significativa positiva del último tercio de la prueba frente al primero.
+PARRAFO_DUALTASK_automatización = {
+    'Automatización PSV':"""Por otro lado, se ha observado una mejora del rendimiento en la precisión de seguimiento y atención sostenida en la tarea 1. Esto sugiere una rápida adaptación a las reglas y procedimientos de esta tarea y capacidad para automatizar y mejorar el rendimiento en la misma. Esta facilidad para automatizar tareas sostenidas puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
+
+    'Automatización TR':"""Por otro lado, se ha observado una mejora del rendimiento en la velocidad de procesamiento y respuesta en la tarea 2. Esto sugiere una rápida adaptación a las reglas y procedimientos de esta tarea y capacidad para automatizar y mejorar el rendimiento en la misma, aumentando la velocidad con la que se ejecuta. Esta facilidad para automatizar una tarea puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
+
+    'Automatización P':"""Por otro lado, se ha observado una mejora del rendimiento en la precisión de respuesta en la tarea 2. Esto sugiere una rápida adaptación a las reglas y procedimientos de esta tarea y capacidad para automatizar y mejorar el rendimiento en la misma, mejorando la efectividad con la que se ejecuta. Esta facilidad para automatizar una tarea puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
+
+    'Automatización PSV y TR':"""Por otro lado, se ha observado una mejora del rendimiento en la precisión de seguimiento y atención sostenida en la tarea 1 y velocidad de procesamiento y respuesta en la tarea 2. Esto señala una buena capacidad para adaptarse a las reglas y procedimientos de una tarea, y automatizar y mejorar su ejecución. Esta facilidad para automatizar la ejecución de diferentes tareas puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
+
+    'Automatización PSV y P':"""Por otro lado, se ha observado una mejora del rendimiento en la precisión de seguimiento y atención sostenida en la tarea 1, y la precisión de respuesta en la tarea 2. Esto señala una buena capacidad para adaptarse a las reglas y procedimientos de una tarea, y automatizar y mejorar su ejecución. Esta facilidad para automatizar la ejecución de diferentes tareas puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
+
+    'Automatización TR y P':"""Por otro lado, se ha observado una mejora del rendimiento en la precisión y velocidad de respuesta en la tarea 2. Esto señala una buena capacidad para adaptarse a las reglas de una tarea, y automatizar y mejorar su ejecución. Esta facilidad para automatizar la ejecución de diferentes tareas puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
+
+    'Automatización PSV, TR y P':"""Por otro lado, se ha observado una mejora del rendimiento en la precisión de seguimiento y atención sostenida en la tarea 1 y precisión y velocidad de procesamiento y respuesta en la tarea 2. Esto señala una capacidad excelente para adaptarse a las reglas de una tarea y automatizar y mejorar su ejecución. Esta facilidad para automatizar la ejecución de diferentes tareas puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
+    }
+
+PARRAFOS_CONDICIONALES_OPCIONALES_DUALTASK = {
+
+    'intro':"Se indican algunas recomendaciones para trabajar con {nombre} en las próximas sesiones.",
+
+# Este PARRAFO es opcional, condicional de si el rendimiento es muy diferente entre T1 (PSV) y T2 (A-E y TR), uno bajo y otro alto, o uno normal y otro bajo.
+    'PARRAFO_DUALTASK_final_inestable_negativo_o_muy_inestable':"Dado el rendimiento variable entre tareas, cabe hacer más evaluación y entrenamiento en torno a la capacidad de {nombre} para dirigir su atención ante tareas dinámicas, y aumentar su capacidad de memoria de trabajo para poder manejar más cantidad y diversidad de información en un mismo momento.",
+
+# Este PARRAFO es opcional, condicional de si el rendimiento es diferente entre T1 (PSV) y T2 (A-E y TR) y T1 alto y T2 normal.
+    'PARRAFO_DUALTASK_final_inestable_mejor_T1_y_T2_positivo':"Se ha observado una preferencia o mejor aptitud para las actividades que demandan una atención sostenida y de concentración prolongada y estable.",
+
+# Este PARRAFO es opcional, condicional de si el rendimiento es diferente entre T1 (PSV) y T2 (A-E y TR) y T1 normal o alto y T2 bajo
+    'PARRAFO_DUALTASK_final_inestable_mejor_T1_y_T2_negativo':"En este contexto, se ha encontrado una clara preferencia o mejor aptitud para el desempeño de la tarea más relacionada con la atención sostenida y concentración prolongada y estable. Esto supone una fortaleza desde la que trabajar y mejorar la atención y cognición. {nombre} parece poder implicarse y mantenerse bien concentrado en una misma tarea por suficiente tiempo. Es recomendable aprovechar esta capacidad para implicar a {nombre] en la ejecución de actividades de entrenamiento de las habilidades atencionales que se han visto más deficientes: la memoria de trabajo, el control voluntario de la atención, y la atención discriminativa, o capacidad para distinguir rápidamente que nueva información es relevante o irrelevante para la tarea u objetivo a desempeñar.""",
+
+# Este PARRAFO es opcional, condicional de si el rendimiento es diferente entre T1 (PSV) y T2 (A-E y TR) y T2 alto y T1 normal.
+    'PARRAFO_DUALTASK_final_inestable_mejor_T2_y_T1_positivo':"Se ha observado una preferencia o mejor aptitud para las actividades que demandan una atención responsiva basada en reflejos y respuestas rápidas a estímulos disruptivos.",
+
+# Este PARRAFO es opcional, condicional de si el rendimiento es diferente entre T1 (PSV) y T2 (A-E y TR) y T2 normal o alto y T1 bajo.
+    'PARRAFO_DUALTASK_final_inestable_mejor_T2_y_T1_negativo':"En este contexto, se ha encontrado una clara preferencia o mejor aptitud para el desempeño de la tarea más relacionada con la atención disruptiva basada en reflejos. Esto es, acciones que demandan un procesamiento y respuesta rápida a información novedosa o inesperada. Esto supone una fortaleza desde la que trabajar y mejorar la atención y cognición. {nombre} parece poder realizar análisis rápidos y efectivos de la información, distinguiendo la información relevante de la irrelevante o engañosa. Esto supone una buena aptitud para actividades estimulantes y reactivas, incluso frenéticas. Sin embargo, otras áreas atencionales parecen presentar dificultades, tales como:  la memoria de trabajo, el control voluntario de la atención, y la atención sostenida, o capacidad para mantenerse concentrado en una misma tarea menos estimulante por el tiempo suficiente. En este sentido, resulta necesario explicar a {nombre} la importancia de tener un control intrínseco y voluntario de la atención propia, y ser capaz de mantenerse concentrado por un tiempo en actividades menos estimulante. Para esto conviene implicar a {nombre} en actividades tranquilas que demanden una atención constante e intencional o guiada por la persona, tales como: puzle, juegos de mesa, pintar, leer, natación y caminar.",
+
+# Este PARRAFO es opcional, condicional de si el rendimiento en T1 (promedio PSV) es significativamente peor en eventos de concurrencia (mediciones 0.2 y 0.4 después de estímulo T2) frente eventos independientes. Y además el rendimiento en T2 (en A-E o TR) es bajo.
+    'PARRAFO_DUALTASK_final_concurrencia_peorT1_malT2':"Otro aspecto es que la distribución de recursos atencionales al tener que procesar dos tareas simultáneamente ha resultado deficiente, provocando distracción, confusión y mal desempeño. Por lo que es recomendable para {nombre} instaurar un método de trabajo ordenado y focalizado. Atendiendo y realizando una única tarea en cada momento, y maximizando así los recursos cognitivos que a esta se le dedica.",
+
+# Este PARRAFO es opcional, condicional de si el rendimiento en T1 (promedio PSV) es bajo
+    'PARRAFO_DUALTASK_final_PSV_bajo':"De nuevo, remarcar la importancia de realizar una evaluación más exhaustiva de las habilidades de movimiento fino y coordinación ojo mano, que en esta prueba se han visto insuficientes para lo normal o esperado para su edad, y que pueden indicar un problema de disgrafía. De confirmarse esto en próximas evaluaciones, se recomienda entrenar dicha habilidad con actividades tales como: caligrafía, construcción con piezas Lego, o videojuegos con movimiento preciso (plataforma, acción, aventura…).",
+
+# Este PARRAFO es opcional, condicional de si algún índice de fatiga resulta significativo. Esto es, una diferencia significativa entre el rendimiento del primer tercio de la prueba y el último tercio de la prueba, en alguna de las dimensiones evaluadas: precisión de seguimiento visomotor, precisión de respuesta en la tarea 2, o tiempo de respuesta en la tarea 2.
+    'PARRAFO_DUALTASK_final_fatiga ':"""Respecto al evidente cansancio o fatiga originado hacia el final de la prueba, hay que destacar que esta es una actividad de 2 minutos de duración. Puede ser conveniente en este aspecto entrenar la resistencia de {nombre} a la fatiga cognitiva ante tareas de alta demanda cognitiva. Esto le ayudará a poder mantener su concentración y ritmo de trabajo durante más tiempo ante tareas más dinámicas y complejas. Por ejemplo, ante cálculos matemáticos complejos, síntesis de información, razonamiento contrafactual, interacciones sociales, etc.""",
+
+}
+
+# Este PARRAFO es opcional, condicional de si el rendimiento en C en T2 es normal o alto. En este caso elegir la opción impulsividad si TR_C es menor TR_A. Y elegir la opción distraibilidad si TR_C es mayor que TR_A. Si no hay una diferencia significativa entre TR_C y TR_A, no añadir este párrafo.
+PARRAFO_DUALTASK_final_dif_TR_A_y_C = {
+    'impulsividad':"""La precisión de {nombre} al emitir respuestas acertadas se ha visto perjudicado parece que en gran parte debido a la impulsividad. Esta representa otra área de la atención donde existe margen de mejora. Y donde se recomiendan actividades de control atencional interno o voluntario. Por ejemplo, con ejercicios de mindfulness, o con la adopción mediante retroalimentación o instrucciones verbales de un estilo atencional y de trabajo más reflexivo, lento pero preciso.""",
+
+    'distraibilidad':"""Se ha registrado un deterioro en la precisión de respuesta en la tarea 2, debido a puntuales fallas de distraibilidad, y durante las cuales el procesamiento de la información de la tarea ha sido mínimo. Es importante valorar el grado de deterioro en el rendimiento de la tarea T2. Ya que de ser alto, esto significaría un problema de distraibilidad persistente y de importante interferencia en el adecuado desempeño atencional."""
+    }
+
+
+
+# ============================================================================
+# 3.5.1 FourFigures
 # ============================================================================
 
 # TR - Velocidad de procesamiento
@@ -398,7 +600,7 @@ PARRAFO_FourFigures_TR = {
 }
 
 PARRAFO_FourFigures_A = {
-    'alto': """El elevado número de aciertos indica una atención general excelente, asociada a un estado de activación o vigilia excepcional. {nombre} estuvo completamente despierto a lo largo de toda esta tarea, lo que también debería haber favorecido el desempeño en otras dimensiones atencionales.""",
+    'alto': """El elevado número de aciertos indica una atención general excelente, asociada a un muy buen estado de activación o vigilia. {nombre} estuvo completamente despierto a lo largo de toda esta tarea y además encontrar una especial facilidad perceptiva en esta tarea. Esto también puede haber favorecido el desempeño en otras dimensiones atencionales.""",
     
     'normal': """El número de aciertos obtenido es adecuado y dentro de la norma para su edad. Esto señala un adecuado estado de activación o vigilia durante la prueba.""",
     
@@ -422,16 +624,16 @@ PARRAFO_FourFigures_C = {
 # Flexibilidad cognitiva. Diferencia puntuación obtenida en P4 vs puntuación esperada en P4 en base a puntuación obtenida en P2 y P3.
 PARRAFO_FourFigures_P4_A_obtenido_vs_esperado = {
 # Álvaro. Comparar prueba significación prueba t o PT en comparación con la muestra? Aquí avogo por PT dada la mayor facilidad de P2 y P3 frente la tarea NamingNumbers, en la cual propongo usar sign. prueba t.
-    'alto': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento incluso superior al esperado, prueba de una excelente capacidad para adaptarse y dirigir su atención a voluntad.""",
+    'alto': """Por último, comparamos el rendimiento real obtenido en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento incluso superior al esperado, prueba de una excelente capacidad para adaptarse y dirigir su atención a voluntad.""",
 
-    'normal': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento normal e igual a lo esperable. Esto prueba una adecuada capacidad para adaptarse y dirigir su atención a voluntad.""",
+    'normal': """Por último, comparamos el rendimiento real obtenido en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento normal e igual a lo esperable. Esto prueba una adecuada capacidad para adaptarse y dirigir su atención a voluntad.""",
     
-    'bajo': """Por último, comparamos el rendimiento real en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento inferior al esperado. Esto muestra una alta rigidez cognitiva o dificultad para cambiar el foco atencional rápidamente y adaptarse a una nueva forma de procesar y responder a una tarea."""
+    'bajo': """Por último, comparamos el rendimiento real obtenido en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento inferior al esperado. Esto muestra una alta rigidez cognitiva o dificultad para cambiar el foco atencional rápidamente y adaptarse a una nueva forma de procesar y responder a una tarea."""
 }
 
 
 # ============================================================================
-# 3.3.2 NamingNumbers
+# 3.5.2 NamingNumbers
 # ============================================================================
 
 # TR - Velocidad de procesamiento
@@ -483,209 +685,43 @@ PARRAFO_NamingNumbers_P4 = {
 }
 
 # ============================================================================
-# 3.5 Digits Memorization
+# 3.6 Digits Memorization
 # ============================================================================
 
 # Calcular este índice en función de la PT promedio de PD_directo y PD_inverso
 PARRAFO_DigitsMemorization = {
 
-    'bajo':"""En relación a la prueba de memorización de dígitos, esta nos indica la capacidad de memoria operativa. En este aspecto el desempeño ha resultado deficiente, por debajo de lo normal o esperable. {nombre} parece presentar dificultades para procesar y mantener consciente por un tiempo mayores cantidades de información.""",
+    'bajo':"""Finalmente está la prueba de memorización de dígitos, la cual informa sobre la capacidad de memoria operativa. En este aspecto el desempeño promedio ha resultado deficiente, por debajo de la norma o lo esperable. Esto significa que {nombre} solo puede mantener consciente por un tiempo una cantidad reducida de información. Véase a continuación, el número de series y el número máximo de dígitos en una serie recordados correctamente en cada parte de la prueba:""",
 
-    'normal':"""En relación a la prueba de memorización de dígitos, esta nos indica la capacidad de memoria operativa. En este aspecto el desempeño ha resultado normal. {nombre} puede adecuadamente procesar y mantener consciente por un tiempo mayores cantidades de información.""",
+    'normal':"""Finalmente está la prueba de memorización de dígitos, la cual informa sobre la capacidad de memoria operativa. En este aspecto el desempeño ha resultado normal. {nombre} puede adecuadamente procesar y mantener consciente por un tiempo una creciente cantidad de información. Véase a continuación, el número de series y el número máximo de dígitos en una serie recordados correctamente en cada parte de la prueba:""",
 
-    'alto':"""En relación a la prueba de memorización de dígitos, esta nos indica la capacidad de memoria operativa. En este aspecto el desempeño ha resultado escepcionalmente bueno. {nombre} tiene una gran capacidad para procesar y mantener consciente por un tiempo mayores cantidades de información.""",
-}
-
-# ============================================================================
-# 3.5 DUAL-TASK
-# ============================================================================
-
-
-# PD_Total - Según puntuación directa total y correspondiente percentil
-PARRAFO_DUALTASK_General_PSV_y_A = {
-
-    'Estable y positivo':"""El rendimiento general en la prueba es positivo y estable entre tareas. Esto índica una muy buena capacidad de gestión de los recursos atencionales para atender y responder a más de una tarea al mismo tiempo.""",
-
-    'Estable y normal':"""El rendimiento general en la prueba es adecuado y estable entre tareas. Esto índica una capacidad adecuada de gestión de los recursos atencionales para atender y responder a más de una tarea al mismo tiempo.""",
-
-    'Estable y negativo':"""El rendimiento general en la prueba es estable entre tareas, pero mayormente negativo. Esto indica una capacidad limitada de gestión de los recursos atencionales para atender y responder a más de una tarea al mismo tiempo.""",
-
-    'Inestable y positivo':"""El rendimiento general en la prueba es inestable entre tareas, aunque mayormente positivo. Esto indica que {nombre} dispone de buenos recursos atencionales para atender y responder a más de una tarea al mismo tiempo. Se observa un mejor rendimiento en la """,
-
-    'Inestable y negativo':"""El rendimiento general en la prueba es inestable entre tareas y mayormente negativo. Esto indica que {nombre} tiene una capacidad limitada y dificultades en la gestión de sus recursos atencionales para atender y responder a más de una tarea al mismo tiempo. Se observa un mejor rendimiento en la """,
-
-    'Muy inestable':"""El rendimiento general en la prueba resulta muy inestable y variable entre tareas. Esto indica que {nombre} tiene muchas dificultades para gestionar sus recursos atencionales y poder atender y responder a más de una tarea al mismo tiempo. El rendimiento ha resultado máximo y sobresaliente para una parte de la prueba, en la que ha depositado todos sus recursos atencionales. Pero ha desatendido completamente la otra tarea, obteniendo un rendimiento inferior al promedio y esperado para su edad. Las dificultades para gestionar adecuadamente sus recursos atencionales y cognitivos en función de la demanda de trabajo derivan en un resultado insuficiente para el cómputo total. Para ejemplificar esto, es como si una persona pudiese leer muy rápido pero sólo hablar lentamente, resultando en que sólo pueda leer lentamente en voz alta. El rendimiento se ha observado mejor en la """,
-}
-
-PARRAFO_DUALTASK_si_inestable = {
-    'T1_mas_T2':"""tarea 1 frente la 2, señalando un desbalance en la gestión de la atención dirigida a cada tarea. Esto parece señalar una preferencia cognitiva por las tareas que demandan una atención sostenida y ejecución constante, frente a las tareas basadas en reflejos que demandan una ejecución rápida e intermitente o disruptiva. Esta preferencia cognitiva supone una mejor aptitud para actividades donde importa la persistencia, la concentración prolongada y el ritmo estable, tales como: leer, redactar y pintar de forma extendida, meditar, hacer senderismo o natación.""",
-
-    'T2_mas_T1':"""tarea 2 frente la 1, señalando un desbalance en la gestión de la atención dirigida a cada tarea. Esto parece señalar una preferencia cognitiva por las tareas basadas en reflejos que demandan una ejecución rápida e intermitente o disruptiva, frente a las tareas atención sostenida y ejecución constante. Esta preferencia cognitiva supone una mejor aptitud para actividades donde predominan los picos de acción intensa, decisiones rápidas y cambios abruptos, tales como: improvisación teatral o en oratoria, deportes (fútbol, baloncesto, boxeo) y videojuegos frenéticos.""",
-}
-
-PARRAFO_DUALTASK_Rendimiento_General_cuando_concurrencia = {
-    'bajo':"""Respecto a la memoria de trabajo, esta se estima a partir del rendimiento promedio de las dos tareas de la prueba cuando ambas tareas concurrieron y la carga de trabajo y demanda cognitiva era mayor. La puntuación obtenida señala una memoria de trabajo por debajo del promedio. Esto significa que {nombre} tiene dificultades para procesar de manera simultánea información procedente de diversas fuentes. Es decir, una capacidad limitada para procesar más información.""",
-
-    'normal':"""Respecto a la memoria de trabajo, esta se estima a partir del rendimiento promedio de las dos tareas de la prueba cuando ambas tareas concurrieron y la carga de trabajo y demanda cognitiva era mayor. La puntuación obtenida señala una memoria de trabajo adecuada o promedio. Esto significa que {nombre} tiene una capacidad normal o promedio para procesar de manera simultánea información procedente de diversas fuentes. Es decir, una capacidad adecuada para procesar mucha información.""",
-
-    'alto':"""Respecto a la memoria de trabajo, esta se estima a partir del rendimiento promedio de las dos tareas de la prueba cuando ambas tareas concurrieron y la carga de trabajo y demanda cognitiva era mayor. La puntuación obtenida señala una memoria de trabajo por encima del promedio. Esto significa que {nombre} tiene una capacidad sobresaliente para procesar de manera simultánea información procedente de diversas fuentes. Es decir, una buena capacidad para procesar más información.""",
-}
-
-PARRAFO_DUALTASK_PSV_cuando_concurrencia = {
-    'deterioro y buen T2':"""Por otro lado, en los momentos en que hubo concurrencia entre tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 ha deteriorado significativamente, mientras que sí se ha respondido bien a tarea 2. Esto sugiere una preferencia y prevalencia de un estilo atencional caracterizado por el cambio focal intermitente entre tareas. {nombre} no atiende a ambas tareas simultáneamente, sino que deja de atender la primera para atender la segunda cuando esta demanda más atención, y vuelve rápidamente a atender a la primera cuando la demanda atencional de la segunda se reduce o desaparece.""",
-
-    'deterioro y mal T2 P':"""Por otro lado, en los momentos en que hubo concurrencia entre tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 ha deteriorado significativamente, mientras que la respuesta a la tarea 2 también a resultado insuficiente, en particular, con relación a una precisión de la respuesta inferior a lo esperado. Esto sugiere una preferencia y prevalencia de un estilo atencional caracterizado por el cambio focal intermitente entre tareas. {nombre} no atiende a ambas tareas simultáneamente, sino que deja de atender la primera para atender la segunda cuando esta demanda más atención, y vuelve rápidamente a atender a la primera cuando la demanda atencional de la segunda se reduce o desaparece. Sin embargo, {nombre} presenta dificultades para dirigir adecuadamente su atención y para procesar tanta información, repercutiendo negativamente en su rendimiento durante la prueba.""",
-
-    'deterioro y mal T2 TR':"""Por otro lado, en los momentos en que hubo concurrencia entre tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 ha deteriorado significativamente, mientras que la respuesta a la tarea 2 también a resultado insuficiente, en particular con relación a una lentitud en la respuesta mayor a lo esperado. Esto sugiere una preferencia y prevalencia de un estilo atencional caracterizado por el cambio focal intermitente entre tareas. {nombre} no atiende a ambas tareas simultáneamente, sino que deja de atender la primera para atender la segunda cuando esta demanda más atención, y vuelve rápidamente a atender a la primera cuando la demanda atencional de la segunda se reduce o desaparece. Sin embargo, {nombre} presenta dificultades para dirigir adecuadamente su atención y para procesar tanta información, repercutiendo negativamente en su rendimiento durante la prueba.""",
-
-    'deterioro y mal T2 P y TR':"""Por otro lado, en los momentos en que hubo concurrencia entre tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 ha deteriorado significativamente, mientras que la respuesta a la tarea 2 también a resultado insuficiente, con relación tanto a la baja precisión como a la lentitud de la respuesta. El estilo atencional aquí presente está caracterizado por el cambio focal intermitente entre tareas. Sin embargo, {nombre} presenta dificultades para dirigir adecuadamente su atención y para procesar tanta información. El tener que procesar una segunda tarea simultáneamente únicamente le provoca una gran distracción y perjuicio durante la prueba.""",
-
-    'no deterioro y buen T2':"""Por otro lado, en los momentos en que hubo concurrencia entre tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 no se ha visto apenas afectada, a la vez que se mantuvo un buen rendimiento en la segunda tarea. Esto sugiere una preferencia y prevalencia de un estilo atencional caracterizado por una distribución paralela de la atención. A fin de atender y responder efectivamente a las dos tareas, {nombre} opta por hacer más difuso y amplio su foco atencional. Manteniendo así una atención estable y simultánea para las dos tareas.""",
-
-    'no deterioro y mal T2 P':"""Por otro lado, en los momentos en que hubo concurrencia entre tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 no se ha visto apenas afectada, aunque la respuesta a la tarea 2 ha resultado insuficiente, en particular con relación a una precisión de la respuesta inferior a lo esperado. Esto puede señalar dificultades en la gestión de la atención y la excesiva carga de trabajo en contextos dinámicos y de multitarea. Y también, sugiere una preferencia y tendencia a focalizar todos los recursos cognitivos en una única tarea.""",
-
-    'no deterioro y mal T2 TR':"""Por otro lado, en los momentos en que hubo concurrencia entre tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 no se ha visto apenas afectada, aunque la respuesta a la tarea 2 ha resultado insuficiente, en particular con relación a una lentitud en la respuesta mayor a lo esperado. Esto puede señalar dificultades en la gestión de la atención y la excesiva carga de trabajo en contextos dinámicos y de multitarea. Y también, sugiere una preferencia y tendencia a focalizar todos los recursos cognitivos en una única tarea.""",
-
-    'no deterioro y mal T2 P y TR':"""Por otro lado, en los momentos en que hubo concurrencia entre tareas y mayor demanda atencional, la precisión de seguimiento en la tarea 1 no se ha visto apenas afectada, aunque la respuesta a la tarea 2 ha resultado insuficiente, con relación tanto a la baja precisión como a la lentitud de la respuesta. Esto puede señalar dificultades en la gestión de la atención y la excesiva carga de trabajo en contextos dinámicos y de multitarea. Y también, sugiere una preferencia y tendencia a focalizar todos los recursos cognitivos en una única tarea.""",
+    'alto':"""Finalmente está la prueba de memorización de dígitos, la cual informa sobre la capacidad de memoria operativa. En este aspecto el desempeño ha resultado escepcionalmente bueno. {nombre} tiene una gran capacidad para procesar y mantener consciente por un tiempo una gran cantidad de información. Véase a continuación, el número de series y el número máximo de dígitos en una serie recordados correctamente en cada parte de la prueba:""",
 }
 
 
-PARRAFO_DUALTASK_PSV = {
-    'bajo':"""En la tarea 1 la precisión del seguimiento visomotor ha sido inferior al promedio; señalando así dificultades en las capacidades visomotoras y de movimiento fino. Esta habilidad es importante para la capacidad de seguir estímulos en movimiento y realizar movimientos coordinados ojo mano, tales como escribir, pintar o construir. Dificultades en esta dimensión representa una mayor probabilidad de presentar problemas de disgrafía.""",
+# Puntuacion decreciente entre P1 < P2 < P3
+PARRAFO_DigitsMemorization_decreciente = {
 
-    'normal':"""En la tarea 1 la precisión del seguimiento visomotor ha resultado normal, y tanto así las adecuadas capacidades visomotoras y de movimiento fino. Esta habilidad es importante para la capacidad de seguir estímulos en movimiento y realizar movimientos coordinados ojo mano, tales como escribir, pintar o construir.""",
-
-    'alto':"""En la tarea 1 la precisión del seguimiento visomotor ha sido superior al promedio, y tanto así las sobresalientes capacidades visomotoras y de movimiento fino. Esta habilidad es importante para la capacidad de seguir estímulos en movimiento y realizar movimientos coordinados ojo mano, tales como escribir, pintar o construir.""",
+    'decreciente':"""Adicionalmente, se puede ver en la tabla anterior que se recuerda mejor las primeras partes de la prueba frente las siguientes. Esto es debido a la dificultad creciente de la prueba, lo que normaliza este desempeño decreciente y más aún, da mayor validez y veracidad a la medición obtenida sobre ela capacidad de memoria operativa de {nombre}.""",
 }
 
 
-PARRAFO_DUALTASK_A = {
+# Se calcula en función de series erradas antes de las 2 últimas: alto si 0, normal si 1 o 2, bajo si más
+PARRAFO_DigitsMemorization_consistencia = {
 
-    'A bajo':"""Avanzamos entonces a los resultados de la tarea 2. En primer lugar, {nombre} muestra un porcentaje de aciertos bajo, lo que indica complicaciones para completar eficientemente la tarea presentada. Esto señala que la capacidad atencional en general resulta inferior a la media para su edad.""",
+    'alto':"""Otro aspecto a mencionar es la muy estrecha relación existente entre el número de dígitos a memorizar y el recuerdo exitoso. Esto reduce la posibilidad de errores debido a despistes y aumenta la confianza en una medición representativa de la capacidad de memoria operativa real de {nombre}.""",
 
-    'A normal':"""Avanzamos entonces a los resultados de la tarea 2. En primer lugar, {nombre} muestra un porcentaje de aciertos normal, lo que indica una capacidad atencional en general adecuada a la esperada para su edad.""",
-    
-    'A alto':"""Avanzamos entonces a los resultados de la tarea 2. En primer lugar, {nombre} muestra un porcentaje de aciertos alto, lo que indica una capacidad atencional en general superior a la media para su edad.""",
-}
+    'normal': """Otro aspecto a mencionar es la normal relación existente entre el número de dígitos a memorizar y el recuerdo exitoso. Antes de llegar al tope de su capacidad de memoria operativa {nombre} ya falla alguna serie por alguna comisión puntual debido a un despiste, impulso o desliz. Estos errores puntuales durante la prueba se encuentran sin embargo dentro de la normalidad y no restan credibilidad a la medición final de la capacidad de memoria operativa de {nombre}.""",
 
-
-PARRAFO_DUALTASK_C = {
-
-    'C bajo':"""Respecto al número de errores de comisión, este fue bajo. Es decir, que pocas veces {nombre} emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente, y una muy baja impulsividad.""",
-
-    'C normal':"""Respecto al número de errores de comisión, este fue normal. Es decir, que {nombre} emite un número de respuestas erróneas igual a lo esperado para su edad. Este resultado señala, a la hora de tomar decisiones, una capacidad adecuada para discriminar la información de manera eficiente y un nivel de impulsividad igual al esperado para su edad.""",
-
-    'C alto':"""Respecto al número de errores de comisión, este fue alto. Es decir, que {nombre} emite un número de respuestas erróneas superior a lo esperado para su edad. Este resultado puede señalar dos cosas: una capacidad inferior al promedio para discriminar la información de manera eficiente, y/o un nivel de impulsividad superior al esperado para su edad.""",
-}
-
-# Añadir este PARRAFO_TR_A_vs_C sólo cuando C es normal o alto
-PARRAFO_DUALTASK_TR_A_vs_C = {
-'C normal y TR_A_vs_C positivo':"""Si miramos al tiempo de respuesta de las comisiones frente a los aciertos, vemos que los errores de comisión de {nombre} acontecen a una mayor velocidad de respuesta en comparación con los aciertos. Esto señala que los errores de precisión se deben a respuestas más impulsivas.""",
-'C normal y TR_A_vs_C negativo':"""Si miramos al tiempo de respuesta de las comisiones frente a los aciertos, vemos que los errores de comisión de {nombre} acontecen a una menor velocidad de respuesta en comparación con los aciertos. Esto señala que los errores de precisión se deben, no tanto a un problema de impulsividad, pero a dificultades puntuales en la percepción y el procesamiento de la información.""",
-
-'C alto y TR_A_vs_C positivo':"""Si miramos al tiempo de respuesta de las comisiones frente a los aciertos, vemos que los errores de comisión de {nombre} acontecen a una mayor velocidad de respuesta en comparación con los aciertos. Esto señala que el problema atencional está especialmente vinculado a una elevada impulsividad, con respuestas más rápidas pero menos precisas.""",
-'C alto y TR_A_vs_C negativo':"""Si miramos al tiempo de respuesta de las comisiones frente a los aciertos, vemos que los errores de comisión de {nombre} acontecen a una menor velocidad de respuesta en comparación con los aciertos. Esto señala que el problema atencional no está tan vinculado a la impulsividad, sino a importantes dificultades en la percepción y el procesamiento de la información, que incapacitan a {nombre} para discriminar la información de manera eficiente.""",
+    'bajo':"""No obstante resulta importante mencionar la reducida relación existente entre el número de dígitos a memorizar y el recuerdo exitoso. Antes de llegar al tope de su capacidad de memoria operativa {nombre} ya falla varias series debido a despistes, impulsos o deslices. La alta incongruencia entre series de menos dígitos erradas, y la mayor serie en dígitos finalmente alcanzada a recordar, sugiere que la medición final de la capacidad de memoria operativa de {nombre} puede estar limitada. Sesgada a la baja en cambio por la presencia de otros problemas atencionales de diferente índole: arousal, distracción, velocidad de procesamiento, impulsividad, etc.""",
 
 }
 
-PARRAFO_DUALTASK_O = {
-    'O bajo':"""En relación al número de errores de omisión, este resulta bajo. Esto significa que pocas veces no se ha respondido cuando se debería. Este resultado señala una velocidad de procesamiento de la información y de toma de decisiones bien ajustada a la exigencia temporal de la tarea. Otra explicación puede ser debido a una capacidad superior al promedio para mantener la atención sostenida a lo largo de la tarea, sin distraerse o fatigarse, de manera que se dificulte emitir una respuesta en los momentos oportunos.""",
+PARRAFO_DigitsMemorization_P3 = {
 
-    'O normal':"""En relación al número de errores de omisión, este resulta normal, Esto significa que no se ha respondido cuando se debería un número de veces igual a lo esperado para su edad. Este resultado señala una velocidad de procesamiento de la información y toma de decisiones adecuada a la exigencia temporal de la tarea. Este índice también puede señalar una capacidad adecuada para mantener la atención sostenida a lo largo de la tarea, sin distraerse o fatigarse demasiado, de manera que se dificulte emitir una respuesta en los momentos oportunos.""",
-    
-    'O alto':"""En relación al número de errores de omisión, este resulta alto. Esto significa que no se ha respondido cuando se debería un número de veces superior a lo esperado para su edad. Este resultado señala una velocidad de procesamiento de la información y toma de decisiones demasiado lenta para la exigencia temporal de la tarea. Otra explicación puede ser debido a una capacidad inferior al promedio para mantener la atención sostenida a lo largo de la tarea: con tendencia a distraerse o fatigarse, lo que le dificulta emitir una respuesta en los momentos oportunos.""",
-}
-
-# Parrafo condicional de C para posibilidad de identificar la prevalencia de un estilo atencional reflexivo o impulsivo
-PARRAFO_DUALTASK_TR = {
-
-    'TR bajo y C bajo':"""Por último, {nombre} muestra un tiempo de respuesta bajo, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad.""",
-    'TR bajo y C normal o alto':"""Por último, {nombre} muestra un tiempo de respuesta bajo, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad. Aunque esta mayor velocidad también puede deberse a la evidente preferencia o tendencia de {nombre} por un estilo atencional más impulsivo, con respuestas más rápidas pero menos precisas.""",
-
-    'TR normal':"""Por último, {nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad.""",
-    
-    'TR alto y C alto':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones significativamente por debajo del promedio. Este resultado puede señala que {nombre} requiere de más tiempo para procesar la misma cantidad de información que otros individuos de su edad.""",
-
-    'TR alto y C normal':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones significativamente por debajo del promedio. Este resultado puede señalar dos fenómenos diferentes: la necesidad de {nombre} de más tiempo para procesar la misma cantidad de información que otros individuos de su edad. Y la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
-
-    'TR alto y C bajo':"""Por último, {nombre} muestra un tiempo de respuesta elevado, lo que indica una velocidad de procesamiento de la información y toma de decisiones significativamente por debajo del promedio. Considerando el reducido número de comisiones parece que prevalece un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
-}
-
-#F_A si fatiga (diferencia significativa) en precisión T1, F_TR en TR T2, TR_PSV si precisión T1
-PARRAFO_DUALTASK_Fatiga = {
-    
-    'no F':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. A lo cual, resulta que no se ha encontrado indicio de cansancio en ninguna de las dimensiones cognitivas y atencionales evaluada, lo que indica una buena resistencia y capacidad de atención cognitiva.""",
-
-    'F_PSV':"""Queda comparar el rendimiento de {nombre} hacia el  principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado indicios una rápida aparición cansancio y fatiga, consistente en un progresivo peor rendimiento en la precisión de seguimiento visomotor de la tarea 1. Es decir, dificultad para mantener la atención sostenida con el paso del tiempo.""",
-    
-    'F_A':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado indicios una rápida aparición de cansancio y fatiga, consistente en un progresivo peor rendimiento en la precisión en la tarea 2. Es decir, dificultad para mantener la capacidad de discriminar, atender y responder adecuadamente a la información relevante frente la irrelevante y engañosa.""",
-
-    'F_TR':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado indicios una rápida aparición de cansancio y fatiga, consistente en un progresivo peor rendimiento en la velocidad de procesamiento y respuesta en la tarea 2. Es decir, dificultad para mantener un ritmo acelerado en el despeño de la tarea.""",
-
-    'F_PSV y F_A':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado un importante cansancio y fatiga. Consistente en un progresivo peor rendimiento en la precisión de seguimiento visomotor de la tarea 1. Esto indica una aparición rápida de fatiga cognitiva y dificultades para mantener la atención sostenida con el paso del tiempo. La fatiga también ha provocado un deterioro de la precisión en la segunda tarea. Esto es, dificultades para mantener la precisión con la que se discrimina, atiende y responde a la información relevante frente la irrelevante y engañosa.""",
-
-    'F_PSV y F_TR':""""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado un importante cansancio y fatiga. Consistente en un progresivo peor rendimiento en la precisión de seguimiento visomotor de la tarea 1. Esto indica una aparición rápida de fatiga cognitiva y dificultades para mantener la atención sostenida con el paso del tiempo. La fatiga también ha provocado un deterioro del tiempo de respuesta la segunda tarea. Esto es, dificultades para mantener la misma velocidad de procesamiento y respuesta durante el breve tiempo de duración de la prueba.""",
-    
-    'F_A y F_TR':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado un importante cansancio y fatiga durante la prueba. Consistente en un progresivo peor rendimiento en la precisión en la tarea 2, y dificultad para mantener la capacidad de discriminar, atender y responder adecuadamente a la información relevante frente la irrelevante y engañosa. La fatiga también ha provocado un deterioro del tiempo de respuesta en esta segunda tarea. Esto es, dificultades para mantener la misma velocidad de procesamiento y respuesta durante el breve tiempo de duración de la prueba.""",
-
-    'F_PSV, F_A y F_TR':"""Queda comparar el rendimiento de {nombre} hacia el principio y el final de la prueba. Esto a fin de estimar posibles efectos de automatización, fatiga o cansancio a lo largo de la prueba. {nombre} ha mostrado un importante cansancio y fatiga durante la prueba, viéndose afectado su rendimiento en todos los índices de la prueba, incluyendo: la precisión de seguimiento visomotor de la tarea 1 o dificultades para mantener la atención sostenida en general. Una reducción de la precisión en la tarea 2, y dificultad para mantener la capacidad de discriminar, atender y responder adecuadamente a la información relevante frente la irrelevante y engañosa. Y, finalmente, un deterioro del tiempo de respuesta en la segunda tarea. Esto es, dificultades para mantener la misma velocidad de procesamiento y respuesta durante el breve tiempo de duración de la prueba.""",
-    }
-
-# Este Párrafo_automatización puede no añadirse si no hay una diferencia significativa positiva del último tercio de la prueba frente al primero.
-PARRAFO_DUALTASK_automatización = {
-    'Automatización_PSV':"""Por otro lado, se ha observado una mejora del rendimiento en la precisión de seguimiento y atención sostenida en la tarea 1. Esto sugiere una rápida adaptación a las reglas y procedimientos de esta tarea y capacidad para automatizar y mejorar el rendimiento en la misma. Esta facilidad para automatizar tareas sostenidas puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
-
-    'Automatización_TR':"""Por otro lado, se ha observado una mejora del rendimiento en la velocidad de procesamiento y respuesta en la tarea 2. Esto sugiere una rápida adaptación a las reglas y procedimientos de esta tarea y capacidad para automatizar y mejorar el rendimiento en la misma, aumentando la velocidad con la que se ejecuta. Esta facilidad para automatizar una tarea puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
-
-    'Automatización_P':"""Por otro lado, se ha observado una mejora del rendimiento en la precisión de respuesta en la tarea 2. Esto sugiere una rápida adaptación a las reglas y procedimientos de esta tarea y capacidad para automatizar y mejorar el rendimiento en la misma, mejorando la efectividad con la que se ejecuta. Esta facilidad para automatizar una tarea puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
-
-    'Automatización_PSV_y_TR':"""Por otro lado, se ha observado una mejora del rendimiento en la precisión de seguimiento y atención sostenida en la tarea 1 y velocidad de procesamiento y respuesta en la tarea 2. Esto señala una buena capacidad para adaptarse a las reglas y procedimientos de una tarea, y automatizar y mejorar su ejecución. Esta facilidad para automatizar la ejecución de diferentes tareas puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
-
-    'Automatización_PSV_y_P':"""Por otro lado, se ha observado una mejora del rendimiento en la precisión de seguimiento y atención sostenida en la tarea 1, y la precisión de respuesta en la tarea 2. Esto señala una buena capacidad para adaptarse a las reglas y procedimientos de una tarea, y automatizar y mejorar su ejecución. Esta facilidad para automatizar la ejecución de diferentes tareas puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
-
-    'Automatización_TR_y_P':"""Por otro lado, se ha observado una mejora del rendimiento en la precisión y velocidad de respuesta en la tarea 2. Esto señala una buena capacidad para adaptarse a las reglas de una tarea, y automatizar y mejorar su ejecución. Esta facilidad para automatizar la ejecución de diferentes tareas puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
-
-    'Automatización_PSV, TR_y_P':"""Por otro lado, se ha observado una mejora del rendimiento en la precisión de seguimiento y atención sostenida en la tarea 1 y precisión y velocidad de procesamiento y respuesta en la tarea 2. Esto señala una capacidad excelente para adaptarse a las reglas de una tarea y automatizar y mejorar su ejecución. Esta facilidad para automatizar la ejecución de diferentes tareas puede suponer una fortaleza y ventaja para un mejor desempeño en otras actividades del estilo.""",
-    }
-
-PARRAFOS_CONDICIONALES_OPCIONALES_DUALTASK = {
-
-    'intro':"Finalmente, se indican algunas recomendaciones para trabajar con {nombre} en las próximas sesiones.",
-
-# Este PARRAFO es opcional, condicional de si el rendimiento es muy diferente entre T1 (PSV) y T2 (A-E y TR), uno bajo y otro alto, o uno normal y otro bajo.
-    'PARRAFO_DUALTASK_final_inestable_negativo_o_muy_inestable':"Dado el rendimiento variable entre tareas, cabe hacer más evaluación y entrenamiento en torno a la capacidad de {nombre} para dirigir su atención ante tareas dinámicas, y aumentar su capacidad de memoria de trabajo para poder manejar más cantidad y diversidad de información en un mismo momento.",
-
-# Este PARRAFO es opcional, condicional de si el rendimiento es diferente entre T1 (PSV) y T2 (A-E y TR) y T1 alto y T2 normal.
-    'PARRAFO_DUALTASK_final_inestable_mejor_T1_y_T2_positivo':"Se ha observado una preferencia o mejor aptitud para las actividades que demandan una atención sostenida y de concentración prolongada y estable.",
-
-# Este PARRAFO es opcional, condicional de si el rendimiento es diferente entre T1 (PSV) y T2 (A-E y TR) y T1 normal o alto y T2 bajo
-    'PARRAFO_DUALTASK_final_inestable_mejor_T1_y_T2_negativo':"En este contexto, se ha encontrado una clara preferencia o mejor aptitud para el desempeño de la tarea más relacionada con la atención sostenida y concentración prolongada y estable. Esto supone una fortaleza desde la que trabajar y mejorar la atención y cognición. {nombre} parece poder implicarse y mantenerse bien concentrado en una misma tarea por suficiente tiempo. Es recomendable aprovechar esta capacidad para implicar a {nombre] en la ejecución de actividades de entrenamiento de las habilidades atencionales que se han visto más deficientes: la memoria de trabajo, el control voluntario de la atención, y la atención discriminativa, o capacidad para distinguir rápidamente que nueva información es relevante o irrelevante para la tarea u objetivo a desempeñar.""",
-
-# Este PARRAFO es opcional, condicional de si el rendimiento es diferente entre T1 (PSV) y T2 (A-E y TR) y T2 alto y T1 normal.
-    'PARRAFO_DUALTASK_final_inestable_mejor_T2_y_T1_positivo':"Se ha observado una preferencia o mejor aptitud para las actividades que demandan una atención responsiva basada en reflejos y respuestas rápidas a estímulos disruptivos.",
-
-# Este PARRAFO es opcional, condicional de si el rendimiento es diferente entre T1 (PSV) y T2 (A-E y TR) y T2 normal o alto y T1 bajo.
-    'PARRAFO_DUALTASK_final_inestable_mejor_T2_y_T1_negativo':"En este contexto, se ha encontrado una clara preferencia o mejor aptitud para el desempeño de la tarea más relacionada con la atención disruptiva basada en reflejos. Esto es, acciones que demandan un procesamiento y respuesta rápida a información novedosa o inesperada. Esto supone una fortaleza desde la que trabajar y mejorar la atención y cognición. {nombre} parece poder realizar análisis rápidos y efectivos de la información, distinguiendo la información relevante de la irrelevante o engañosa. Esto supone una buena aptitud para actividades estimulantes y reactivas, incluso frenéticas. Sin embargo, otras áreas atencionales parecen presentar dificultades, tales como:  la memoria de trabajo, el control voluntario de la atención, y la atención sostenida, o capacidad para mantenerse concentrado en una misma tarea menos estimulante por el tiempo suficiente. En este sentido, resulta necesario explicar a {nombre} la importancia de tener un control intrínseco y voluntario de la atención propia, y ser capaz de mantenerse concentrado por un tiempo en actividades menos estimulante. Para esto conviene implicar a {nombre} en actividades tranquilas que demanden una atención constante e intencional o guiada por la persona, tales como: puzle, juegos de mesa, pintar, leer, natación y caminar.",
-
-# Este PARRAFO es opcional, condicional de si el rendimiento en T1 (promedio PSV) es significativamente peor en eventos de concurrencia (mediciones 0.2 y 0.4 después de estímulo T2) frente eventos independientes. Y además el rendimiento en T2 (en A-E o TR) es bajo.
-    'PARRAFO_DUALTASK_final_concurrencia_peorT1_malT2':"Otro aspecto es que la distribución de recursos atencionales al tener que procesar dos tareas simultáneamente ha resultado deficiente, provocando distracción, confusión y mal desempeño. Por lo que es recomendable para {nombre} instaurar un método de trabajo ordenado y focalizado. Atendiendo y realizando una única tarea en cada momento, y maximizando así los recursos cognitivos que a esta se le dedica.",
-
-# Este PARRAFO es opcional, condicional de si el rendimiento en T1 (promedio PSV) es bajo
-    'PARRAFO_DUALTASK_final_PSV_bajo':"De nuevo, remarcar la importancia de realizar una evaluación más exhaustiva de las habilidades de movimiento fino y coordinación ojo mano, que en esta prueba se han visto insuficientes para lo normal o esperado para su edad, y que pueden indicar un problema de disgrafía. De confirmarse esto en próximas evaluaciones, se recomienda entrenar dicha habilidad con actividades tales como: caligrafía, construcción con piezas Lego, o videojuegos con movimiento preciso (plataforma, acción, aventura…).",
-
-# Este PARRAFO es opcional, condicional de si algún índice de fatiga resulta significativo. Esto es, una diferencia significativa entre el rendimiento del primer tercio de la prueba y el último tercio de la prueba, en alguna de las dimensiones evaluadas: precisión de seguimiento visomotor, precisión de respuesta en la tarea 2, o tiempo de respuesta en la tarea 2.
-    'PARRAFO_DUALTASK_final_fatiga ':"""Respecto al evidente cansancio o fatiga originado hacia el final de la prueba, hay que destacar que esta es una actividad de 2 minutos de duración. Puede ser conveniente en este aspecto entrenar la resistencia de {nombre} a la fatiga cognitiva ante tareas de alta demanda cognitiva. Esto le ayudará a poder mantener su concentración y ritmo de trabajo durante más tiempo ante tareas más dinámicas y complejas. Por ejemplo, ante cálculos matemáticos complejos, síntesis de información, razonamiento contrafactual, interacciones sociales, etc.""",
+    'P3_inesperado':"""Por otro lado y de último, destaca el significativamente peor resultado de en la parte 3 de la prueba. Este resultado tan deteriorado difiere drásticamente de lo esperable en base al rendimiento en las partes anteriores. Por lo tanto parece que este resultado puede no ser tan representativo de la capacidad de memoria operativa, y en cambio estar sesgado por un problema cognitivo específico de esta parte con cálculo. Esto es, la sospecha de una posible discalculia.""",
 
 }
-
-# Este PARRAFO es opcional, condicional de si el rendimiento en C en T2 es normal o alto. En este caso elegir la opción impulsividad si TR_C es menor TR_A. Y elegir la opción distraibilidad si TR_C es mayor que TR_A. Si no hay una diferencia significativa entre TR_C y TR_A, no añadir este párrafo.
-PARRAFO_DUALTASK_final_dif_TR_A_y_C = {
-    'impulsividad':"""La precisión de {nombre} al emitir respuestas acertadas se ha visto perjudicado parece que en gran parte debido a la impulsividad. Esta representa otra área de la atención donde existe margen de mejora. Y donde se recomiendan actividades de control atencional interno o voluntario. Por ejemplo, con ejercicios de mindfulness, o con la adopción mediante retroalimentación o instrucciones verbales de un estilo atencional y de trabajo más reflexivo, lento pero preciso.""",
-
-    'distraibilidad':"""Se ha registrado un deterioro en la precisión de respuesta en la tarea 2, debido a puntuales fallas de distraibilidad, y durante las cuales el procesamiento de la información de la tarea ha sido mínimo. Es importante valorar el grado de deterioro en el rendimiento de la tarea T2. Ya que de ser alto, esto significaría un problema de distraibilidad persistente y de importante interferencia en el adecuado desempeño atencional."""
-    }
-
-
 
 # ============================================================================
 # 4. FINAL

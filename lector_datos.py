@@ -339,6 +339,7 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
     o_por_fila = []
     c_por_fila = []
     con_por_fila = []
+    tot_por_fila = []
 
     for _, group in df.sort_values(['row', 'letter_num']).groupby('row'):
         attempted = group.loc[selected.loc[group.index] | timestamp.loc[group.index].gt(0), 'letter_num']
@@ -357,27 +358,33 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
 
         c_row = int((~target.loc[group.index] & selected.loc[group.index]).sum())
         con_row = ta_row - c_row
+        tot_row = tr_row - o_row - c_row
 
         tr_por_fila.append(tr_row)
         ta_por_fila.append(ta_row)
         o_por_fila.append(o_row)
         c_por_fila.append(c_row)
         con_por_fila.append(con_row)
+        tot_por_fila.append(tot_row)
 
     resultados['TR_por_fila'] = tr_por_fila
     resultados['TA_por_fila'] = ta_por_fila
     resultados['O_por_fila'] = o_por_fila
     resultados['C_por_fila'] = c_por_fila
+    resultados['TOT_por_fila'] = tot_por_fila
     resultados['TR_total'] = int(sum(tr_por_fila))
     resultados['TA_total'] = int(sum(ta_por_fila))
     resultados['O_total'] = int(sum(o_por_fila))
     resultados['C_total'] = int(sum(c_por_fila))
     resultados['E_total'] = resultados['O_total'] + resultados['C_total']
-    resultados['TOT'] = resultados['TR_total'] - resultados['E_total']
+    resultados['TOT'] = int(sum(tot_por_fila))
     resultados['CON'] = resultados['TA_total'] - resultados['C_total']
     resultados['TR_max'] = int(max(tr_por_fila)) if tr_por_fila else 0
     resultados['TR_min'] = int(min(tr_por_fila)) if tr_por_fila else 0
-    resultados['VAR'] = resultados['TR_max'] - resultados['TR_min']
+    # VAR es la desviación estándar poblacional del TOT de las series (14 previstas).
+    resultados['VAR'] = (
+        float(pd.Series(tot_por_fila).std(ddof=0)) if tot_por_fila else None
+    )
 
     resultados['PD_CPT_N'] = resultados['TR_total']
     resultados['PD_CPT_A'] = resultados['TA_total']
@@ -385,12 +392,13 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
     resultados['PD_CPT_C'] = resultados['C_total']
     resultados['PD_CPT_E'] = resultados['E_total']
     resultados['PD_CPT_TOT'] = resultados['TOT']
-    resultados['PD_CPT_CON'] = resultados['CON']
+    #  resultados['PD_CPT_CON'] = resultados['CON']  # YA NO SE UTILIZA este índice: substituído x TOT
     resultados['PD_CPT_VAR'] = resultados['VAR']
     resultados['PD_CPT_R'] = resultados['TA_total']
-    resultados['PD_CPT_CON_principio_vs_final'] = (
-        float(sum(con_por_fila[:4]) / len(con_por_fila[:4])) - float(sum(con_por_fila[-4:]) / len(con_por_fila[-4:]))
-        if len(con_por_fila) >= 4 else None
+    # Diferencia positiva indica menor TOT al final: se interpreta como fatiga.
+    resultados['PD_CPT_TOT_principio_vs_final'] = (
+        float(sum(tot_por_fila[:4]) / 4) - float(sum(tot_por_fila[-4:]) / 4)
+        if len(tot_por_fila) >= 8 else None
     )
     if len(ta_por_fila) >= 2:
         first_count = max(1, len(ta_por_fila) // 3)
@@ -420,7 +428,7 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
         'CPT',
         datos['display_names']['CPT'],
         [
-            ('CPT_CON', 'CON', resultados['PD_CPT_CON'], 'PT_CPT_CON'),
+            ('CPT_TOT', 'CON', resultados['PD_CPT_TOT'], 'PT_CPT_TOT'),
             ('CPT_VAR', 'VAR', resultados['PD_CPT_VAR'], 'PT_CPT_VAR'),
             ('CPT_O', 'O', resultados['PD_CPT_O'], 'PT_CPT_O'),
             ('CPT_C', 'C', resultados['PD_CPT_C'], 'PT_CPT_C'),
@@ -483,16 +491,47 @@ def _calcular_four_figures(resultados: dict, datos: dict) -> None:
 
 
 def _calcular_digits(resultados: dict, datos: dict) -> None:
-    row = datos['df_DigitsMemorization'].iloc[0].to_dict()
-    directo = int(row.get('forward_span') or 0)
-    inverso = int(row.get('backward_span') or 0)
-    creciente = int(row.get('ascending_span') or 0)
+    digits = datos['df_DigitsMemorization']
+    partes = {
+        'directo': ('directo', 'forward_span'),
+        'inverso': ('inverso', 'backward_span'),
+        'calculo': ('calculo', 'calculo'),
+    }
+    puntuaciones = {}
+
+    if {'parte', 'num_digits', 'correct'}.issubset(digits.columns):
+        nombres_parte = digits['parte'].astype(str).str.strip().str.lower()
+        numeros_digitos = pd.to_numeric(digits['num_digits'], errors='coerce')
+        respuestas_correctas = _bool_yes(digits['correct'])
+        for parte, etiquetas in partes.items():
+            filas_parte = nombres_parte.isin(etiquetas)
+            correctas = filas_parte & respuestas_correctas
+            puntuaciones[parte] = {
+                'span': int(numeros_digitos[correctas].max()) if correctas.any() else 0,
+                'correctas': int(correctas.sum()),
+                'series': int(filas_parte.sum()),
+            }
+    else:
+        row = digits.iloc[0].to_dict()
+        for parte, (_, columna_span) in partes.items():
+            puntuaciones[parte] = {
+                'span': int(row.get(columna_span) or 0),
+                'correctas': None,
+                'series': None,
+            }
+
+    directo = puntuaciones['directo']['span']
+    inverso = puntuaciones['inverso']['span']
+    calculo = puntuaciones['calculo']['span']
 
     resultados['PD_DigitsMemorization_directo'] = directo
     resultados['PD_DigitsMemorization_inverso'] = inverso
-    resultados['PD_DigitsMemorization_creciente'] = creciente
-    resultados['PD_DigitsMemorization_total'] = directo + inverso + creciente
-    resultados['PD_Digits_Memorization_M'] = (directo + inverso + creciente) / 3
+    resultados['PD_DigitsMemorization_calculo'] = calculo
+    resultados['PD_DigitsMemorization_total'] = directo + inverso + calculo
+    resultados['PD_Digits_Memorization_M'] = (directo + inverso + calculo) / 3
+    for parte, puntuacion in puntuaciones.items():
+        resultados[f'PD_DigitsMemorization_{parte}_aciertos'] = puntuacion['correctas']
+        resultados[f'PD_DigitsMemorization_{parte}_series'] = puntuacion['series']
 
     _registrar_resultado_prueba(
         resultados,
@@ -501,7 +540,7 @@ def _calcular_digits(resultados: dict, datos: dict) -> None:
         [
             ('DigitsMemorization_directo', 'Directo', directo, 'PT_DigitsMemorization_directo'),
             ('DigitsMemorization_inverso', 'Inverso', inverso, 'PT_DigitsMemorization_inverso'),
-            ('DigitsMemorization_creciente', 'Creciente', creciente, 'PT_DigitsMemorization_creciente'),
+            ('DigitsMemorization_calculo', 'Calculo', calculo, 'PT_DigitsMemorization_calculo'),
             ('Digits_Memorization_M', 'M', resultados['PD_Digits_Memorization_M'], 'PT_Digits_Memorization_M'),
         ],
     )

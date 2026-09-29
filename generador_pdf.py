@@ -30,6 +30,7 @@ from reportlab.platypus import SimpleDocTemplate, Spacer, Table as RLTable, Tabl
 from pypdf import PdfReader, PdfWriter
 
 REL_NS = '{http://schemas.openxmlformats.org/officeDocument/2006/relationships}embed'
+CPT_PAGE_TITLE = 'CPT - prueba de rendimiento continuo'
 
 
 def _normalizar_ruta(ruta):
@@ -177,14 +178,7 @@ def crear_pdf_desde_imagen(ruta_imagen, ruta_pdf_salida):
 
 def insertar_imagen_en_pagina_3(ruta_pdf_original, ruta_imagen, ruta_pdf_salida):
     """
-    Inserta una imagen como página 10 en un PDF existente.
-    
-    El resultado será:
-    - Página 1: contenido original
-    - Página 2: contenido original
-    - Páginas 3-9: contenido original
-    - Página 10: imagen grafico_CPT_final
-    - Página 11+: resto del contenido original
+    Inserta el gráfico CPT inmediatamente después de la página con el título CPT.
     
     Args:
         ruta_pdf_original: Ruta al PDF original (generado desde DOCX)
@@ -198,6 +192,17 @@ def insertar_imagen_en_pagina_3(ruta_pdf_original, ruta_imagen, ruta_pdf_salida)
         # Leer el PDF original
         lector_original = PdfReader(ruta_pdf_original)
         num_paginas = len(lector_original.pages)
+        pagina_cpt = next(
+            (
+                indice
+                for indice, pagina in enumerate(lector_original.pages)
+                if CPT_PAGE_TITLE in ' '.join((pagina.extract_text() or '').split())
+            ),
+            None,
+        )
+        if pagina_cpt is None:
+            print(f"No se encontró la página con el título '{CPT_PAGE_TITLE}'.")
+            return False
         
         # Crear PDF temporal con la imagen
         with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp_file:
@@ -214,15 +219,13 @@ def insertar_imagen_en_pagina_3(ruta_pdf_original, ruta_imagen, ruta_pdf_salida)
         # Crear el PDF de salida
         escritor = PdfWriter()
         
-        # Copiar las primeras 9 páginas del PDF original.
-        for i in range(min(9, num_paginas)):  # Aquí se cambia inserción pág grafico_CPT
+        # Conservar la página CPT y agregar el gráfico justo después.
+        for i in range(pagina_cpt + 1):
             escritor.add_page(lector_original.pages[i])
         
-        # Insertar la página con la imagen (página 10).
         escritor.add_page(pagina_imagen)
         
-        # Copiar el resto de las páginas originales (desde la página 10).
-        for i in range(9, num_paginas):      # También quí se cambia inserción pág grafico_CPT
+        for i in range(pagina_cpt + 1, num_paginas):
             escritor.add_page(lector_original.pages[i])
         
         # Guardar el PDF final
@@ -238,7 +241,7 @@ def insertar_imagen_en_pagina_3(ruta_pdf_original, ruta_imagen, ruta_pdf_salida)
         return True
         
     except Exception as e:
-        print(f"Error al insertar imagen CPT en página 10: {e}")
+        print(f"Error al insertar imagen después de la página CPT: {e}")
         return False
 
 
@@ -288,7 +291,7 @@ def generar_pdf_desde_docx(ruta_docx, ruta_pdf=None, verbose=True):
                 ):
                     os.replace(ruta_pdf_con_imagen, ruta_pdf)
                 else:
-                    print("    Advertencia: no se pudo insertar el gráfico CPT en la página 10")
+                    print("    Advertencia: no se pudo insertar el gráfico después de la página CPT")
             finally:
                 if os.path.exists(ruta_pdf_con_imagen):
                     os.unlink(ruta_pdf_con_imagen)

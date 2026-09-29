@@ -28,7 +28,8 @@ BAREMOS_PROVISIONALES: Dict[str, BaremoProvisional] = {
     'ANT_TR_orientacion': BaremoProvisional(25, 50, invertir=True),
     'ANT_TR_ejecutivo': BaremoProvisional(25, 50, invertir=True),
     'CPT_CON': BaremoProvisional(4, 8),
-    'CPT_VAR': BaremoProvisional(0, 50, invertir=True), # VAR ¿qué índice baremado compara: N, TA, CON...?
+    # Baremo temporal: una desviación estándar TOT mayor se clasifica como más baja.
+    'CPT_VAR': BaremoProvisional(0, 50, invertir=True),
     'CPT_O': BaremoProvisional(2, 6, invertir=True),
     'CPT_C': BaremoProvisional(3, 5, invertir=True),
     'CPT_N': BaremoProvisional(68, 350),
@@ -136,17 +137,22 @@ def _clasificar_ant_fatiga(resultados: dict, clasificaciones: dict) -> None:
 
 
 def _clasificar_cpt_var(resultados: dict, clasificaciones: dict) -> None:
-    diff = resultados.get('PD_CPT_CON_principio_vs_final')
+    """Clasifica variabilidad TOT y cambio de nivel entre las primeras/últimas 4 series.
+
+    El corte provisional es 5 puntos: diferencia positiva = fatiga; negativa =
+    mejora final, que se interpreta como automatización salvo que CPT_TOT sea bajo.
+    """
+    diff = resultados.get('PD_CPT_TOT_principio_vs_final')
     if diff is None:
         clasificaciones['CPT_VAR_condicion'] = 'nada'
         return
     if diff >= 5:
         clasificaciones['CPT_VAR_condicion'] = 'fatiga'
     elif diff <= -5:
-        con_nivel = clasificaciones.get('CPT_CON')
-        if con_nivel in ('normal', 'alto'):
+        tot_nivel = clasificaciones.get('CPT_TOT')
+        if tot_nivel in ('normal', 'alto'):
             clasificaciones['CPT_VAR_condicion'] = 'automatismo'
-        elif con_nivel == 'bajo':
+        elif tot_nivel == 'bajo':
             clasificaciones['CPT_VAR_condicion'] = 'dificultadinicial'
         else:
             clasificaciones['CPT_VAR_condicion'] = 'nada'
@@ -258,24 +264,31 @@ def _clasificar_dualtask(resultados: dict, clasificaciones: dict) -> None:
     psv_diff = resultados.get('PD_DUALTASK_PSV_principio_vs_final')
     if psv_diff is not None:
         if psv_diff >= 2:
-            fatiga_flags.append('F_PSV')
+            fatiga_flags.append('F PSV')
         elif psv_diff <= -2:
-            auto_flags.append('Automatización_PSV')
+            auto_flags.append('Automatización PSV')
     a_diff = resultados.get('PD_DUALTASK_A_principio_vs_final')
     if a_diff is not None:
         if a_diff >= 0.1:
-            fatiga_flags.append('F_A')
+            fatiga_flags.append('F A')
         elif a_diff <= -0.1:
-            auto_flags.append('Automatización_P')
+            auto_flags.append('Automatización P')
     tr_diff = resultados.get('PD_DUALTASK_TR_principio_vs_final')
     if tr_diff is not None:
         if tr_diff >= 0.05:
-            fatiga_flags.append('F_TR')
+            fatiga_flags.append('F TR')
         elif tr_diff <= -0.05:
-            auto_flags.append('Automatización_TR')
+            auto_flags.append('Automatización TR')
 
-    clasificaciones['DUALTASK_Fatiga'] = 'no F' if not fatiga_flags else ' y '.join(flag.replace('F_', 'F_') for flag in fatiga_flags)
-    clasificaciones['DUALTASK_automatización'] = None if not auto_flags else '_y_'.join(auto_flags).replace('_y_', '_y_')
+    def combinar_flags(flags):
+        if len(flags) == 3:
+            return f'{flags[0]}, {flags[1]} y {flags[2]}'
+        return ' y '.join(flags)
+
+    clasificaciones['DUALTASK_Fatiga'] = combinar_flags(fatiga_flags) if fatiga_flags else 'no F'
+    orden_automatizacion = ('Automatización PSV', 'Automatización TR', 'Automatización P')
+    auto_flags.sort(key=orden_automatizacion.index)
+    clasificaciones['DUALTASK_automatización'] = combinar_flags(auto_flags) if auto_flags else None
 
     t1 = _nivel_a_numero(psv)
     t2 = round((_nivel_a_numero(a) + _nivel_a_numero(tr)) / 2)
