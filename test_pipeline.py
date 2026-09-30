@@ -5,6 +5,8 @@ from datetime import datetime
 
 import pandas as pd
 from docx import Document
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from PIL import Image
 from pypdf import PdfReader, PdfWriter
 from reportlab.pdfgen import canvas
@@ -22,10 +24,13 @@ from textos import (
     PARRAFO_ANT_F,
     PARRAFO_CPT_TR,
     PARRAFO_CPT_VAR,
+    PARRAFO_DigitsMemorization_consistencia,
     PARRAFO_DUALTASK_General_PSV_y_A,
+    PARRAFO_DUALTASK_Fatiga,
+    PARRAFO_DUALTASK_automatización,
     PARRAFO_DUALTASK_estilo_atencional_cuando_concurrencia,
-    PARRAFO_DUALTASK_memoria_trabajo_cuando_concurrencia,
     PARRAFO_DUALTASK_si_inestable,
+    PARRAFOS_CONDICIONALES_OPCIONALES_DUALTASK,
     PARRAFO_FourFigures_C,
 )
 
@@ -58,6 +63,8 @@ class PipelineTests(unittest.TestCase):
         self.assertIn('PT_ANT_A', resultados)
         self.assertIn('CPT_VAR_condicion', clasificaciones)
         self.assertIn('DUALTASK_PSV_cuando_concurrencia', clasificaciones)
+        for indice in ('PSV', 'A', 'TR'):
+            self.assertIn(f'P_DUALTASK_{indice}_principio_vs_final', resultados)
 
         with tempfile.TemporaryDirectory() as tmpdir:
             ruta_docx = os.path.join(tmpdir, 'informe.docx')
@@ -67,6 +74,131 @@ class PipelineTests(unittest.TestCase):
             self.assertTrue(os.path.exists(ruta_docx))
             self.assertTrue(generar_pdf_desde_docx(ruta_docx, ruta_pdf, verbose=False))
             self.assertTrue(os.path.exists(ruta_pdf))
+
+    def test_parts_table_centering_is_scoped_to_four_figures_variants(self):
+        for display_name in ('FourFigures', 'NamingNumbers'):
+            with self.subTest(display_name=display_name):
+                doc = crear_informe_docx(
+                    {
+                        'available_tests': ['FourFigures', 'DigitsMemorization'],
+                        'display_names': {'FourFigures': display_name},
+                    },
+                    {},
+                    'caso',
+                )
+                parts_table = next(
+                    table for table in doc.tables
+                    if len(table.rows) == 5
+                    and len(table.columns) == 2
+                    and table.cell(0, 1).text == 'Puntuación obtenida'
+                )
+                for row in parts_table.rows:
+                    for cell in row.cells:
+                        self.assertEqual(
+                            cell.vertical_alignment,
+                            WD_CELL_VERTICAL_ALIGNMENT.CENTER,
+                        )
+                        for paragraph in cell.paragraphs:
+                            self.assertEqual(
+                                paragraph.alignment,
+                                WD_PARAGRAPH_ALIGNMENT.CENTER,
+                            )
+
+                digits_table = next(
+                    table for table in doc.tables
+                    if table.cell(0, 1).text == 'Filas acertadas'
+                )
+                self.assertNotEqual(
+                    digits_table.cell(1, 0).paragraphs[0].alignment,
+                    WD_PARAGRAPH_ALIGNMENT.CENTER,
+                )
+                self.assertNotEqual(
+                    digits_table.cell(1, 0).vertical_alignment,
+                    WD_CELL_VERTICAL_ALIGNMENT.CENTER,
+                )
+
+    def test_sintesis_incluye_indices_completos_y_temporales_por_signo(self):
+        resultados = {
+            'available_tests': [],
+            'display_names': {'FourFigures': 'FiveDigits'},
+            'PD_ANT_A_principio_vs_final': 0.2,
+            'PD_ANT_TR_principio_vs_final': 25,
+            'PD_CPT_TOT_principio_vs_final': -5,
+            'PD_DUALTASK_PSV_principio_vs_final': 3,
+            'P_DUALTASK_PSV_principio_vs_final': 0.01,
+            'PD_DUALTASK_A_principio_vs_final': -0.2,
+            'P_DUALTASK_A_principio_vs_final': 0.01,
+            'PD_DUALTASK_TR_principio_vs_final': -0.3,
+            'P_DUALTASK_TR_principio_vs_final': 0.01,
+        }
+        clasificaciones = {
+            'ANT_TR_alerta': 'alto',
+            'CPT_TOT': 'bajo',
+            'DUALTASK_O': 'bajo',
+            'DUALTASK_PSV': 'bajo',
+            'DUALTASK_A': 'alto',
+            'FourFigures_A': 'alto',
+            'CPT_VAR': 'normal',
+            'ANT_TR_ejecutivo': 'bajo',
+            'ANT_TR_orientacion': 'alto',
+            'ANT_C': 'bajo',
+            'CPT_C': 'bajo',
+            'CPT_O': 'bajo',
+            'DUALTASK_C': 'alto',
+            'FourFigures_C': 'bajo',
+            'ANT_TR': 'bajo',
+            'ANT_O': 'alto',
+            'CPT_N': 'bajo',
+            'DUALTASK_TR': 'bajo',
+            'FourFigures_TR': 'alto',
+        }
+
+        doc = crear_informe_docx(resultados, clasificaciones, 'caso')
+        parrafos_doc = [paragraph.text for paragraph in doc.paragraphs]
+        texto_doc = '\n'.join(parrafos_doc)
+
+        for etiqueta in (
+            'ANT - Red de alerta',
+            'CPT - TOT',
+            'DUALTASK - omisiones',
+            'DUALTASK - seguimiento visomotor',
+            'NamingNumbers - precisión',
+            'DUALTASK - aciertos',
+            'ANT - fatiga en la precisión',
+            'ANT - automatización en la velocidad',
+            'CPT - automatización',
+            'DUALTASK - fatiga en el seguimiento visomotor',
+            'DUALTASK - automatización en la precisión',
+            'DUALTASK - fatiga en la velocidad',
+            'ANT - red ejecutiva',
+            'ANT - red orientación',
+            'ANT - comisiones',
+            'CPT - comisiones',
+            'CPT - omisiones',
+            'DUALTASK - comisiones',
+            'NamingNumbers - comisiones',
+            'ANT - omisiones',
+            'CPT - elementos procesados',
+            'DUALTASK - tiempo de respuesta',
+            'NamingNumbers - tiempo de respuesta',
+        ):
+            with self.subTest(etiqueta=etiqueta):
+                self.assertIn(etiqueta, texto_doc)
+
+        self.assertNotIn('DUALTASK - automatización en la velocidad', texto_doc)
+        self.assertIn('El siguiente aspecto a revisar es el de la atención sostenida', texto_doc)
+        parrafos_sintesis = [
+            texto for texto in parrafos_doc
+            if texto.startswith((
+                'Primeramente, en cuestión de arousal',
+                'El siguiente aspecto a revisar es el de atención sostenida',
+                'Con respecto al control ejecutivo',
+                'Seguidamente está el aspecto de la flexibilidad cognitiva',
+                'Otro aspecto a mencionar es el de la memoria de trabajo',
+                'Finalmente, en relación a la velocidad de procesamiento',
+            ))
+        ]
+        self.assertEqual(len(parrafos_sintesis), 6)
 
     def test_detecta_pruebas_sustitutivas_y_ausentes(self):
         info = pd.DataFrame([{
@@ -79,6 +211,11 @@ class PipelineTests(unittest.TestCase):
             {'row': 1, 'letter_num': 2, 'selected': False, 'timestamp': 0, 'target': 'no'},
         ])
         five_digits = pd.DataFrame([
+            {
+                'part': 1, 'trial_type': 'experimental', 'contour': '0', 'content': '0',
+                'discrepancy': 'no', 'response_given': '0', 'correct_response': '1',
+                'correct': 'no', 'TR': 900,
+            },
             {
                 'part': 2, 'trial_type': 'experimental', 'contour': '1', 'content': '1',
                 'discrepancy': 'no', 'response_given': '1', 'correct_response': '1',
@@ -115,6 +252,29 @@ class PipelineTests(unittest.TestCase):
             self.assertIn('D2 - prueba de rendimiento continuo', texto)
             self.assertIn('FiveDigits - control y flexibilidad cognitiva', texto)
             self.assertNotIn('Dual Task - prueba multitarea de atención dividida', texto)
+            tabla_partes = next(
+                table for table in doc.tables
+                if table.rows[0].cells[0].text == 'Parte'
+            )
+            self.assertEqual(
+                [cell.text for cell in tabla_partes.rows[0].cells],
+                ['Parte', 'Puntuación obtenida'],
+            )
+            self.assertEqual(
+                [[cell.text for cell in row.cells] for row in tabla_partes.rows[1:]],
+                [['1', '0 / 1'], ['2', '1 / 1'], ['3', '1 / 1'], ['4', '1 / 1']],
+            )
+            self.assertTrue(all(
+                run.bold
+                for cell in tabla_partes.rows[0].cells
+                for run in cell.paragraphs[0].runs
+            ))
+            for row in tabla_partes.rows[1:]:
+                self.assertTrue(row.cells[0].paragraphs[0].runs[0].bold)
+                self.assertEqual(
+                    row.cells[0].paragraphs[0].alignment,
+                    1,
+                )
 
     def test_tabla_y_pt_provisional_se_generan(self):
         datos = leer_datos_excel(SAMPLE_XLSX)
@@ -149,6 +309,28 @@ class PipelineTests(unittest.TestCase):
                 ['3. Recuerdo tras cálculo', '2 / 4', '2'],
             ],
         )
+        self.assertEqual(
+            resultados['PD_DigitsMemorization_directo_errores_antes_ultimas_dos'],
+            1,
+        )
+        self.assertEqual(clasificaciones['Digits_Memorization_consistencia'], 'normal')
+        self.assertIn(
+            PARRAFO_DigitsMemorization_consistencia['normal'].format(nombre='caso'),
+            [paragraph.text for paragraph in doc.paragraphs],
+        )
+
+    def test_digits_memorization_consistency_thresholds(self):
+        escenarios = ((0, 'alto'), (1, 'normal'), (2, 'normal'), (3, 'bajo'))
+        for errores, esperado in escenarios:
+            with self.subTest(errores=errores):
+                clasificaciones = obtener_puntuaciones({
+                    'report_tests': [],
+                    'PD_DigitsMemorization_directo_errores_antes_ultimas_dos': errores,
+                })
+                self.assertEqual(
+                    clasificaciones['Digits_Memorization_consistencia'],
+                    esperado,
+                )
 
     def test_dualtask_general_paragraphs_are_added_in_order(self):
         clasificaciones = {
@@ -163,9 +345,6 @@ class PipelineTests(unittest.TestCase):
         esperados = [
             PARRAFO_DUALTASK_General_PSV_y_A['PSV normal y T2 P alto'].format(nombre='caso'),
             PARRAFO_DUALTASK_si_inestable['PSV normal o bajo y T2 P alto'].format(nombre='caso'),
-            PARRAFO_DUALTASK_memoria_trabajo_cuando_concurrencia[
-                'alto y T2 P normal o alto'
-            ].format(nombre='caso'),
             PARRAFO_DUALTASK_estilo_atencional_cuando_concurrencia[
                 'no deterioro y T2 P y TR normal o alto'
             ].format(nombre='caso'),
@@ -173,6 +352,76 @@ class PipelineTests(unittest.TestCase):
 
         posiciones = [parrafos.index(texto) for texto in esperados]
         self.assertEqual(posiciones, sorted(posiciones))
+
+    def test_dualtask_concurrence_paragraph_covers_all_conditions(self):
+        directions = (
+            (3, 'deterioro'),
+            (0, 'no deterioro'),
+            (-3, 'mejora'),
+        )
+        t2_levels = (
+            ('normal', 'normal'),
+            ('alto', 'normal'),
+            ('normal', 'alto'),
+            ('alto', 'alto'),
+            ('bajo', 'normal'),
+            ('normal', 'bajo'),
+            ('bajo', 'bajo'),
+        )
+        for diferencia, direccion in directions:
+            for nivel_a, nivel_tr in t2_levels:
+                clasificaciones = {
+                    'DUALTASK_PSV': 'normal',
+                    'DUALTASK_A': nivel_a,
+                    'DUALTASK_TR': nivel_tr,
+                    'DUALTASK_C': 'normal',
+                    'DUALTASK_O': 'normal',
+                }
+                _clasificar_dualtask(
+                    {'PD_DUALTASK_PSV_cuando_concurrencia': diferencia},
+                    clasificaciones,
+                )
+                if nivel_a == 'bajo' and nivel_tr == 'bajo':
+                    condicion_t2 = 'mal T2 P y TR'
+                    sufijo_texto = 'P y TR bajo'
+                elif nivel_a == 'bajo':
+                    condicion_t2 = 'mal T2 P'
+                    sufijo_texto = 'P bajo'
+                elif nivel_tr == 'bajo':
+                    condicion_t2 = 'mal T2 TR'
+                    sufijo_texto = 'TR bajo'
+                else:
+                    condicion_t2 = 'buen T2'
+                    sufijo_texto = (
+                        'normal o alto'
+                        if direccion == 'deterioro'
+                        else 'P y TR normal o alto'
+                    )
+                clave_clasificacion = f'{direccion} y {condicion_t2}'
+                clave_texto = (
+                    f'{direccion} y T2 {sufijo_texto}'
+                    if condicion_t2 != 'buen T2' or direccion != 'deterioro'
+                    else 'deterioro y T2 normal o alto'
+                )
+
+                with self.subTest(
+                    diferencia=diferencia,
+                    nivel_a=nivel_a,
+                    nivel_tr=nivel_tr,
+                ):
+                    self.assertEqual(
+                        clasificaciones['DUALTASK_PSV_cuando_concurrencia'],
+                        clave_clasificacion,
+                    )
+                    doc = crear_informe_docx(
+                        {'available_tests': ['DUALTASK']}, clasificaciones, 'caso'
+                    )
+                    self.assertIn(
+                        PARRAFO_DUALTASK_estilo_atencional_cuando_concurrencia[
+                            clave_texto
+                        ].format(nombre='caso'),
+                        [paragraph.text for paragraph in doc.paragraphs],
+                    )
 
     def test_dualtask_skips_optional_paragraphs_without_matching_conditions(self):
         clasificaciones = {'DUALTASK_PSV': 'normal', 'DUALTASK_A': 'normal'}
@@ -186,18 +435,27 @@ class PipelineTests(unittest.TestCase):
         self.assertFalse(any(text.startswith('Se señala un desbalance') for text in parrafos))
         self.assertFalse(any(text.startswith('Respecto a la memoria de trabajo') for text in parrafos))
         self.assertFalse(any(text.startswith('Por otro lado, en estos momentos') for text in parrafos))
+        self.assertNotIn('🔹 Recomendaciones', parrafos)
+        self.assertNotIn(
+            PARRAFOS_CONDICIONALES_OPCIONALES_DUALTASK['intro'].format(nombre='caso'),
+            parrafos,
+        )
 
-    # Comprueba dirección y umbral de fatiga/automatización, y su texto DOCX.
+    # Comprueba dirección, significación y texto DOCX de fatiga/automatización.
     def test_dualtask_fatigue_and_automation_directions_match_text_keys(self):
         scenarios = (
-            ('PSV', 2, 'F PSV', 'Automatización PSV'),
-            ('A', 0.1, 'F A', 'Automatización P'),
-            ('TR', 0.05, 'F TR', 'Automatización TR'),
+            ('PSV', 0.5, 'F PSV', 'Automatización PSV', True),
+            ('A', 0.01, 'F A', 'Automatización P', True),
+            ('TR', 0.001, 'F TR', 'Automatización TR', False),
         )
         result_key = {
             'PSV': 'PD_DUALTASK_PSV_principio_vs_final',
             'A': 'PD_DUALTASK_A_principio_vs_final',
             'TR': 'PD_DUALTASK_TR_principio_vs_final',
+        }
+        pvalue_key = {
+            indice: f'P_DUALTASK_{indice}_principio_vs_final'
+            for indice, _, _, _, _ in scenarios
         }
         fatigue_text_key = {
             'PSV': 'F PSV',
@@ -210,10 +468,17 @@ class PipelineTests(unittest.TestCase):
             'TR': 'Automatización TR',
         }
 
-        for indice, umbral, clave_fatiga, clave_auto in scenarios:
-            for diferencia, esperado in ((umbral, clave_fatiga), (-umbral, clave_auto)):
+        for indice, umbral, clave_fatiga, clave_auto, positivo_es_fatiga in scenarios:
+            cambios = (
+                (umbral, clave_fatiga if positivo_es_fatiga else clave_auto),
+                (-umbral, clave_auto if positivo_es_fatiga else clave_fatiga),
+            )
+            for diferencia, esperado in cambios:
                 with self.subTest(indice=indice, diferencia=diferencia):
-                    resultados = {result_key[indice]: diferencia}
+                    resultados = {
+                        result_key[indice]: diferencia,
+                        pvalue_key[indice]: 0.01,
+                    }
                     clasificaciones = {
                         'DUALTASK_PSV': 'normal',
                         'DUALTASK_A': 'normal',
@@ -223,7 +488,8 @@ class PipelineTests(unittest.TestCase):
                     }
                     _clasificar_dualtask(resultados, clasificaciones)
 
-                    if diferencia > 0:
+                    es_fatiga = (diferencia > 0) == positivo_es_fatiga
+                    if es_fatiga:
                         self.assertEqual(clasificaciones['DUALTASK_Fatiga'], esperado)
                         diccionario = PARRAFO_DUALTASK_Fatiga
                         clave_texto = fatigue_text_key[indice]
@@ -239,6 +505,28 @@ class PipelineTests(unittest.TestCase):
                         diccionario[clave_texto].format(nombre='caso'),
                         [paragraph.text for paragraph in doc.paragraphs],
                     )
+
+    def test_dualtask_nonsignificant_change_is_not_fatigue_or_automation(self):
+        resultados = {
+            'PD_DUALTASK_PSV_principio_vs_final': 10,
+            'P_DUALTASK_PSV_principio_vs_final': 0.05,
+            'PD_DUALTASK_A_principio_vs_final': -1,
+            'P_DUALTASK_A_principio_vs_final': 0.2,
+            'PD_DUALTASK_TR_principio_vs_final': 1,
+            'P_DUALTASK_TR_principio_vs_final': None,
+        }
+        clasificaciones = {
+            'DUALTASK_PSV': 'normal',
+            'DUALTASK_A': 'normal',
+            'DUALTASK_C': 'normal',
+            'DUALTASK_O': 'normal',
+            'DUALTASK_TR': 'normal',
+        }
+
+        _clasificar_dualtask(resultados, clasificaciones)
+
+        self.assertEqual(clasificaciones['DUALTASK_Fatiga'], 'no F')
+        self.assertIsNone(clasificaciones['DUALTASK_automatización'])
 
     def test_cpt_var_selecciona_parrafo_segun_con(self):
         for clave_parrafo, texto_esperado in PARRAFO_CPT_VAR.items():
@@ -308,7 +596,16 @@ class PipelineTests(unittest.TestCase):
             with self.subTest(difference=difference, tot_level=tot_level):
                 self.assertEqual(classifications['CPT_VAR_condicion'], expected)
 
-    def test_cpt_rendimiento_general_usa_elementos_procesados_y_comisiones(self):
+    def test_cpt_errores_totales_se_clasifican_desde_omisiones_y_comisiones(self):
+        for errores, expected in ((5, 'alto'), (8, 'normal'), (11, 'bajo')):
+            with self.subTest(errores=errores):
+                clasificaciones = obtener_puntuaciones({
+                    'report_tests': [],
+                    'PD_CPT_E': errores,
+                })
+                self.assertEqual(clasificaciones['CPT_E'], expected)
+
+    def test_cpt_rendimiento_general_usa_elementos_procesados_y_errores_totales(self):
         escenarios = (
             ('alto', 'alto', 'alto y E alto o normal'),
             ('alto', 'normal', 'alto y E bajo'),
@@ -317,17 +614,42 @@ class PipelineTests(unittest.TestCase):
             ('bajo', 'bajo', 'bajo y E bajo'),
         )
 
-        for nivel_n, nivel_c, clave_texto in escenarios:
-            with self.subTest(nivel_n=nivel_n, nivel_c=nivel_c):
+        for nivel_n, nivel_e, clave_texto in escenarios:
+            with self.subTest(nivel_n=nivel_n, nivel_e=nivel_e):
                 doc = crear_informe_docx(
                     {'available_tests': ['CPT']},
-                    {'CPT_N': nivel_n, 'CPT_C': nivel_c},
+                    {'CPT_N': nivel_n, 'CPT_E': nivel_e},
                     'caso',
                 )
                 self.assertIn(
                     PARRAFO_CPT_TR[clave_texto].format(nombre='caso'),
                     [paragraph.text for paragraph in doc.paragraphs],
                 )
+
+    def test_cpt_rendimiento_general_uses_classified_processed_elements(self):
+        resultados = {
+            'available_tests': ['CPT'],
+            'report_tests': [{
+                'indices': [{
+                    'key': 'CPT_N',
+                    'pd': 350,
+                    'pt_key': 'PT_CPT_N',
+                }],
+            }],
+            'PD_CPT_E': 11,
+        }
+        clasificaciones = obtener_puntuaciones(resultados)
+
+        self.assertEqual(resultados['PT_CPT_N'], 100)
+        self.assertEqual(clasificaciones['CPT_N'], 'alto')
+        self.assertEqual(clasificaciones['CPT_E'], 'bajo')
+
+        doc = crear_informe_docx(resultados, clasificaciones, 'caso')
+
+        self.assertIn(
+            PARRAFO_CPT_TR['alto y E bajo'].format(nombre='caso'),
+            [paragraph.text for paragraph in doc.paragraphs],
+        )
 
     def test_fourfigures_commission_paragraph_uses_existing_c_tr_keys(self):
         escenarios = (

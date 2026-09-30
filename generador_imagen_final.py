@@ -54,8 +54,8 @@ POSICIONES_TOTALES = {
     'TOT_total2': (67, 510),  # Hay que calcular y declarar este y siguientes índices
     'CON_total2': (254, 511), 
     'VAR_total': (428, 510),   
-    'TR_min': (465, 510),  
-    'TR_max': (494, 510),  
+    'CPT_TR_min': (465, 510),  
+    'CPT_TR_max': (494, 510),  
     'E_total2': (774, 512), 
 }
 
@@ -213,8 +213,8 @@ def dibujar_textos_rotados_totales(draw, resultados, img_width, img_height):
         'TOT_total2': f"{resultados['TOT']}",  # Texto para TOT (TR - (O+C))
         'CON_total2': f"{resultados['CON']}",  # Texto para CON (TA - C)
         'VAR_total': f"{resultados['VAR']}",  # Texto para VAR (TR_max - TR_min)
-        'TR_min': f"{resultados['TR_min']}",  # Texto para TR_min
-        'TR_max': f"{resultados['TR_max']}",  # Texto para TR_max
+        'CPT_TR_min': f"{resultados['CPT_TR_min']}",  # Texto para TR_min
+        'CPT_TR_max': f"{resultados['CPT_TR_max']}",  # Texto para TR_max
         'E_total2': f"{resultados['E_total']}",  # Texto para E_total (O + C)
     }
 

@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import Dict, Iterable, List, Optional, Tuple
 
 import pandas as pd
+from scipy.stats import ttest_ind
 
 
 ACS_ITEMS = {
@@ -76,6 +77,15 @@ def _difference_or_none(a: Optional[float], b: Optional[float]) -> Optional[floa
     if a is None or b is None:
         return None
     return float(a - b)
+
+
+def _welch_pvalue(first: pd.Series, last: pd.Series) -> Optional[float]:
+    first_values = pd.to_numeric(first, errors='coerce').dropna()
+    last_values = pd.to_numeric(last, errors='coerce').dropna()
+    if len(first_values) < 2 or len(last_values) < 2:
+        return None
+    pvalue = float(ttest_ind(first_values, last_values, equal_var=False).pvalue)
+    return pvalue if math.isfinite(pvalue) else None
 
 
 def _split_first_last(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -379,8 +389,8 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
     resultados['E_total'] = resultados['O_total'] + resultados['C_total']
     resultados['TOT'] = int(sum(tot_por_fila))
     resultados['CON'] = resultados['TA_total'] - resultados['C_total']
-    resultados['TR_max'] = int(max(tr_por_fila)) if tr_por_fila else 0
-    resultados['TR_min'] = int(min(tr_por_fila)) if tr_por_fila else 0
+    resultados['CPT_TR_max'] = int(max(tr_por_fila)) if tr_por_fila else 0
+    resultados['CPT_TR_min'] = int(min(tr_por_fila)) if tr_por_fila else 0
     # VAR es la desviación estándar poblacional del TOT de las series (14 previstas).
     resultados['VAR'] = (
         float(pd.Series(tot_por_fila).std(ddof=0)) if tot_por_fila else None
@@ -462,8 +472,16 @@ def _calcular_four_figures(resultados: dict, datos: dict) -> None:
     )
 
     part_accuracy = {}
+    part_counts = {}
     for part, group in experimental.groupby('part'):
-        part_accuracy[int(part)] = _mean_bool(_bool_yes(group['correct']))
+        part_number = int(part)
+        part_correct = _bool_yes(group['correct'])
+        part_accuracy[part_number] = _mean_bool(part_correct)
+        part_counts[part_number] = (int(part_correct.sum()), len(group))
+    for part_number in range(1, 5):
+        correct_count, trial_count = part_counts.get(part_number, (0, 0))
+        resultados[f'PD_FourFigures_part_{part_number}_correctas'] = correct_count
+        resultados[f'PD_FourFigures_part_{part_number}_ensayos'] = trial_count
     expected_p4 = None
     if 2 in part_accuracy and 3 in part_accuracy:
         expected_p4 = (part_accuracy[2] + part_accuracy[3]) / 2
@@ -510,6 +528,9 @@ def _calcular_digits(resultados: dict, datos: dict) -> None:
                 'span': int(numeros_digitos[correctas].max()) if correctas.any() else 0,
                 'correctas': int(correctas.sum()),
                 'series': int(filas_parte.sum()),
+                'errores_antes_ultimas_dos': int(
+                    (~respuestas_correctas[filas_parte].iloc[:-2]).sum()
+                ),
             }
     else:
         row = digits.iloc[0].to_dict()
@@ -518,6 +539,7 @@ def _calcular_digits(resultados: dict, datos: dict) -> None:
                 'span': int(row.get(columna_span) or 0),
                 'correctas': None,
                 'series': None,
+                'errores_antes_ultimas_dos': None,
             }
 
     directo = puntuaciones['directo']['span']
@@ -532,6 +554,9 @@ def _calcular_digits(resultados: dict, datos: dict) -> None:
     for parte, puntuacion in puntuaciones.items():
         resultados[f'PD_DigitsMemorization_{parte}_aciertos'] = puntuacion['correctas']
         resultados[f'PD_DigitsMemorization_{parte}_series'] = puntuacion['series']
+        resultados[
+            f'PD_DigitsMemorization_{parte}_errores_antes_ultimas_dos'
+        ] = puntuacion['errores_antes_ultimas_dos']
 
     _registrar_resultado_prueba(
         resultados,
@@ -585,22 +610,37 @@ def _calcular_dualtask(resultados: dict, datos: dict) -> None:
         _safe_mean(pd.to_numeric(tracking_last['distance_px'], errors='coerce')),
         _safe_mean(pd.to_numeric(tracking_first['distance_px'], errors='coerce')),
     )
+    resultados['P_DUALTASK_PSV_principio_vs_final'] = _welch_pvalue(
+        pd.to_numeric(tracking_first['distance_px'], errors='coerce'),
+        pd.to_numeric(tracking_last['distance_px'], errors='coerce'),
+    )
 
-    def _target_accuracy(df_resp: pd.DataFrame) -> Optional[float]:
+    def _target_accuracy_values(df_resp: pd.DataFrame) -> pd.Series:
         targets = df_resp[_dual_task_is_target(df_resp['stimulus_type'])]
         if targets.empty:
-            return None
+            return pd.Series(dtype=float)
         if 'correct' in targets.columns:
-            return float(_bool_yes(targets['correct']).mean())
-        return float(targets['responded'].fillna(False).astype(bool).mean())
+            return _bool_yes(targets['correct']).astype(float)
+        return targets['responded'].fillna(False).astype(bool).astype(float)
+
+    def _target_accuracy(df_resp: pd.DataFrame) -> Optional[float]:
+        return _safe_mean(_target_accuracy_values(df_resp))
 
     resultados['PD_DUALTASK_A_principio_vs_final'] = _difference_or_none(
         _target_accuracy(resp_first),
         _target_accuracy(resp_last),
     )
+    resultados['P_DUALTASK_A_principio_vs_final'] = _welch_pvalue(
+        _target_accuracy_values(resp_first),
+        _target_accuracy_values(resp_last),
+    )
     resultados['PD_DUALTASK_TR_principio_vs_final'] = _difference_or_none(
         _safe_mean(pd.to_numeric(resp_last.loc[resp_last['responded'] == True, 'latency_s'], errors='coerce')),
         _safe_mean(pd.to_numeric(resp_first.loc[resp_first['responded'] == True, 'latency_s'], errors='coerce')),
+    )
+    resultados['P_DUALTASK_TR_principio_vs_final'] = _welch_pvalue(
+        pd.to_numeric(resp_first.loc[resp_first['responded'] == True, 'latency_s'], errors='coerce'),
+        pd.to_numeric(resp_last.loc[resp_last['responded'] == True, 'latency_s'], errors='coerce'),
     )
 
     concurrent_targets = responses.loc[responses['stimulus'].isin(tracking.loc[concurrent, 'stimulus'].unique())]

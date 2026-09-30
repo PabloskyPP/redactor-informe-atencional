@@ -32,6 +32,7 @@ BAREMOS_PROVISIONALES: Dict[str, BaremoProvisional] = {
     'CPT_VAR': BaremoProvisional(0, 50, invertir=True),
     'CPT_O': BaremoProvisional(2, 6, invertir=True),
     'CPT_C': BaremoProvisional(3, 5, invertir=True),
+    'CPT_E': BaremoProvisional(5, 11, invertir=True),
     'CPT_N': BaremoProvisional(68, 350),
     'CPT_TOT': BaremoProvisional(60, 340),
     'FourFigures_A': BaremoProvisional(0, 128),
@@ -187,6 +188,21 @@ def _clasificar_omisiones(resultados: dict, clasificaciones: dict) -> None:
             clasificaciones[clave] = 'bajo'
 
 
+def _clasificar_digits_consistencia(resultados: dict, clasificaciones: dict) -> None:
+    errores = resultados.get(
+        'PD_DigitsMemorization_directo_errores_antes_ultimas_dos'
+    )
+    if errores is None:
+        return
+    if errores == 0:
+        nivel = 'alto'
+    elif errores <= 2:
+        nivel = 'normal'
+    else:
+        nivel = 'bajo'
+    clasificaciones['Digits_Memorization_consistencia'] = nivel
+
+
 def _clasificar_dualtask(resultados: dict, clasificaciones: dict) -> None:
     psv = clasificaciones.get('DUALTASK_PSV', 'normal')
     a = clasificaciones.get('DUALTASK_A', 'normal')
@@ -216,24 +232,25 @@ def _clasificar_dualtask(resultados: dict, clasificaciones: dict) -> None:
     diff_conc = resultados.get('PD_DUALTASK_PSV_cuando_concurrencia')
     t2_mal_p = clasificaciones.get('DUALTASK_A') == 'bajo'
     t2_mal_tr = clasificaciones.get('DUALTASK_TR') == 'bajo'
-    if diff_conc is not None and diff_conc > 2:
-        if not t2_mal_p and not t2_mal_tr:
-            clasificaciones['DUALTASK_PSV_cuando_concurrencia'] = 'deterioro y buen T2'
-        elif t2_mal_p and t2_mal_tr:
-            clasificaciones['DUALTASK_PSV_cuando_concurrencia'] = 'deterioro y mal T2 P y TR'
-        elif t2_mal_p:
-            clasificaciones['DUALTASK_PSV_cuando_concurrencia'] = 'deterioro y mal T2 P'
+    if diff_conc is not None:
+        if diff_conc > 2:
+            direccion = 'deterioro'
+        elif diff_conc < -2:
+            direccion = 'mejora'
         else:
-            clasificaciones['DUALTASK_PSV_cuando_concurrencia'] = 'deterioro y mal T2 TR'
-    else:
+            direccion = 'no deterioro'
+
         if not t2_mal_p and not t2_mal_tr:
-            clasificaciones['DUALTASK_PSV_cuando_concurrencia'] = 'no deterioro y buen T2'
+            condicion_t2 = 'buen T2'
         elif t2_mal_p and t2_mal_tr:
-            clasificaciones['DUALTASK_PSV_cuando_concurrencia'] = 'no deterioro y mal T2 P y TR'
+            condicion_t2 = 'mal T2 P y TR'
         elif t2_mal_p:
-            clasificaciones['DUALTASK_PSV_cuando_concurrencia'] = 'no deterioro y mal T2 P'
+            condicion_t2 = 'mal T2 P'
         else:
-            clasificaciones['DUALTASK_PSV_cuando_concurrencia'] = 'no deterioro y mal T2 TR'
+            condicion_t2 = 'mal T2 TR'
+        clasificaciones['DUALTASK_PSV_cuando_concurrencia'] = (
+            f'{direccion} y {condicion_t2}'
+        )
 
     avg_concurrent_pts = [
         resultados.get('PT_DUALTASK_A_cuando_concurrencia'),
@@ -261,24 +278,20 @@ def _clasificar_dualtask(resultados: dict, clasificaciones: dict) -> None:
 
     fatiga_flags = []
     auto_flags = []
-    psv_diff = resultados.get('PD_DUALTASK_PSV_principio_vs_final')
-    if psv_diff is not None:
-        if psv_diff >= 2:
-            fatiga_flags.append('F PSV')
-        elif psv_diff <= -2:
-            auto_flags.append('Automatización PSV')
-    a_diff = resultados.get('PD_DUALTASK_A_principio_vs_final')
-    if a_diff is not None:
-        if a_diff >= 0.1:
-            fatiga_flags.append('F A')
-        elif a_diff <= -0.1:
-            auto_flags.append('Automatización P')
-    tr_diff = resultados.get('PD_DUALTASK_TR_principio_vs_final')
-    if tr_diff is not None:
-        if tr_diff >= 0.05:
-            fatiga_flags.append('F TR')
-        elif tr_diff <= -0.05:
-            auto_flags.append('Automatización TR')
+    diferencias_temporales = (
+        ('PSV', 'F PSV', 'Automatización PSV', True),
+        ('A', 'F A', 'Automatización P', True),
+        ('TR', 'F TR', 'Automatización TR', False),
+    )
+    for indice, clave_fatiga, clave_automatizacion, positivo_es_fatiga in diferencias_temporales:
+        diferencia = resultados.get(f'PD_DUALTASK_{indice}_principio_vs_final')
+        pvalue = resultados.get(f'P_DUALTASK_{indice}_principio_vs_final')
+        if diferencia is None or pvalue is None or pvalue >= 0.05:
+            continue
+        if (diferencia > 0) == positivo_es_fatiga:
+            fatiga_flags.append(clave_fatiga)
+        else:
+            auto_flags.append(clave_automatizacion)
 
     def combinar_flags(flags):
         if len(flags) == 3:
@@ -318,11 +331,17 @@ def obtener_puntuaciones(resultados):
 
     for clave_pd, baremo_key in [
         ('PD_ANT_E', 'ANT_E'),
+        ('PD_CPT_E', 'CPT_E'),
         ('PD_DUALTASK_A_cuando_concurrencia', 'DUALTASK_A_cuando_concurrencia'),
         ('PD_DUALTASK_TR_cuando_concurrencia', 'DUALTASK_TR_cuando_concurrencia'),
     ]:
         if clave_pd in resultados:
-            resultados[f'PT_{clave_pd[3:]}'] = pd_a_pt_provisional(resultados.get(clave_pd), BAREMOS_PROVISIONALES.get(baremo_key))
+            pt = pd_a_pt_provisional(
+                resultados[clave_pd],
+                BAREMOS_PROVISIONALES.get(baremo_key),
+            )
+            resultados[f'PT_{clave_pd[3:]}'] = pt
+            clasificaciones[baremo_key] = clasificar_pt(pt)
 
     _clasificar_special_tr('ANT', resultados, clasificaciones)
     _clasificar_special_tr('FourFigures', resultados, clasificaciones)
@@ -331,6 +350,7 @@ def obtener_puntuaciones(resultados):
     _clasificar_cpt_var(resultados, clasificaciones)
     _clasificar_cpt_diferencias(resultados, clasificaciones)
     _clasificar_omisiones(resultados, clasificaciones)
+    _clasificar_digits_consistencia(resultados, clasificaciones)
     _clasificar_dualtask(resultados, clasificaciones)
 
     return clasificaciones

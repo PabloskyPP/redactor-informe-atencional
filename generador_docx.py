@@ -38,15 +38,14 @@ from textos import (
     PARRAFO_ANT_ejecutivo,
     PARRAFO_ANT_orientacion,
     PARRAFO_CPT_C,
+    PARRAFO_CPT_TR,
     PARRAFO_CPT_TOT,
     PARRAFO_CPT_O,
-    PARRAFO_CPT_TR,
     PARRAFO_CPT_VAR,
     PARRAFO_DUALTASK_A,
     PARRAFO_DUALTASK_C,
     PARRAFO_DUALTASK_O,
     PARRAFO_DUALTASK_PSV,
-    PARRAFO_DUALTASK_memoria_trabajo_cuando_concurrencia,
     PARRAFO_DUALTASK_estilo_atencional_cuando_concurrencia,
     PARRAFO_DUALTASK_TR,
     PARRAFO_DUALTASK_TR_A_vs_C,
@@ -176,6 +175,35 @@ def _add_group(doc, *text_items):
     for text in texts:
         _add_markdown_paragraph(doc, text)
 
+
+def _add_four_figures_parts_table(doc, resultados):
+    tabla = doc.add_table(rows=1, cols=2)
+    tabla.style = 'Table Grid'
+    encabezados = ('Parte', 'Puntuación obtenida')
+    for celda, encabezado in zip(tabla.rows[0].cells, encabezados):
+        celda.text = encabezado
+        for run in celda.paragraphs[0].runs:
+            run.bold = True
+
+    for numero_parte in range(1, 5):
+        fila = tabla.add_row().cells
+        celda_parte = fila[0]
+        celda_parte.text = str(numero_parte)
+        celda_parte.paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        for run in celda_parte.paragraphs[0].runs:
+            run.bold = True
+
+        correctas = resultados.get(
+            f'PD_FourFigures_part_{numero_parte}_correctas', 0
+        )
+        ensayos = resultados.get(
+            f'PD_FourFigures_part_{numero_parte}_ensayos', 0
+        )
+        fila[1].text = f'{correctas} / {ensayos}'
+
+    _center_table_content(tabla)
+    return tabla
+
 def _remove_table_borders(table):
     """Elimina todos los bordes visibles de una tabla."""
     tbl   = table._tbl
@@ -192,6 +220,16 @@ def _remove_table_borders(table):
         el.set(qn('w:color'), 'auto')
         tblBorders.append(el)
     tblPr.append(tblBorders)
+
+
+def _center_table_content(table):
+    for row in table.rows:
+        for cell in row.cells:
+            cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+            for paragraph in cell.paragraphs:
+                paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+            for nested_table in cell.tables:
+                _center_table_content(nested_table)
 
 
 def _cargar_fuente_pil(tamanio):
@@ -1085,19 +1123,19 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
             if texto_tr:
                 return agregar_texto(texto_tr.format(nombre=nombre))
 
-        # CPT_N usa claves semánticas combinadas con el nivel de errores.
+        # CPT_TR usa claves semánticas combinadas con el nivel de errores.
         if textos is PARRAFO_CPT_TR:
             tr = clasificaciones.get('CPT_N')
-            c = clasificaciones.get('CPT_C')
-            if tr == 'alto' and c in ('bajo', 'normal'):
-                clave = 'alto y E bajo o normal'
-            elif tr == 'alto' and c == 'alto':
-                clave = 'alto y E alto'
+            errores = clasificaciones.get('CPT_E')
+            if tr == 'alto' and errores == 'bajo':
+                clave = 'alto y E bajo'
+            elif tr == 'alto' and errores in ('normal', 'alto'):
+                clave = 'alto y E alto o normal'
             elif tr == 'normal':
                 clave = 'normal'
-            elif tr == 'bajo' and c in ('normal', 'alto'):
+            elif tr == 'bajo' and errores in ('normal', 'alto'):
                 clave = 'bajo y E normal o alto'
-            elif tr == 'bajo' and c == 'bajo':
+            elif tr == 'bajo' and errores == 'bajo':
                 clave = 'bajo y E bajo'
             else:
                 clave = None
@@ -1250,35 +1288,26 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
         nivel_general_concurrencia = clasificaciones.get(
             'DUALTASK_Rendimiento_General_cuando_concurrencia'
         )
-        clave_memoria = nivel_general_concurrencia
-        if nivel_general_concurrencia == 'alto':
-            clave_memoria = (
-                'alto y T2 P bajo' if nivel_t2_p == 'bajo'
-                else 'alto y T2 P normal o alto'
-            )
-        subtitulo('🔹 Memoria operativa')
-        texto_memoria = PARRAFO_DUALTASK_memoria_trabajo_cuando_concurrencia.get(
-            clave_memoria
-        )
-        if texto_memoria:
-            doc.add_paragraph(texto_memoria.format(nombre=nombre))
-
         claves_estilo = {
             'deterioro y buen T2': 'deterioro y T2 normal o alto',
             'deterioro y mal T2 P': 'deterioro y T2 P bajo',
             'deterioro y mal T2 TR': 'deterioro y T2 TR bajo',
             'deterioro y mal T2 P y TR': 'deterioro y T2 P y TR bajo',
+            'mejora y buen T2': 'mejora y T2 P y TR normal o alto',
+            'mejora y mal T2 P': 'mejora y T2 P bajo',
+            'mejora y mal T2 TR': 'mejora y T2 TR bajo',
+            'mejora y mal T2 P y TR': 'mejora y T2 P y TR bajo',
             'no deterioro y buen T2': 'no deterioro y T2 P y TR normal o alto',
             'no deterioro y mal T2 P': 'no deterioro y T2 P bajo',
             'no deterioro y mal T2 TR': 'no deterioro y T2 TR bajo',
             'no deterioro y mal T2 P y TR': 'no deterioro y T2 P y TR bajo',
         }
         clave_estilo = claves_estilo.get(concurrencia)
-        subtitulo('🔹 Estilo de distribución de la atención')
         texto_estilo = PARRAFO_DUALTASK_estilo_atencional_cuando_concurrencia.get(
             clave_estilo
         )
         if texto_estilo:
+            subtitulo('🔹 Memoria operativa y estilo de distribución de la atención')
             doc.add_paragraph(texto_estilo.format(nombre=nombre))
 
 
@@ -1338,22 +1367,30 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
         if nivel_psv == 'bajo':
             recomendaciones.append('PARRAFO_DUALTASK_final_PSV_bajo')
 
-        if recomendaciones or (nivel_c in ('normal', 'alto') and tr_a_vs_c is not None) or (fatiga and fatiga != 'no F'):
+        textos_recomendaciones = []
+        for clave in recomendaciones:
+            texto = PARRAFOS_CONDICIONALES_OPCIONALES_DUALTASK.get(clave)
+            if texto:
+                textos_recomendaciones.append(texto.format(nombre=nombre))
+
+        if nivel_c in ('normal', 'alto') and tr_a_vs_c in ('positivo', 'negativo'):
+            clave = 'impulsividad' if tr_a_vs_c == 'positivo' else 'distraibilidad'
+            texto = PARRAFO_DUALTASK_final_dif_TR_A_y_C.get(clave)
+            if texto:
+                textos_recomendaciones.append(texto.format(nombre=nombre))
+
+        if fatiga and fatiga != 'no F':
+            texto_fatiga = PARRAFOS_CONDICIONALES_OPCIONALES_DUALTASK.get(
+                'PARRAFO_DUALTASK_final_fatiga '
+            )
+            if texto_fatiga:
+                textos_recomendaciones.append(texto_fatiga.format(nombre=nombre))
+
+        if textos_recomendaciones:
             subtitulo('🔹 Recomendaciones')
             doc.add_paragraph(PARRAFOS_CONDICIONALES_OPCIONALES_DUALTASK['intro'].format(nombre=nombre))
-            for clave in recomendaciones:
-                texto = PARRAFOS_CONDICIONALES_OPCIONALES_DUALTASK.get(clave)
-                if texto:
-                    doc.add_paragraph(texto.format(nombre=nombre))
-
-            if nivel_c in ('normal', 'alto') and tr_a_vs_c in ('positivo', 'negativo'):
-                clave = 'impulsividad' if tr_a_vs_c == 'positivo' else 'distraibilidad'
-                doc.add_paragraph(PARRAFO_DUALTASK_final_dif_TR_A_y_C[clave].format(nombre=nombre))
-
-            if fatiga and fatiga != 'no F':
-                texto_fatiga = PARRAFOS_CONDICIONALES_OPCIONALES_DUALTASK.get('PARRAFO_DUALTASK_final_fatiga ')
-                if texto_fatiga:
-                    doc.add_paragraph(texto_fatiga.format(nombre=nombre))
+            for texto in textos_recomendaciones:
+                doc.add_paragraph(texto)
 
     if 'FourFigures' in resultados.get('available_tests', []):
         doc.add_page_break()
@@ -1390,11 +1427,14 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
                 (PARRAFO_NamingNumbers_TR, clave_tr),
                 (PARRAFO_NamingNumbers_A, nivel_a),
                 (PARRAFO_NamingNumbers_C, clave_c),
-                (PARRAFO_NamingNumbers_P4, clave_p4),
             ):
                 texto = textos.get(clave)
                 if texto:
                     doc.add_paragraph(texto.format(nombre=nombre))
+            _add_four_figures_parts_table(doc, resultados)
+            texto_p4 = PARRAFO_NamingNumbers_P4.get(clave_p4)
+            if texto_p4:
+                doc.add_paragraph(texto_p4.format(nombre=nombre))
         else:
             parrafo_con_nivel(PARRAFO_FourFigures_TR, 'Velocidad de procesamiento / Tiempo de respuesta (TR)', 'FourFigures_TR_texto')
             subtitulo('🔹 Precisión / Aciertos (A) y comisiones (C)')
@@ -1419,6 +1459,8 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
                     doc.add_paragraph(texto_c)
                 else:
                     parrafo_precision.add_run(f' {texto_c}')
+            _add_four_figures_parts_table(doc, resultados)
+            doc.add_paragraph()
             parrafo_con_nivel(PARRAFO_FourFigures_P4_A_obtenido_vs_esperado, 'Flexibilidad cognitiva', 'FourFigures_P4_A_obtenido_vs_esperado')
 
     doc.add_page_break()
@@ -1454,6 +1496,7 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
             celdas[1].text = conteo
             celdas[2].text = str(extension) if extension is not None else 'N/D'
         
+        doc.add_paragraph()
         # 2. Mostrar párrafo de decrecimiento si aplica
         if clasificaciones.get('Digits_Memorization_decreciente') == 'decreciente':
             texto_decreciente = PARRAFO_DigitsMemorization_decreciente.get('decreciente')
@@ -1488,8 +1531,28 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
         PARRAFOS_FIJOS['introduccion_sintesis_final'].format(nombre=nombre)
     )
 
-    def nivel_sintesis(claves):
-        niveles = [clasificaciones.get(clave) for clave in claves]
+    nombre_fourfigures = resultados.get('display_names', {}).get('FourFigures')
+    es_naming_numbers = nombre_fourfigures in ('FiveDigits', 'NamingNumbers')
+    etiqueta_fourfigures = 'NamingNumbers' if es_naming_numbers else 'FourFigures'
+
+    def nivel_indice_sintesis(indice):
+        if len(indice) == 2:
+            clave, _ = indice
+            return clasificaciones.get(clave)
+
+        clave_pd, clave_p, _, _, positivo_es_deficit = indice
+        diferencia = resultados.get(clave_pd)
+        if diferencia is None or diferencia == 0:
+            return None
+        if clave_p is not None:
+            p_value = resultados.get(clave_p)
+            if p_value is None or p_value >= 0.05:
+                return None
+        deficit = (diferencia > 0) == positivo_es_deficit
+        return 'bajo' if deficit else 'alto'
+
+    def nivel_sintesis(indices):
+        niveles = [nivel_indice_sintesis(indice) for indice in indices]
         niveles = [nivel for nivel in niveles if nivel in ('bajo', 'normal', 'alto')]
         if 'bajo' in niveles:
             return 'malo'
@@ -1501,37 +1564,76 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
         """Devuelve nombres de índices bajos y altos para los textos de síntesis."""
         deficits = []
         strengths = []
-        for clave, etiqueta in indices:
-            valor = clasificaciones.get(clave)
+        for indice in indices:
+            if len(indice) == 2:
+                clave, etiqueta = indice
+                valor = clasificaciones.get(clave)
+            else:
+                clave_pd, clave_p, etiqueta_deficit, etiqueta_fortaleza, positivo_es_deficit = indice
+                valor = nivel_indice_sintesis(indice)
+                etiqueta = etiqueta_deficit if valor == 'bajo' else etiqueta_fortaleza
             if valor == 'bajo':
                 deficits.append(etiqueta)
             elif valor == 'alto':
                 strengths.append(etiqueta)
-            elif clave == 'DUALTASK_Fatiga' and valor not in (None, 'no F'):
-                deficits.append(etiqueta)
         return ', '.join(deficits) or 'ninguna', ', '.join(strengths) or 'ninguna'
 
     dimensiones = {
         'arousal': (
-            ('ACS_atenciongeneral', 'ACS: atención general'),
-            ('FourFigures_A', 'FourFigures: aciertos'),
-            ('DUALTASK_A', 'DualTask: aciertos'),
+            ('ANT_TR_alerta', 'ANT - Red de alerta'),
+            ('CPT_TOT', 'CPT - TOT'),
+            ('DUALTASK_O', 'DUALTASK - omisiones'),
+            ('DUALTASK_PSV', 'DUALTASK - seguimiento visomotor'),
+            ('FourFigures_A', f'{etiqueta_fourfigures} - precisión'),
+            ('DUALTASK_A', 'DUALTASK - aciertos'),
         ),
         'atencionsostenida': (
-            ('CPT_VAR', 'CPT: variabilidad'),
-            ('ANT_A_principio_vs_final', 'ANT: fatiga en aciertos'),
-            ('DUALTASK_Fatiga', 'DualTask: fatiga'),
+            ('CPT_VAR', 'CPT - variabilidad'),
+            (
+                'PD_ANT_A_principio_vs_final', None,
+                'ANT - fatiga en la precisión',
+                'ANT - automatización en la precisión', True,
+            ),
+            (
+                'PD_ANT_TR_principio_vs_final', None,
+                'ANT - fatiga en la velocidad',
+                'ANT - automatización en la velocidad', False,
+            ),
+            (
+                'PD_CPT_TOT_principio_vs_final', None,
+                'CPT - fatiga', 'CPT - automatización', True,
+            ),
+            (
+                'PD_DUALTASK_PSV_principio_vs_final', 'P_DUALTASK_PSV_principio_vs_final',
+                'DUALTASK - fatiga en el seguimiento visomotor',
+                'DUALTASK - automatización en el seguimiento visomotor', True,
+            ),
+            (
+                'PD_DUALTASK_A_principio_vs_final', 'P_DUALTASK_A_principio_vs_final',
+                'DUALTASK - fatiga en la precisión',
+                'DUALTASK - automatización en la precisión', True,
+            ),
+            (
+                'PD_DUALTASK_TR_principio_vs_final', 'P_DUALTASK_TR_principio_vs_final',
+                'DUALTASK - fatiga en la velocidad',
+                'DUALTASK - automatización en la velocidad', False,
+            ),
         ),
         'controlejecutivo': (
-            ('CPT_C', 'CPT: comisiones'),
-            ('CPT_O', 'CPT: omisiones'),
-            ('DUALTASK_C', 'DualTask: comisiones'),
-            ('DUALTASK_O', 'DualTask: omisiones'),
+            ('ANT_TR_ejecutivo', 'ANT - red ejecutiva'),
+            ('ANT_TR_orientacion', 'ANT - red orientación'),
+            ('ANT_C', 'ANT - comisiones'),
+            ('CPT_C', 'CPT - comisiones'),
+            ('CPT_O', 'CPT - omisiones'),
+            ('DUALTASK_C', 'DUALTASK - comisiones'),
+            ('FourFigures_C', f'{etiqueta_fourfigures} - comisiones'),
         ),
         'velocidadprocesamiento': (
-            ('CPT_TR', 'CPT: elementos procesados'),
-            ('DUALTASK_TR', 'DualTask: tiempo de respuesta'),
-            ('ANT_TR', 'ANT: tiempo de respuesta'),
+            ('ANT_TR', 'ANT - tiempo de respuesta'),
+            ('ANT_O', 'ANT - omisiones'),
+            ('CPT_N', 'CPT - elementos procesados'),
+            ('DUALTASK_TR', 'DualTask - tiempo de respuesta'),
+            ('FourFigures_TR', f'{etiqueta_fourfigures} - tiempo de respuesta'),
         ),
     }
 
@@ -1557,12 +1659,12 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
     sintesis_fmt['dimension_afectada'] = sintesis_fmt['tarea_deficit_controlejecutivo']
     sintesis_fmt['prueba_afectada'] = sintesis_fmt['tarea_deficit_atencionsostenida']
     sintesis = (
-        (PARRAFO_sintesis_arousal, nivel_sintesis(('ACS_atenciongeneral', 'FourFigures_A', 'DUALTASK_A'))),
-        (PARRAFO_sintesis_atencionsostenida, nivel_sintesis(('CPT_VAR', 'ANT_A_principio_vs_final', 'DUALTASK_Fatiga'))),
-        (PARRAFO_sintesis_controlejecutivo, nivel_sintesis(('CPT_C', 'CPT_O', 'DUALTASK_C', 'DUALTASK_O'))),
-        (PARRAFO_sintesis_flexibilidadcognitiva, nivel_sintesis(('FourFigures_P4_A_obtenido_vs_esperado',))),
-        (PARRAFO_sintesis_memoriatrabajo, nivel_sintesis(('DUALTASK_Rendimiento_General_cuando_concurrencia', 'Digits_Memorization_M'))),
-        (PARRAFO_sintesis_velocidadprocesamiento, nivel_sintesis(('CPT_TR', 'DUALTASK_TR', 'ANT_TR'))),
+        (PARRAFO_sintesis_arousal, nivel_sintesis(dimensiones['arousal'])),
+        (PARRAFO_sintesis_atencionsostenida, nivel_sintesis(dimensiones['atencionsostenida'])),
+        (PARRAFO_sintesis_controlejecutivo, nivel_sintesis(dimensiones['controlejecutivo'])),
+        (PARRAFO_sintesis_flexibilidadcognitiva, nivel_sintesis((('FourFigures_P4_A_obtenido_vs_esperado', ''),))),
+        (PARRAFO_sintesis_memoriatrabajo, nivel_sintesis((('DUALTASK_Rendimiento_General_cuando_concurrencia', ''), ('Digits_Memorization_M', '')))),
+        (PARRAFO_sintesis_velocidadprocesamiento, nivel_sintesis(dimensiones['velocidadprocesamiento'])),
         (PARRAFO_sintesis_final, 'normal'),
     )
     textos_dimensiones = []
@@ -1572,10 +1674,7 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
             texto = texto.format(**sintesis_fmt).strip()
             if texto and texto[-1] not in '.!?':
                 texto += '.'
-            textos_dimensiones.append(texto)
-
-    if textos_dimensiones:
-        doc.add_paragraph(' '.join(textos_dimensiones))
+            doc.add_paragraph(texto)
 
     textos_sintesis_final, clave_final = sintesis[-1]
     texto_final = textos_sintesis_final.get(clave_final)
