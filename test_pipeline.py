@@ -12,6 +12,7 @@ from pypdf import PdfReader, PdfWriter
 from reportlab.pdfgen import canvas
 
 from generador_docx import agregar_portada, crear_informe_docx, guardar_informe
+from generador_imagen_final import generar_imagen_final
 from generador_pdf import generar_pdf_desde_docx
 from lector_datos import calcular_puntuaciones_directas, leer_datos_excel
 from reglas_psicometricas import (
@@ -557,23 +558,30 @@ class PipelineTests(unittest.TestCase):
                 self.assertIn(texto_esperado, [paragraph.text for paragraph in doc.paragraphs])
 
     def test_cpt_var_uses_per_series_tot_standard_deviation_and_change(self):
+    def test_cpt_tr_totals_and_var_use_attempted_row_extents(self):
         datos = leer_datos_excel(SAMPLE_XLSX)
         resultados = calcular_puntuaciones_directas(datos)
 
+        tr_por_fila = resultados['TR_por_fila']
         tot_por_fila = [
             tr - omisiones - comisiones
             for tr, omisiones, comisiones in zip(
-                resultados['TR_por_fila'],
+                tr_por_fila,
                 resultados['O_por_fila'],
                 resultados['C_por_fila'],
             )
         ]
         self.assertEqual(len(tot_por_fila), 14)
         self.assertEqual(resultados['TOT_por_fila'], tot_por_fila)
-        self.assertAlmostEqual(
-            resultados['PD_CPT_VAR'],
-            pd.Series(tot_por_fila).std(ddof=0),
+        self.assertEqual(resultados['TR_total'], sum(tr_por_fila))
+        self.assertEqual(resultados['PD_CPT_N'], resultados['TR_total'])
+        self.assertEqual(resultados['CPT_TR_max'], max(tr_por_fila))
+        self.assertEqual(resultados['CPT_TR_min'], min(tr_por_fila))
+        self.assertEqual(
+            resultados['VAR'],
+            resultados['CPT_TR_max'] - resultados['CPT_TR_min'],
         )
+        self.assertEqual(resultados['PD_CPT_VAR'], resultados['VAR'])
         self.assertAlmostEqual(
             resultados['PD_CPT_TOT_principio_vs_final'],
             sum(tot_por_fila[:4]) / 4 - sum(tot_por_fila[-4:]) / 4,
@@ -713,7 +721,13 @@ class PipelineTests(unittest.TestCase):
             )
             self.assertTrue(generar_pdf_desde_docx(ruta_docx_sin, os.path.join(tmpdir, 'sin_imagen.pdf'), verbose=False))
 
-            Image.new('RGB', (20, 20), 'white').save(os.path.join(tmpdir, 'grafico_CPT_final.png'))
+            ruta_imagen = os.path.join(tmpdir, 'grafico_CPT_final.png')
+            self.assertTrue(generar_imagen_final(
+                resultados,
+                resultados['datos_d2'],
+                os.path.join(REPO_DIR, 'imagenes', 'grafico_CPT.png'),
+                ruta_imagen,
+            ))
             guardar_informe(
                 crear_informe_docx(resultados, clasificaciones, resultados['nombre_completo'], tmpdir),
                 ruta_docx,
@@ -726,6 +740,15 @@ class PipelineTests(unittest.TestCase):
                 self.assertTrue(os.path.exists(os.path.join(tmpdir, 'solo_nombre.pdf')))
                 self.assertFalse(self._pdf_has_xobject(os.path.join(tmpdir, 'sin_imagen.pdf')))
                 self.assertTrue(self._pdf_has_xobject(os.path.join(tmpdir, 'solo_nombre.pdf')))
+                paginas = PdfReader(os.path.join(tmpdir, 'solo_nombre.pdf')).pages
+                pagina_cpt = next(
+                    indice for indice, pagina in enumerate(paginas)
+                    if 'CPT - prueba de rendimiento continuo'
+                    in ' '.join((pagina.extract_text() or '').split())
+                )
+                self.assertTrue(
+                    paginas[pagina_cpt + 1].get('/Resources', {}).get('/XObject')
+                )
             finally:
                 os.chdir(cwd)
 

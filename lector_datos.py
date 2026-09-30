@@ -391,10 +391,7 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
     resultados['CON'] = resultados['TA_total'] - resultados['C_total']
     resultados['CPT_TR_max'] = int(max(tr_por_fila)) if tr_por_fila else 0
     resultados['CPT_TR_min'] = int(min(tr_por_fila)) if tr_por_fila else 0
-    # VAR es la desviación estándar poblacional del TOT de las series (14 previstas).
-    resultados['VAR'] = (
-        float(pd.Series(tot_por_fila).std(ddof=0)) if tot_por_fila else None
-    )
+    resultados['VAR'] = resultados['CPT_TR_max'] - resultados['CPT_TR_min']
 
     resultados['PD_CPT_N'] = resultados['TR_total']
     resultados['PD_CPT_A'] = resultados['TA_total']
