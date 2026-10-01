@@ -316,7 +316,7 @@ PARRAFO_ANT_ejecutivo = {
 PARRAFO_CPT_TR = {
     'alto y E alto o normal': """El elevado número de elementos procesados indica una excelente velocidad de procesamiento, asociada a escepcional capacidad de exploración visual y rapidez en la toma de decisiones.""",
     
-    'alto y E bajo': """El elevado número de elementos procesados indica una muy buena velocidad de procesamiento, asociada a una rápida exploración visual y rapidez en la toma de decisiones. Esto que a primeras parece positivo cambia al revisar la precisión o calidad de esta capacidad exploratoria y decisional. Vemos aquí que {nombre} bien a omitido información relevante o bien a respondido erroneamente ante información irrelevante. Esto señala un procesamiento de la información superficial, rápido pero defectuoso.""",
+    'alto y E bajo': """El elevado número de elementos procesados indica una muy buena velocidad de procesamiento, asociada a una rápida exploración visual y rapidez en la toma de decisiones. Esto que a primeras parece positivo cambia al revisar la precisión o calidad de esta capacidad exploratoria y decisional. Vemos aquí que {nombre} bien a omitido información relevante o bien a respondido erróneamente ante información irrelevante. Esto señala un procesamiento de la información superficial, rápido pero defectuoso.""",
 
     'normal': """El número de elementos procesados se sitúa dentro de los valores esperables para su grupo normativo, indicando una velocidad de procesamiento adecuada, con un ritmo de trabajo ajustado a las demandas temporales de la tarea""",
     
