@@ -1,6 +1,6 @@
 # Generador de Informe atencional
 
-Este programa procesa los datos del cuestionario ACS y las pruebas conductuales ANT, CPT, FourFigures y DUAL-TASK, y genera un informe profesional en formato Word (.docx) y PDF.
+Este programa procesa los datos del cuestionario ACS y las pruebas conductuales ANT, CPT, NamingNumbers (o su alternativa FourFigures) y DUAL-TASK, y genera un informe profesional en formato Word (.docx) y PDF.
 
 ## 📋 Requisitos
 
@@ -62,7 +62,7 @@ python main.py
 ```
 
 El programa ejecutará automáticamente los siguientes pasos:
-1. Leer datos del archivo Excel (hojas `info`, `ACS`, `ANT`, `CPT`, `DUAL-TASK`, `FourFIgures`)
+1. Leer datos del archivo Excel (hojas `info`, `ACS`, `ANT`, `CPT`, `DUAL-TASK`, `FourFIgures`, `NamingNumbers`)
 2. Calcular puntuaciones directas (Precisión, Latencia de Respuesta, Posiciones del cursor, Índices Compuestos...)
 3. Generar informe en formato Word con párrafos adaptativos
 4. Guardar el informe Word en `informes_generados/`
@@ -115,7 +115,7 @@ El programa ejecutará automáticamente los siguientes pasos:
 - **VAR**: Variabilidad (TR_max - TR_min). Sirve de índice de Atención Sostenida
 | **Fatiga** | Significatividad diferencia en Precisión y TR entre el primer primer vs tercer tercio de la prueba. Si negativa en Precisión y positiva en TR hablamos de prevalencia por un estilo reflexivo compensatorio ante el cansancio. Si Precisión positiva y TR negativa hablamos de prevalencia por un estilo impulsivo. |
 
-### Prueba 3 - FourFigures
+### Prueba 3 - NamingNumbers (o en su defecto FourFigures)
 
 | Índice | Descripción |
 |--------|-------------|

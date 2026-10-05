@@ -21,7 +21,7 @@ TEST_SLOTS = {
     'ACS': ('ACS',),
     'ANT': ('ANT',),
     'CPT': ('CPT', 'D2'),
-    'FourFigures': ('FourFigures', 'FiveDigits'),
+    'FourFigures': ('FourFigures', 'NamingNumbers'),
     'DUALTASK': ('Dual Task - Tracking', 'Dual Task - Responses'),
     'DigitsMemorization': ('Digits Memorization',),
 }
@@ -32,7 +32,7 @@ DISPLAY_NAMES = {
     'CPT': 'CPT',
     'D2': 'D2',
     'FourFigures': 'Four Figures',
-    'FiveDigits': 'FiveDigits',
+    'NamingNumbers': 'NamingNumbers',
     'DUALTASK': 'Dual Task',
     'Digits Memorization': 'Memorización de dígitos',
 }
@@ -143,11 +143,12 @@ def _build_presence(sheet_map: Dict[str, str]) -> Dict[str, TestPresence]:
         sheet_names=(cpt_name,) if cpt_name else (),
     )
 
-    ff_name = sheet_map.get('FourFigures') or sheet_map.get('FiveDigits')
+    ff_key = next((k for k in ('FourFigures', 'NamingNumbers') if k in sheet_map), None)
+    ff_name = sheet_map[ff_key] if ff_key else None
     presence['FourFigures'] = TestPresence(
         slot='FourFigures',
         present=bool(ff_name),
-        display_name=DISPLAY_NAMES.get(ff_name, 'Four Figures') if ff_name else 'Four Figures',
+        display_name=DISPLAY_NAMES.get(ff_key, 'Four Figures') if ff_key else 'Four Figures',
         sheet_names=(ff_name,) if ff_name else (),
     )
 

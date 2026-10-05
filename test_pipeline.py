@@ -1,4 +1,4 @@
-import os
+﻿import os
 import tempfile
 import unittest
 from datetime import datetime
@@ -121,7 +121,7 @@ class PipelineTests(unittest.TestCase):
     def test_sintesis_incluye_indices_completos_y_temporales_por_signo(self):
         resultados = {
             'available_tests': [],
-            'display_names': {'FourFigures': 'FiveDigits'},
+            'display_names': {'FourFigures': 'NamingNumbers'},
             'PD_ANT_A_principio_vs_final': 0.2,
             'PD_ANT_TR_principio_vs_final': 25,
             'PD_CPT_TOT_principio_vs_final': -5,
@@ -211,7 +211,7 @@ class PipelineTests(unittest.TestCase):
             {'row': 1, 'letter_num': 1, 'selected': True, 'timestamp': 100, 'target': 'si'},
             {'row': 1, 'letter_num': 2, 'selected': False, 'timestamp': 0, 'target': 'no'},
         ])
-        five_digits = pd.DataFrame([
+        naming_numbers = pd.DataFrame([
             {
                 'part': 1, 'trial_type': 'experimental', 'contour': '0', 'content': '0',
                 'discrepancy': 'no', 'response_given': '0', 'correct_response': '1',
@@ -239,11 +239,11 @@ class PipelineTests(unittest.TestCase):
             with pd.ExcelWriter(ruta_xlsx) as writer:
                 info.to_excel(writer, sheet_name='info', index=False)
                 d2.to_excel(writer, sheet_name='D2', index=False)
-                five_digits.to_excel(writer, sheet_name='FiveDigits', index=False)
+                naming_numbers.to_excel(writer, sheet_name='NamingNumbers', index=False)
 
             datos = leer_datos_excel(ruta_xlsx)
             self.assertEqual(datos['display_names']['CPT'], 'D2')
-            self.assertEqual(datos['display_names']['FourFigures'], 'FiveDigits')
+            self.assertEqual(datos['display_names']['FourFigures'], 'NamingNumbers')
             self.assertFalse(datos['test_presence']['DUALTASK'].present)
 
             resultados = calcular_puntuaciones_directas(datos)
@@ -251,7 +251,7 @@ class PipelineTests(unittest.TestCase):
             doc = crear_informe_docx(resultados, clasificaciones, 'Caso Sustituto', REPO_DIR)
             texto = "\n".join(p.text for p in doc.paragraphs)
             self.assertIn('D2 - prueba de rendimiento continuo', texto)
-            self.assertIn('FiveDigits - control y flexibilidad cognitiva', texto)
+            self.assertIn('Naming Numbers - prueba de control y flexibilidad cognitiva', texto)
             self.assertNotIn('Dual Task - prueba multitarea de atención dividida', texto)
             tabla_partes = next(
                 table for table in doc.tables

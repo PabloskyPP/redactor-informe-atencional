@@ -649,11 +649,12 @@ PARRAFO_FourFigures_P4_A_obtenido_vs_esperado = {
 # 3.5.2 NamingNumbers
 # ============================================================================
 
+
 # TR - Velocidad de procesamiento
 PARRAFO_NamingNumbers_TR = {
-   'TR alto':"""{nombre} muestra un tiempo de respuesta rápido, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media para su edad.""",
+   'TR alto':"""{nombre} muestra un tiempo de respuesta rápido, lo que indica una velocidad de procesamiento de la información y toma de decisiones superior a la media de su edad.""",
 
-    'TR normal y C normal o bajo':"""{nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad.""",
+    'TR normal y C normal o bajo':"""{nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media de su edad.""",
 
     'TR normal y C alto':"""{nombre} muestra un tiempo de respuesta normal, lo que indica una velocidad de procesamiento de la información y toma de decisiones adecuada a la media para su edad. Además un breve vistazo al número de comisiones durante la tarea nos muestra la excelente precisión de {nombre} durante la tarea. Ambos índices parecen señalar dos cosas. Primero una sobrada capacidad para procesar esta tarea y otras más difíciles en un tiempo de respuesta adecuado. Y segundo, una posible preferencia por un estilo atencional más reflexivo, que prioriza precisión ante velocidad de respuesta.""",
     
@@ -661,7 +662,7 @@ PARRAFO_NamingNumbers_TR = {
 }
 
 PARRAFO_NamingNumbers_A = {
-    'alto': """El elevado número de aciertos indica una atención general excelente, asociada a un estado de activación o vigilia excepcional. {nombre} estuvo completamente despierto a lo largo de toda esta tarea, lo que también debería haber favorecido el desempeño en otras dimensiones atencionales.""",
+    'alto': """El elevado número de aciertos indica que durante toda la prueba {nombre} ha estado muy despierto. Además presentadno una especial facilidad perceptiva para esta tarea, lo cual puede haber favorecido el desempeño en otras dimensiones atencionales.""",
     
     'normal': """El número de aciertos obtenido es adecuado y dentro de la norma para su edad. Esto señala un adecuado estado de activación o vigilia durante la prueba.""",
     
@@ -671,30 +672,25 @@ PARRAFO_NamingNumbers_A = {
 
 # C - Errores de comisión
 PARRAFO_NamingNumbers_C = {
-    'C alto y TR alto o normal':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad.""",
+    'C alto y TR alto o normal':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una muy buena capacidad para discriminar la información de manera eficiente y una muy baja impulsividad.""",
 
-    'C alto y TR bajo':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una capacidad superior al promedio para discriminar la información de manera eficiente y una muy baja impulsividad. Por otro lado, {nombre} tarda más de lo normal o esperado en emitir sus respuestas. Ambos índices parecen señalar la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
+    'C alto y TR bajo':"""Respecto al número de errores de comisión, este fue bajo, lo que señala que pocas veces emite una respuesta errónea. Este resultado señala una muy buena capacidad para discriminar la información de manera eficiente y una muy baja impulsividad. Por otro lado, {nombre} tarda más de lo normal o esperado en emitir sus respuestas. Ambos índices parecen señalar la prevalencia de un estilo atencional más reflexivo, con respuestas más lentas pero más precisas.""",
 
     'C normal':"""Respecto al número de errores de comisión, este fue normal, lo que señala que emite un número de respuestas erróneas igual a lo esperado para su edad. Este resultado señala, a la hora de tomar decisiones, una capacidad adecuada para discriminar la información de manera eficiente y un nivel de impulsividad igual al esperado para su edad.""",
 
-    'C bajo y TR bajo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando la suma rapidez con la que se responde vemos que estos errores de comisión se deben a una escepcionalmente alta impulsividdad, con respuestas más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
+    'C bajo y TR alto':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando la suma rapidez con la que se responde vemos que estos errores de comisión se deben a una escepcionalmente alta impulsividdad, con respuestas más rápidas pero menos precisas. Son errores que se pueden reducir si se practica un desempeño tranquilo y concienciado mantenido a lo largo de toda la tarea.""",
 
-    'C bajo y TR normal o alto':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando el velocidad normal o lenta con el que se responde, vemos que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
-
+    'C bajo y TR normal o bajo':"""Respecto al número de errores de comisión, este fue alto, lo que señala que emite un número de respuestas erróneas superior a lo esperado para su edad. Considerando el velocidad normal o lenta con el que se responde, vemos que el problema no está primariamente vinculado a impulsividad, sino a importantes dificultades perceptivas y en el procesamiento de la información, que incapacitan a {nombre} a discriminar la información de manera eficiente, independientemente de la velocidad con la que intente responder.""",
 }
 
 # Flexibilidad cognitiva. Diferencia puntuación obtenida en P4 vs puntuación esperada en P4 en base a puntuación obtenida en P2 y P3.
-PARRAFO_NamingNumbers_P4 = {
-# Álvaro. Comparar prueba significación prueba t o PT en comparación con la muestra? Aquí avogo por usar sign. prueba t.
-    'alto': """Por último, comparamos el rendimiento obtenido en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento superior al esperable. Esto destaca positivamente su capacidad para adaptarse y dirigir la atención a voluntad.""",
+PARRAFO_NamingNumbers_P4_A_obtenido_vs_esperado = {
+# Álvaro. Comparar prueba significación prueba t o PT en comparación con la muestra? Aquí avogo por PT dada la mayor facilidad de P2 y P3 frente la tarea NamingNumbers, en la cual propongo usar sign. prueba t.
+    'alto': """Por último, comparamos el rendimiento real obtenido en la parte 4 de la prueba con el rendimiento esperado en base a la puntuación obtenida en las partes anteriores. Véanse estas en la tabla anterior. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento incluso superior al esperado, prueba de una excelente capacidad para adaptarse y dirigir su atención a voluntad.""",
 
-# Quitar distinción en f(A) si al final se usa una PT.
-    'normal y A normal o alto': """Por último, comparamos el rendimiento obtenido en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento igual a lo esperable en la línea de su rendimiento general. Esto evidencia una adecuada flexibilidad cognitiva, capacidad para adaptarse y dirigir la atención a voluntad..""",
-
-    'normal y A bajo': """Por último, comparamos el rendimiento obtenido en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento igual a lo esperable en la línea de su rendimiento general. Esto disminuye la posibilidad de una deficiencia atencional particularmente ligada a problemas de flexibilidad cognitiva, o la capacidad para cambiar el foco atencional rápidamente y a voluntad.""",
+    'normal': """Por último, comparamos el rendimiento real obtenido en la parte 4 de la prueba con el rendimiento esperado en base a la puntuación obtenida en las partes anteriores. Véanse estas en la tabla anterior. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento normal e igual a lo esperable. Esto prueba una adecuada capacidad para adaptarse y dirigir su atención a voluntad.""",
     
-    'bajo': """Por último, comparamos el rendimiento obtenido en la parte 4 de la prueba, con el rendimiento esperado en base al rendimiento en las partes anteriores. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento inferior al esperado. Esto muestra una alta rigidez cognitiva o dificultad para cambiar el foco atencional rápidamente y adaptarse a una nueva forma de procesar y responder a una tarea."""
-
+    'bajo': """Por último, comparamos el rendimiento real obtenido en la parte 4 de la prueba con el rendimiento esperado en base a la puntuación obtenida en las partes anteriores. Véanse estas en la tabla anterior. La diferencia con la parte 4 es que aquí el objetivo a atender cambia continuamente. De esta manera obtenemos un índice de la flexibilidad cognitiva, o capacidad para adaptarse rápidamente a cambios en las reglas de ejecución de una tarea. En este sentido, {nombre} ha mostrado un rendimiento inferior al esperado. Esto muestra una alta rigidez cognitiva o dificultad para cambiar el foco atencional rápidamente y adaptarse a una nueva forma de procesar y responder a una tarea."""
 }
 
 # ============================================================================

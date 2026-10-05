@@ -65,7 +65,7 @@ from textos import (
     PARRAFO_FourFigures_TR,
     PARRAFO_NamingNumbers_A,
     PARRAFO_NamingNumbers_C,
-    PARRAFO_NamingNumbers_P4,
+    PARRAFO_NamingNumbers_P4_A_obtenido_vs_esperado,
     PARRAFO_NamingNumbers_TR,
     PARRAFO_sintesis_arousal,
     PARRAFO_sintesis_atencionsostenida,
@@ -174,6 +174,12 @@ def _add_group(doc, *text_items):
     texts = [t for t in text_items if t]
     for text in texts:
         _add_markdown_paragraph(doc, text)
+
+
+def _es_naming_numbers(resultados):
+    return resultados.get('display_names', {}).get('FourFigures') in (
+        'NamingNumbers'
+    )
 
 
 def _add_four_figures_parts_table(doc, resultados):
@@ -387,7 +393,7 @@ def agregar_portada(doc: Document, nombre_completo: str, datos: dict) -> None:
     run_n = nota.add_run(
         f"Informe de evaluación atencional obtenido a partir de las declaraciones "
         f"de {nombre_completo} en el cuestionario ACS y su rendimiento en las pruebas conductuales "
-         "ANT, CPT, FourFigures, DigitsMemorization y Dual-Task."
+         f"ANT, CPT, {'NamingNumbers' if _es_naming_numbers(datos) else 'FourFigures'}, DigitsMemorization y Dual-Task."
     )
     run_n.italic = True
     run_n.font.size = Pt(12)
@@ -445,6 +451,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     datos_portada = {
         'edad':             resultados.get('edad'),
         'fecha_aplicacion': resultados.get('fecha_aplicacion'),
+        'display_names':    resultados.get('display_names', {}),
     }
 
     # ------------------------------------------------------------------ #
@@ -459,7 +466,10 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
     # ------------------------------------------------------------------ #
     _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_general_prueba'])
     doc.add_paragraph()  # Espacio
-    doc.add_paragraph(PARRAFOS_FIJOS['objetivo_prueba'].format(**fmt))
+    objetivo = PARRAFOS_FIJOS['objetivo_prueba'].format(**fmt)
+    if _es_naming_numbers(resultados):
+        objetivo = objetivo.replace('FourFigures', 'NamingNumbers')
+    doc.add_paragraph(objetivo)
 
     doc.add_paragraph()
     _add_bold_paragraph(doc, PARRAFOS_FIJOS['titulo_procedimiento'])
@@ -490,7 +500,7 @@ def crear_informe_docx(resultados, clasificaciones, nombre_caso="caso",
         parrafo_imagen_ant.add_run().add_picture(imagen_ant, width=Inches(6))
 
     if 'FourFigures' in resultados.get('available_tests', []):
-        if resultados.get('display_names', {}).get('FourFigures') == 'NamingNumbers':
+        if _es_naming_numbers(resultados):
             descripcion_tarea = PARRAFOS_FIJOS['descripcion_procedimiento4.1.2']
             imagen_tarea = 'NamingNumbers estimulos.png'
         else:
@@ -820,7 +830,10 @@ def construir_modelo(resultados, clasificaciones, available_tests):
     filas = [_fila_cabecera()]
 
     for bloque, prueba in resolver_pruebas(available_tests):
-        f_ind = [_celda(0, 1, prueba, vmerge="restart"), _celda(1, 1, "Índice")]
+        etiqueta_prueba = prueba
+        if prueba == 'FourFigures' and _es_naming_numbers(resultados):
+            etiqueta_prueba = 'NamingNumbers'
+        f_ind = [_celda(0, 1, etiqueta_prueba, vmerge="restart"), _celda(1, 1, "Índice")]
         f_pd = [_celda(0, 1, vmerge="continue"), _celda(1, 1, "PD")]
         f_rend = [_celda(0, 1, vmerge="continue"), _celda(1, 1, "Rendimiento")]
 
@@ -1394,9 +1407,7 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
 
     if 'FourFigures' in resultados.get('available_tests', []):
         doc.add_page_break()
-        es_naming_numbers = resultados.get('display_names', {}).get('FourFigures') in (
-            'FiveDigits', 'NamingNumbers'
-        )
+        es_naming_numbers = _es_naming_numbers(resultados)
         titulo_key = 'titulo_NamingNumbers' if es_naming_numbers else 'titulo_FourFigures'
         titulo_prueba(PARRAFOS_FIJOS[titulo_key])
         doc.add_paragraph()
@@ -1418,10 +1429,7 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
 
             nivel_a = clasificaciones.get('FourFigures_A', 'normal')
             nivel_p4 = clasificaciones.get('FourFigures_P4_A_obtenido_vs_esperado')
-            if nivel_p4 == 'normal':
-                clave_p4 = 'normal y A bajo' if nivel_a == 'bajo' else 'normal y A normal o alto'
-            else:
-                clave_p4 = nivel_p4
+            clave_p4 = nivel_p4
 
             for textos, clave in (
                 (PARRAFO_NamingNumbers_TR, clave_tr),
@@ -1432,7 +1440,7 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
                 if texto:
                     doc.add_paragraph(texto.format(nombre=nombre))
             _add_four_figures_parts_table(doc, resultados)
-            texto_p4 = PARRAFO_NamingNumbers_P4.get(clave_p4)
+            texto_p4 = PARRAFO_NamingNumbers_P4_A_obtenido_vs_esperado.get(clave_p4)
             if texto_p4:
                 doc.add_paragraph(texto_p4.format(nombre=nombre))
         else:
@@ -1532,7 +1540,7 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
     )
 
     nombre_fourfigures = resultados.get('display_names', {}).get('FourFigures')
-    es_naming_numbers = nombre_fourfigures in ('FiveDigits', 'NamingNumbers')
+    es_naming_numbers = _es_naming_numbers(resultados)
     etiqueta_fourfigures = 'NamingNumbers' if es_naming_numbers else 'FourFigures'
 
     def nivel_indice_sintesis(indice):

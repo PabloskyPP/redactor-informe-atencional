@@ -98,7 +98,7 @@ HOJA 6: "Dual Task - Tracking"
 - `measurement_phase`: `concurrent` (durante el estímulo), `after` (inmediatamente después), `unrelated` (independiente).
 - `distance_px`: distancia en píxeles entre cursor y punto objetivo (menor = mejor precisión).
 
-HOJA 7 "FourFigures"
+HOJA 7 "NamingNumbers" o en su defecto "FourFigures"
 -------------------------------
 | part | trial_type | contour  | content | discrepancy | latency_s     | correct_response | correct |
 |------|------------|----------| --------|-------------|---------------|------------------|---------|
