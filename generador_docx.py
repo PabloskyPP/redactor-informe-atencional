@@ -1,4 +1,4 @@
-"""
+﻿"""
 Módulo para generar el informe atencional en formato DOCX.
 """
 from __future__ import annotations
@@ -177,9 +177,7 @@ def _add_group(doc, *text_items):
 
 
 def _es_naming_numbers(resultados):
-    return resultados.get('display_names', {}).get('FourFigures') in (
-        'NamingNumbers'
-    )
+    return resultados.get('display_names', {}).get('FourFigures') == 'NamingNumbers'
 
 
 def _add_four_figures_parts_table(doc, resultados):
@@ -657,9 +655,8 @@ BLOQUES = [
     {   # ── CPT o D2 (excluyentes) ─────────────────────────────────────────
         "variantes": ("CPT", "D2"),
         "celdas": [
-            (2, 2, "TOT*", "PD_{T}_TOT", "{T}_TOT", "clasif"),
-            (4, 1, "Dif. A", ("PD_{T}_A_principio_vs_final", "PD_{T}_Dif_A"), "{T}_A_principio_vs_final", "sign"),
-            (5, 1, "Dif. TR", ("PD_{T}_TR_principio_vs_final", "PD_{T}_Dif_TR"), "{T}_TR_principio_vs_final", "sign"),
+            (2, 2, "CON*", "PD_{T}_CON", "{T}_CON", "clasif"),
+            (4, 2, "Dif. CON", "PD_{T}_CON_principio_vs_final", "{T}_CON_principio_vs_final", "sign"),
             (6, 2, NEGRO),
             (8, 1, "O", "PD_{T}_O", "{T}_O", "clasif"),
             (9, 1, "C", "PD_{T}_C", "{T}_C", "clasif"),
@@ -1047,8 +1044,8 @@ def agregar_tabla_indices(doc, resultados, clasificaciones, available_tests,
     pie_tabla.paragraph_format.space_before = Pt(0)
     pie_tabla.paragraph_format.space_after = Pt(0)
     run_siglas = pie_tabla.add_run(
-        "A: Aciertos | Dif: Diferencia en una misma puntuación obtenida en una y otra parte de la prueba | C: Comisiones | O: Omisiones | TR: Tiempo de respuesta | "
-        "TOT: Número de elementos procesados - E (O + C) | N: Número de elementos procesados | "
+        "A: Aciertos | Dif: Diferencia en una misma puntuación obtenida al principio versus al final de la prueba | C: Comisiones | O: Omisiones | TR: Tiempo de respuesta | "
+        "CON: Aciertos - C (A - C) | N: Número de elementos procesados | "
         "Dif P4: A en la parte 4 de la prueba, obtenidos vs esperados en base a los A en las partes anteriores | "
         "PSV: Precisión de Seguimiento Visomotor | "
         "M: Promedio del número máximo de cifras memorizadas"
@@ -1157,8 +1154,17 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
 
         return parrafo_destino
 
-    def subtitulo(texto):
-        _add_bold_paragraph(doc, texto)
+    def subtitulo(texto, evitar_final_de_pagina=False):
+        parrafo = _add_bold_paragraph(doc, texto)
+        if evitar_final_de_pagina:
+            # Word mueve el subtítulo junto con su primer párrafo (sin cortarlo) a la página siguiente.
+            parrafo.paragraph_format.keep_with_next = True
+        return parrafo
+
+    def parrafo_sin_cortar(texto):
+        parrafo = doc.add_paragraph(texto)
+        parrafo.paragraph_format.keep_together = True
+        return parrafo
 
     titulo_resultados_especificos = doc.add_paragraph()
     titulo_resultados_especificos.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
@@ -1244,7 +1250,7 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
         doc.add_paragraph()
         doc.paragraphs[-2].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
         parrafo_con_nivel(PARRAFO_CPT_TR, 'Rendimiento general', 'CPT_N')
-        parrafo_con_nivel(PARRAFO_CPT_TOT, 'Concentración (TOT)', 'CPT_TOT', mostrar_titulo=False)
+        parrafo_con_nivel(PARRAFO_CPT_TOT, 'Concentración (CON)', 'CPT_CON', mostrar_titulo=False)
         subtitulo('🔹 Precisión / Errores de omisión (O) y comisión (C)')
         parrafo_con_nivel(PARRAFO_CPT_O, 'Errores de omisión (O)', 'CPT_O', mostrar_titulo=False)
         parrafo_con_nivel(PARRAFO_CPT_C, 'Errores de comisión (C)', 'CPT_C', mostrar_titulo=False)
@@ -1253,12 +1259,12 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
         var_condicion = clasificaciones.get('CPT_VAR_condicion', 'nada')
         var_key = (var_nivel, var_condicion)
         if var_condicion == 'automatismo':
-            var_key = (var_nivel, var_condicion, 'TOT normal o alto')
+            var_key = (var_nivel, var_condicion, 'CON normal o alto')
         elif var_condicion == 'dificultadinicial':
-            var_key = (var_nivel, var_condicion, 'TOT bajo')
+            var_key = (var_nivel, var_condicion, 'CON bajo')
         texto_var = PARRAFO_CPT_VAR.get(var_key)
-        if texto_var is None and var_nivel in PARRAFO_CPT_VAR:
-            texto_var = PARRAFO_CPT_VAR[var_nivel]
+        if texto_var is None:
+            texto_var = PARRAFO_CPT_VAR.get((var_nivel, 'nada'))
         if texto_var:
             doc.add_paragraph(texto_var.format(nombre=nombre))
 
@@ -1316,6 +1322,16 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
             'no deterioro y mal T2 P y TR': 'no deterioro y T2 P y TR bajo',
         }
         clave_estilo = claves_estilo.get(concurrencia)
+        # PSV bajo tiene prioridad: el rendimiento deficiente en T1 hace que el estilo dependa de T2.
+        if nivel_psv == 'bajo':
+            t2_deficiente = (
+                clasificaciones.get('DUALTASK_A') == 'bajo'
+                or clasificaciones.get('DUALTASK_TR') == 'bajo'
+            )
+            clave_estilo = (
+                'PSV bajo y T2 P o TR bajo' if t2_deficiente
+                else 'PSV bajo y T2 P y TR normal o alto'
+            )
         texto_estilo = PARRAFO_DUALTASK_estilo_atencional_cuando_concurrencia.get(
             clave_estilo
         )
@@ -1346,9 +1362,17 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
         parrafo_con_nivel(PARRAFO_DUALTASK_TR, 'Velocidad de procesamiento / Tiempo de respuesta (TR)', 'DUALTASK_TR', mostrar_titulo=False)
 
 
-        subtitulo('🔹 Fatiga o automatización')
-        parrafo_con_nivel(PARRAFO_DUALTASK_Fatiga, 'Fatiga', 'DUALTASK_Fatiga', mostrar_titulo=False)
-        if clasificaciones.get('DUALTASK_automatización'):
+        subtitulo('🔹 Fatiga o automatización', evitar_final_de_pagina=True)
+        clave_fatiga = clasificaciones.get('DUALTASK_Fatiga')
+        texto_fatiga = PARRAFO_DUALTASK_Fatiga.get(clave_fatiga)
+        if texto_fatiga:
+            parrafo_sin_cortar(texto_fatiga.format(
+                nombre=nombre,
+                dualtask_dimension_automatizada=clasificaciones.get(
+                    'DUALTASK_dimension_automatizada', ''
+                ),
+            ))
+        if clasificaciones.get('DUALTASK_automatización') and clave_fatiga != 'automatismo PSV, TR o A':
             parrafo_con_nivel(
                 PARRAFO_DUALTASK_automatización,
                 'Automatización',
@@ -1386,7 +1410,7 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
             if texto:
                 textos_recomendaciones.append(texto.format(nombre=nombre))
 
-        if nivel_c in ('normal', 'alto') and tr_a_vs_c in ('positivo', 'negativo'):
+        if nivel_c == 'bajo' and tr_a_vs_c in ('positivo', 'negativo'):
             clave = 'impulsividad' if tr_a_vs_c == 'positivo' else 'distraibilidad'
             texto = PARRAFO_DUALTASK_final_dif_TR_A_y_C.get(clave)
             if texto:
@@ -1400,8 +1424,8 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
                 textos_recomendaciones.append(texto_fatiga.format(nombre=nombre))
 
         if textos_recomendaciones:
-            subtitulo('🔹 Recomendaciones')
-            doc.add_paragraph(PARRAFOS_CONDICIONALES_OPCIONALES_DUALTASK['intro'].format(nombre=nombre))
+            subtitulo('🔹 Recomendaciones', evitar_final_de_pagina=True)
+            parrafo_sin_cortar(PARRAFOS_CONDICIONALES_OPCIONALES_DUALTASK['intro'].format(nombre=nombre))
             for texto in textos_recomendaciones:
                 doc.add_paragraph(texto)
 
@@ -1440,6 +1464,7 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
                 if texto:
                     doc.add_paragraph(texto.format(nombre=nombre))
             _add_four_figures_parts_table(doc, resultados)
+            doc.add_paragraph()
             texto_p4 = PARRAFO_NamingNumbers_P4_A_obtenido_vs_esperado.get(clave_p4)
             if texto_p4:
                 doc.add_paragraph(texto_p4.format(nombre=nombre))
@@ -1548,25 +1573,43 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
             clave, _ = indice
             return clasificaciones.get(clave)
 
-        clave_pd, clave_p, _, _, positivo_es_deficit = indice
+        clave_pd, clave_sign, _, _, positivo_es_deficit = indice
         diferencia = resultados.get(clave_pd)
         if diferencia is None or diferencia == 0:
             return None
-        if clave_p is not None:
-            p_value = resultados.get(clave_p)
-            if p_value is None or p_value >= 0.05:
-                return None
+        # Significativa según la misma clasificación que muestra la tabla de resultados.
+        if clasificaciones.get(clave_sign) not in ('bajo', 'alto'):
+            return None
         deficit = (diferencia > 0) == positivo_es_deficit
         return 'bajo' if deficit else 'alto'
 
-    def nivel_sintesis(indices):
+    def nivel_sintesis(indices, umbrales=None):
         niveles = [nivel_indice_sintesis(indice) for indice in indices]
         niveles = [nivel for nivel in niveles if nivel in ('bajo', 'normal', 'alto')]
-        if 'bajo' in niveles:
-            return 'malo'
-        if 'alto' in niveles:
-            return 'bueno'
-        return 'normal'
+        if umbrales is None:
+            if 'bajo' in niveles:
+                return 'malo'
+            if 'alto' in niveles:
+                return 'bueno'
+            return 'normal'
+
+        # Claves según el número de índices desfavorables (d) y favorables (f).
+        d = niveles.count('bajo')
+        f = niveles.count('alto')
+        d_poco, d_malo = umbrales['d']
+        f_poco, f_bueno = umbrales['f']
+        if d == 0 and f == 0:
+            return 'normal'
+        if f == 0:
+            return 'poco malo' if d <= d_poco else 'malo' if d <= d_malo else 'muy malo'
+        if d == 0:
+            return 'poco bueno' if f <= f_poco else 'bueno' if f <= f_bueno else 'muy bueno'
+        if d == f:
+            return 'malo y bueno'
+        if f > d:
+            return 'poco malo y bueno'
+        max_d_pequeno, clave_pequena = umbrales['mixto']
+        return clave_pequena if d <= max_d_pequeno else 'muy malo y poco bueno'
 
     def completar_dimensiones(indices):
         """Devuelve nombres de índices bajos y altos para los textos de síntesis."""
@@ -1584,47 +1627,42 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
                 deficits.append(etiqueta)
             elif valor == 'alto':
                 strengths.append(etiqueta)
-        return ', '.join(deficits) or 'ninguna', ', '.join(strengths) or 'ninguna'
+        legible = lambda lista: ', '.join(' '.join(e.replace('_', ' ').split()) for e in lista)
+        return legible(deficits) or 'ninguna', legible(strengths) or 'ninguna'
 
     dimensiones = {
         'arousal': (
             ('ANT_TR_alerta', 'ANT_Red__alerta'),
-            ('CPT_TOT', 'CPT_TOT'),
+            ('CPT_CON', 'CPT_CON'),
             ('DUALTASK_O', 'DualTask_omisiones'),
             ('DUALTASK_PSV', 'DualTask_seguimiento_visomotor'),
             ('FourFigures_A', f'{etiqueta_fourfigures}_aciertos'),
             ('DUALTASK_A', 'DualTask_aciertos'),
         ),
         'atencionsostenida': (
-            ('CPT_VAR', 'CPT_variabilidad'),
             (
-                'PD_ANT_A_principio_vs_final', None,
+                'PD_ANT_A_principio_vs_final', 'ANT_A_principio_vs_final',
                 'ANT_fatiga_precisión',
                 'ANT_automatización_precisión', True,
             ),
             (
-                'PD_ANT_TR_principio_vs_final', None,
+                'PD_ANT_TR_principio_vs_final', 'ANT_TR_principio_vs_final',
                 'ANT_fatiga_velocidad',
                 'ANT_automatización_velocidad', False,
             ),
             (
-                'PD_CPT_TOT_principio_vs_final', None,
-                'CPT_fatiga', 'CPT_automatización', True,
+                'PD_CPT_CON_principio_vs_final', 'CPT_CON_principio_vs_final',
+                'CPT_fatiga_concentración', 'CPT_automatización_concentración', True,
             ),
             (
-                'PD_DUALTASK_PSV_principio_vs_final', 'P_DUALTASK_PSV_principio_vs_final',
-                'DualTask_fatiga_seguimiento_visomotor',
-                'DualTask_automatización_seguimiento_visomotor', True,
-            ),
-            (
-                'PD_DUALTASK_A_principio_vs_final', 'P_DUALTASK_A_principio_vs_final',
+                'PD_DUALTASK_A_principio_vs_final', 'DUALTASK_A_principio_vs_final',
                 'DualTask_fatiga_precisión',
                 'DualTask_automatización_precisión', True,
             ),
             (
-                'PD_DUALTASK_TR_principio_vs_final', 'P_DUALTASK_TR_principio_vs_final',
-                'DualTask_fatiga_velocidad',
-                'DualTask_automatización_velocidad', False,
+                'PD_DUALTASK_PSV_principio_vs_final', 'DUALTASK_PSV_principio_vs_final',
+                'DualTask_fatiga_seguimiento_visomotor',
+                'DualTask_automatización_seguimiento_visomotor', False,
             ),
         ),
         'controlejecutivo': (
@@ -1666,13 +1704,19 @@ def _add_textual_results_sections(doc, resultados, clasificaciones, nombre):
 
     sintesis_fmt['dimension_afectada'] = sintesis_fmt['tarea_deficit_controlejecutivo']
     sintesis_fmt['prueba_afectada'] = sintesis_fmt['tarea_deficit_atencionsostenida']
+    umbrales_sintesis = {
+        'arousal': {'d': (1, 3), 'f': (1, 3), 'mixto': (99, 'malo y poco bueno')},
+        'atencionsostenida': {'d': (2, 4), 'f': (2, 4), 'mixto': (3, 'poco malo y poco bueno')},
+        'controlejecutivo': {'d': (2, 4), 'f': (2, 4), 'mixto': (3, 'malo y poco bueno')},
+        'velocidadprocesamiento': {'d': (1, 3), 'f': (1, 3), 'mixto': (2, 'malo y poco bueno')},
+    }
     sintesis = (
-        (PARRAFO_sintesis_arousal, nivel_sintesis(dimensiones['arousal'])),
-        (PARRAFO_sintesis_atencionsostenida, nivel_sintesis(dimensiones['atencionsostenida'])),
-        (PARRAFO_sintesis_controlejecutivo, nivel_sintesis(dimensiones['controlejecutivo'])),
+        (PARRAFO_sintesis_arousal, nivel_sintesis(dimensiones['arousal'], umbrales_sintesis['arousal'])),
+        (PARRAFO_sintesis_atencionsostenida, nivel_sintesis(dimensiones['atencionsostenida'], umbrales_sintesis['atencionsostenida'])),
+        (PARRAFO_sintesis_controlejecutivo, nivel_sintesis(dimensiones['controlejecutivo'], umbrales_sintesis['controlejecutivo'])),
         (PARRAFO_sintesis_flexibilidadcognitiva, nivel_sintesis((('FourFigures_P4_A_obtenido_vs_esperado', ''),))),
-        (PARRAFO_sintesis_memoriatrabajo, nivel_sintesis((('DUALTASK_Rendimiento_General_cuando_concurrencia', ''), ('Digits_Memorization_M', '')))),
-        (PARRAFO_sintesis_velocidadprocesamiento, nivel_sintesis(dimensiones['velocidadprocesamiento'])),
+        (PARRAFO_sintesis_memoriatrabajo, nivel_sintesis((('Digits_Memorization_M', ''),))),
+        (PARRAFO_sintesis_velocidadprocesamiento, nivel_sintesis(dimensiones['velocidadprocesamiento'], umbrales_sintesis['velocidadprocesamiento'])),
         (PARRAFO_sintesis_final, 'normal'),
     )
     textos_dimensiones = []

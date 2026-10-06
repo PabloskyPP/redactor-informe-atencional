@@ -24,17 +24,16 @@ BAREMOS_PROVISIONALES: Dict[str, BaremoProvisional] = {
     'ANT_O': BaremoProvisional(0, 20, invertir=True),
     'ANT_E': BaremoProvisional(0, 25, invertir=True),
     'ANT_TR': BaremoProvisional(250, 900, invertir=True),
-    'ANT_TR_alerta': BaremoProvisional(25, 50, invertir=True),
-    'ANT_TR_orientacion': BaremoProvisional(25, 50, invertir=True),
-    'ANT_TR_ejecutivo': BaremoProvisional(25, 50, invertir=True),
-    'CPT_CON': BaremoProvisional(4, 8),
-    # Baremo temporal: una desviación estándar TOT mayor se clasifica como más baja.
+    'ANT_TR_alerta': BaremoProvisional(-60, -10, invertir=True),
+    'ANT_TR_orientacion': BaremoProvisional(-25, -10, invertir=True),
+    'ANT_TR_ejecutivo': BaremoProvisional(40, 70, invertir=True),
+    'CPT_CON': BaremoProvisional(120, 190),
+    # Baremo temporal: una desviación estándar CON mayor se clasifica como más baja.
     'CPT_VAR': BaremoProvisional(0, 50, invertir=True),
     'CPT_O': BaremoProvisional(2, 6, invertir=True),
     'CPT_C': BaremoProvisional(3, 5, invertir=True),
     'CPT_E': BaremoProvisional(5, 11, invertir=True),
-    'CPT_N': BaremoProvisional(68, 350),
-    'CPT_TOT': BaremoProvisional(60, 340),
+    'CPT_N': BaremoProvisional(300, 500),
     'FourFigures_A': BaremoProvisional(0, 128),
     'FourFigures_C': BaremoProvisional(0, 32, invertir=True),
     'FourFigures_TR': BaremoProvisional(500, 3500, invertir=True),
@@ -51,6 +50,34 @@ BAREMOS_PROVISIONALES: Dict[str, BaremoProvisional] = {
     'DUALTASK_A_cuando_concurrencia': BaremoProvisional(0, 1),
     'DUALTASK_TR_cuando_concurrencia': BaremoProvisional(0.2, 1.2, invertir=True),
 }
+
+
+# TODO: sustituir por matriz percentílica real.
+# Matriz improvisada PD (ms) -> percentil de eficiencia (mayor percentil = red más eficiente).
+# Cada lista son pares (PD, percentil) con PD ascendente; se interpola linealmente entre ellos.
+PERCENTILES_PROVISIONALES: Dict[str, list] = {
+    'ANT_TR_alerta': [(-80, 95), (-60, 84), (-45, 69), (-30, 50), (-15, 31), (0, 16), (15, 5)],
+    'ANT_TR_orientacion': [(-40, 95), (-30, 84), (-22, 69), (-15, 50), (-8, 31), (0, 16), (10, 5)],
+    'ANT_TR_ejecutivo': [(20, 95), (40, 84), (60, 69), (80, 50), (100, 31), (125, 16), (160, 5)],
+}
+
+
+def pd_a_percentil_provisional(pd_value, clave: str):
+    """
+    Convierte PD a percentil con la matriz provisional; None si no hay matriz o dato.
+    """
+    tabla = PERCENTILES_PROVISIONALES.get(clave)
+    if pd_value is None or not tabla:
+        return None
+    valor = float(pd_value)
+    if valor <= tabla[0][0]:
+        return tabla[0][1]
+    if valor >= tabla[-1][0]:
+        return tabla[-1][1]
+    for (x0, p0), (x1, p1) in zip(tabla, tabla[1:]):
+        if x0 <= valor <= x1:
+            return int(round(p0 + (p1 - p0) * (valor - x0) / (x1 - x0)))
+    return None
 
 
 def pd_a_pt_provisional(pd_value, baremo: Optional[BaremoProvisional]):
@@ -138,19 +165,34 @@ def _clasificar_ant_fatiga(resultados: dict, clasificaciones: dict) -> None:
 
 
 def _clasificar_cpt_var(resultados: dict, clasificaciones: dict) -> None:
-    """Clasifica variabilidad TOT y cambio de nivel entre las primeras/últimas 4 series.
+    """Clasifica CPT_VAR (variabilidad) y CPT_VAR_condicion (evolución de CON).
 
-    El corte provisional es 5 puntos: diferencia positiva = fatiga; negativa =
-    mejora final, que se interpreta como automatización salvo que CPT_TOT sea bajo.
+    CPT_VAR: desviación típica del CON entre series; >5 'bajo', <3 'alto', resto 'normal'.
+    Condición: diferencia significativa (p < 0.05) del CON medio entre las primeras y
+    últimas 4 series. Positiva = fatiga; negativa = automatismo, salvo que CPT_CON
+    sea bajo, entonces dificultad inicial.
     """
-    diff = resultados.get('PD_CPT_TOT_principio_vs_final')
-    if diff is None:
+    sd = resultados.get('PD_CPT_VAR_SD_CON')
+    if sd is not None:
+        if sd > 5:
+            clasificaciones['CPT_VAR'] = 'bajo'
+        elif sd < 3:
+            clasificaciones['CPT_VAR'] = 'alto'
+        else:
+            clasificaciones['CPT_VAR'] = 'normal'
+
+    diff = resultados.get('PD_CPT_CON_principio_vs_final')
+    pvalue = resultados.get('P_CPT_CON_principio_vs_final')
+    if diff is None or pvalue is None or pvalue >= 0.05 or diff == 0:
+        clasificaciones['CPT_CON_principio_vs_final'] = 'normal'
+    else:
+        clasificaciones['CPT_CON_principio_vs_final'] = 'bajo' if diff > 0 else 'alto'
+    if diff is None or pvalue is None or pvalue >= 0.05:
         clasificaciones['CPT_VAR_condicion'] = 'nada'
-        return
-    if diff >= 5:
+    elif diff > 0:
         clasificaciones['CPT_VAR_condicion'] = 'fatiga'
-    elif diff <= -5:
-        tot_nivel = clasificaciones.get('CPT_TOT')
+    elif diff < 0:
+        tot_nivel = clasificaciones.get('CPT_CON')
         if tot_nivel in ('normal', 'alto'):
             clasificaciones['CPT_VAR_condicion'] = 'automatismo'
         elif tot_nivel == 'bajo':
@@ -279,14 +321,21 @@ def _clasificar_dualtask(resultados: dict, clasificaciones: dict) -> None:
     fatiga_flags = []
     auto_flags = []
     diferencias_temporales = (
-        ('PSV', 'F PSV', 'Automatización PSV', True),
+        ('PSV', 'F PSV', 'Automatización PSV', False),
         ('A', 'F A', 'Automatización P', True),
         ('TR', 'F TR', 'Automatización TR', False),
     )
     for indice, clave_fatiga, clave_automatizacion, positivo_es_fatiga in diferencias_temporales:
         diferencia = resultados.get(f'PD_DUALTASK_{indice}_principio_vs_final')
-        pvalue = resultados.get(f'P_DUALTASK_{indice}_principio_vs_final')
-        if diferencia is None or pvalue is None or pvalue >= 0.05:
+        if diferencia is None:
+            continue
+        # PSV y A usan la misma significación que la tabla de resultados; TR no tiene umbral en la tabla.
+        if indice == 'TR':
+            pvalue = resultados.get('P_DUALTASK_TR_principio_vs_final')
+            significativa = pvalue is not None and pvalue < 0.05
+        else:
+            significativa = clasificaciones.get(f'DUALTASK_{indice}_principio_vs_final') in ('bajo', 'alto')
+        if not significativa:
             continue
         if (diferencia > 0) == positivo_es_fatiga:
             fatiga_flags.append(clave_fatiga)
@@ -298,7 +347,26 @@ def _clasificar_dualtask(resultados: dict, clasificaciones: dict) -> None:
             return f'{flags[0]}, {flags[1]} y {flags[2]}'
         return ' y '.join(flags)
 
-    clasificaciones['DUALTASK_Fatiga'] = combinar_flags(fatiga_flags) if fatiga_flags else 'no F'
+    dimensiones_automatizadas = {
+        'Automatización PSV': 'seguimiento visomotor',
+        'Automatización P': 'aciertos',
+        'Automatización TR': 'velocidad de respuesta',
+    }
+    nombres_auto = [
+        dimensiones_automatizadas[f]
+        for f in ('Automatización PSV', 'Automatización P', 'Automatización TR')
+        if f in auto_flags
+    ]
+    clasificaciones['DUALTASK_dimension_automatizada'] = (
+        ', '.join(nombres_auto[:-1]) + ' y ' + nombres_auto[-1]
+        if len(nombres_auto) > 1 else (nombres_auto[0] if nombres_auto else '')
+    )
+    if fatiga_flags:
+        clasificaciones['DUALTASK_Fatiga'] = combinar_flags(fatiga_flags)
+    elif auto_flags:
+        clasificaciones['DUALTASK_Fatiga'] = 'automatismo PSV, TR o A'
+    else:
+        clasificaciones['DUALTASK_Fatiga'] = 'no F'
     orden_automatizacion = ('Automatización PSV', 'Automatización TR', 'Automatización P')
     auto_flags.sort(key=orden_automatizacion.index)
     clasificaciones['DUALTASK_automatización'] = combinar_flags(auto_flags) if auto_flags else None
@@ -325,7 +393,9 @@ def obtener_puntuaciones(resultados):
             key = indice['key']
             pd_value = indice['pd']
             baremo = BAREMOS_PROVISIONALES.get(key)
-            pt = pd_a_pt_provisional(pd_value, baremo)
+            pt = pd_a_percentil_provisional(pd_value, key)
+            if pt is None:
+                pt = pd_a_pt_provisional(pd_value, baremo)
             resultados[indice['pt_key']] = pt
             clasificaciones[key] = clasificar_pt(pt)
 

@@ -319,8 +319,8 @@ def _calcular_ant(resultados: dict, datos: dict) -> None:
     last_correct = _mean_bool(pd.to_numeric(last['correct'], errors='coerce').fillna(0).astype(int).eq(1))
     resultados['PD_ANT_A_principio_vs_final'] = _difference_or_none(first_correct, last_correct)
     resultados['PD_ANT_TR_principio_vs_final'] = _difference_or_none(
-        _safe_mean(pd.to_numeric(last['RT'], errors='coerce')),
         _safe_mean(pd.to_numeric(first['RT'], errors='coerce')),
+        _safe_mean(pd.to_numeric(last['RT'], errors='coerce')),
     )
 
     _registrar_resultado_prueba(
@@ -383,6 +383,7 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
     resultados['O_por_fila'] = o_por_fila
     resultados['C_por_fila'] = c_por_fila
     resultados['TOT_por_fila'] = tot_por_fila
+    resultados['CON_por_fila'] = con_por_fila
     resultados['TR_total'] = int(sum(tr_por_fila))
     resultados['TA_total'] = int(sum(ta_por_fila))
     resultados['O_total'] = int(sum(o_por_fila))
@@ -400,24 +401,31 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
     resultados['PD_CPT_C'] = resultados['C_total']
     resultados['PD_CPT_E'] = resultados['E_total']
     resultados['PD_CPT_TOT'] = resultados['TOT']
-    #  resultados['PD_CPT_CON'] = resultados['CON']  # YA NO SE UTILIZA este índice: substituído x TOT
+    resultados['PD_CPT_CON'] = resultados['CON']
     resultados['PD_CPT_VAR'] = resultados['VAR']
+    resultados['PD_CPT_VAR_SD_CON'] = (
+        float(pd.Series(con_por_fila, dtype=float).std(ddof=1)) if len(con_por_fila) >= 2 else None
+    )
     resultados['PD_CPT_R'] = resultados['TA_total']
     # Diferencia positiva indica menor TOT al final: se interpreta como fatiga.
-    resultados['PD_CPT_TOT_principio_vs_final'] = (
-        float(sum(tot_por_fila[:4]) / 4) - float(sum(tot_por_fila[-4:]) / 4)
-        if len(tot_por_fila) >= 8 else None
+    resultados['PD_CPT_CON_principio_vs_final'] = (
+        float(sum(con_por_fila[:4]) / 4) - float(sum(con_por_fila[-4:]) / 4)
+        if len(con_por_fila) >= 8 else None
+    )
+    resultados['P_CPT_CON_principio_vs_final'] = (
+        _welch_pvalue(pd.Series(con_por_fila[:4]), pd.Series(con_por_fila[-4:]))
+        if len(con_por_fila) >= 8 else None
     )
     if len(ta_por_fila) >= 2:
         first_count = max(1, len(ta_por_fila) // 3)
         last_count = max(1, len(ta_por_fila) // 3)
         resultados['PD_CPT_A_principio_vs_final'] = _difference_or_none(
-            _safe_mean(pd.Series(ta_por_fila[-last_count:])),
             _safe_mean(pd.Series(ta_por_fila[:first_count])),
+            _safe_mean(pd.Series(ta_por_fila[-last_count:])),
         )
         resultados['PD_CPT_TR_principio_vs_final'] = _difference_or_none(
-            _safe_mean(pd.Series(tr_por_fila[-last_count:])),
             _safe_mean(pd.Series(tr_por_fila[:first_count])),
+            _safe_mean(pd.Series(tr_por_fila[-last_count:])),
         )
     else:
         resultados['PD_CPT_A_principio_vs_final'] = None
@@ -436,12 +444,11 @@ def _calcular_cpt(resultados: dict, datos: dict) -> None:
         'CPT',
         datos['display_names']['CPT'],
         [
-            ('CPT_TOT', 'CON', resultados['PD_CPT_TOT'], 'PT_CPT_TOT'),
+            ('CPT_CON', 'CON', resultados['PD_CPT_CON'], 'PT_CPT_CON'),
             ('CPT_VAR', 'VAR', resultados['PD_CPT_VAR'], 'PT_CPT_VAR'),
             ('CPT_O', 'O', resultados['PD_CPT_O'], 'PT_CPT_O'),
             ('CPT_C', 'C', resultados['PD_CPT_C'], 'PT_CPT_C'),
             ('CPT_N', 'Elementos procesados', resultados['PD_CPT_N'], 'PT_CPT_N'),
-            ('CPT_TOT', 'TOT', resultados['PD_CPT_TOT'], 'PT_CPT_TOT'),
         ],
     )
 
@@ -451,8 +458,19 @@ def _calcular_four_figures(resultados: dict, datos: dict) -> None:
     experimental = df[df['trial_type'].astype(str).str.lower() == 'experimental'].copy()
     correct = _bool_yes(experimental['correct'])
     responded = experimental['response_given'].notna() & experimental['response_given'].astype(str).str.strip().ne('')
-    discrepancy = experimental['discrepancy'].astype(str).str.lower().isin({'yes', 'si', 'sí', 'true'})
-    tr = pd.to_numeric(experimental['TR'], errors='coerce')
+    # FourFigures usa 'discrepancy' y 'TR'; NamingNumbers usa 'is_switch_trial' y 'rt'.
+    columna_discrepancia = next(
+        (c for c in ('discrepancy', 'is_switch_trial') if c in experimental.columns), None
+    )
+    if columna_discrepancia:
+        discrepancy = _bool_yes(experimental[columna_discrepancia])
+    else:
+        discrepancy = pd.Series(False, index=experimental.index)
+    columna_tr = next((c for c in ('TR', 'rt', 'RT') if c in experimental.columns), None)
+    tr = (
+        pd.to_numeric(experimental[columna_tr], errors='coerce')
+        if columna_tr else pd.Series(float('nan'), index=experimental.index)
+    )
 
     resultados['PD_FourFigures_A'] = int(correct.sum())
     resultados['PD_FourFigures_O'] = int((~responded).sum())
@@ -605,8 +623,8 @@ def _calcular_dualtask(resultados: dict, datos: dict) -> None:
     tracking_first, tracking_last = _split_first_last(tracking)
     resp_first, resp_last = _split_first_last(responses)
     resultados['PD_DUALTASK_PSV_principio_vs_final'] = _difference_or_none(
-        _safe_mean(pd.to_numeric(tracking_last['distance_px'], errors='coerce')),
         _safe_mean(pd.to_numeric(tracking_first['distance_px'], errors='coerce')),
+        _safe_mean(pd.to_numeric(tracking_last['distance_px'], errors='coerce')),
     )
     resultados['P_DUALTASK_PSV_principio_vs_final'] = _welch_pvalue(
         pd.to_numeric(tracking_first['distance_px'], errors='coerce'),
@@ -633,8 +651,8 @@ def _calcular_dualtask(resultados: dict, datos: dict) -> None:
         _target_accuracy_values(resp_last),
     )
     resultados['PD_DUALTASK_TR_principio_vs_final'] = _difference_or_none(
-        _safe_mean(pd.to_numeric(resp_last.loc[resp_last['responded'] == True, 'latency_s'], errors='coerce')),
         _safe_mean(pd.to_numeric(resp_first.loc[resp_first['responded'] == True, 'latency_s'], errors='coerce')),
+        _safe_mean(pd.to_numeric(resp_last.loc[resp_last['responded'] == True, 'latency_s'], errors='coerce')),
     )
     resultados['P_DUALTASK_TR_principio_vs_final'] = _welch_pvalue(
         pd.to_numeric(resp_first.loc[resp_first['responded'] == True, 'latency_s'], errors='coerce'),

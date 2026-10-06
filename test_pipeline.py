@@ -124,7 +124,7 @@ class PipelineTests(unittest.TestCase):
             'display_names': {'FourFigures': 'NamingNumbers'},
             'PD_ANT_A_principio_vs_final': 0.2,
             'PD_ANT_TR_principio_vs_final': 25,
-            'PD_CPT_TOT_principio_vs_final': -5,
+            'PD_CPT_CON_principio_vs_final': -5,
             'PD_DUALTASK_PSV_principio_vs_final': 3,
             'P_DUALTASK_PSV_principio_vs_final': 0.01,
             'PD_DUALTASK_A_principio_vs_final': -0.2,
@@ -134,7 +134,7 @@ class PipelineTests(unittest.TestCase):
         }
         clasificaciones = {
             'ANT_TR_alerta': 'alto',
-            'CPT_TOT': 'bajo',
+            'CPT_CON': 'bajo',
             'DUALTASK_O': 'bajo',
             'DUALTASK_PSV': 'bajo',
             'DUALTASK_A': 'alto',
@@ -160,7 +160,7 @@ class PipelineTests(unittest.TestCase):
 
         for etiqueta in (
             'ANT - Red de alerta',
-            'CPT - TOT',
+            'CPT - CON',
             'DUALTASK - omisiones',
             'DUALTASK - seguimiento visomotor',
             'NamingNumbers - precisión',
@@ -533,18 +533,23 @@ class PipelineTests(unittest.TestCase):
         for clave_parrafo, texto_esperado in PARRAFO_CPT_VAR.items():
             var_nivel, condicion_esperada = clave_parrafo[:2]
             tot_nivel = (
-                'bajo' if len(clave_parrafo) == 3 and clave_parrafo[2] == 'TOT bajo'
+                'bajo' if len(clave_parrafo) == 3 and clave_parrafo[2] == 'CON bajo'
                 else 'normal'
             )
-            diferencia = {
-                'nada': 0,
-                'fatiga': 5,
-                'automatismo': -5,
-                'dificultadinicial': -5,
+            diferencia, pvalue = {
+                'nada': (0, 0.5),
+                'fatiga': (5, 0.01),
+                'automatismo': (-5, 0.01),
+                'dificultadinicial': (-5, 0.01),
             }[condicion_esperada]
-            clasificaciones = {'CPT_TOT': tot_nivel, 'CPT_VAR': var_nivel}
+            sd = {'bajo': 6, 'normal': 4, 'alto': 2}[var_nivel]
+            clasificaciones = {'CPT_CON': tot_nivel}
             _clasificar_cpt_var(
-                {'PD_CPT_TOT_principio_vs_final': diferencia},
+                {
+                    'PD_CPT_VAR_SD_CON': sd,
+                    'PD_CPT_CON_principio_vs_final': diferencia,
+                    'P_CPT_CON_principio_vs_final': pvalue,
+                },
                 clasificaciones,
             )
             with self.subTest(clave_parrafo=clave_parrafo):
@@ -558,6 +563,11 @@ class PipelineTests(unittest.TestCase):
                 self.assertIn(texto_esperado, [paragraph.text for paragraph in doc.paragraphs])
 
     def test_cpt_var_uses_per_series_tot_standard_deviation_and_change(self):
+        resultados = calcular_puntuaciones_directas(leer_datos_excel(SAMPLE_XLSX))
+        tot = pd.Series(resultados['CON_por_fila'], dtype=float)
+        self.assertAlmostEqual(resultados['PD_CPT_VAR_SD_CON'], tot.std(ddof=1))
+        self.assertIsNotNone(resultados['P_CPT_CON_principio_vs_final'])
+
     def test_cpt_tr_totals_and_var_use_attempted_row_extents(self):
         datos = leer_datos_excel(SAMPLE_XLSX)
         resultados = calcular_puntuaciones_directas(datos)
@@ -583,25 +593,28 @@ class PipelineTests(unittest.TestCase):
         )
         self.assertEqual(resultados['PD_CPT_VAR'], resultados['VAR'])
         self.assertAlmostEqual(
-            resultados['PD_CPT_TOT_principio_vs_final'],
-            sum(tot_por_fila[:4]) / 4 - sum(tot_por_fila[-4:]) / 4,
+            resultados['PD_CPT_CON_principio_vs_final'],
+            sum(resultados['CON_por_fila'][:4]) / 4 - sum(resultados['CON_por_fila'][-4:]) / 4,
         )
 
     def test_cpt_var_uses_tot_difference_and_tot_level(self):
         cases = (
-            (5, 'normal', 'fatiga'),
-            (4.99, 'normal', 'nada'),
-            (-5, 'alto', 'automatismo'),
-            (-5, 'bajo', 'dificultadinicial'),
-            (-5, 'N/D', 'nada'),
+            (5, 0.01, 'normal', 'fatiga'),
+            (5, 0.2, 'normal', 'nada'),
+            (-5, 0.01, 'alto', 'automatismo'),
+            (-5, 0.01, 'bajo', 'dificultadinicial'),
+            (-5, 0.01, 'N/D', 'nada'),
         )
-        for difference, tot_level, expected in cases:
-            classifications = {'CPT_TOT': tot_level}
+        for difference, pvalue, tot_level, expected in cases:
+            classifications = {'CPT_CON': tot_level}
             _clasificar_cpt_var(
-                {'PD_CPT_TOT_principio_vs_final': difference},
+                {
+                    'PD_CPT_CON_principio_vs_final': difference,
+                    'P_CPT_CON_principio_vs_final': pvalue,
+                },
                 classifications,
             )
-            with self.subTest(difference=difference, tot_level=tot_level):
+            with self.subTest(difference=difference, pvalue=pvalue, tot_level=tot_level):
                 self.assertEqual(classifications['CPT_VAR_condicion'], expected)
 
     def test_cpt_errores_totales_se_clasifican_desde_omisiones_y_comisiones(self):
